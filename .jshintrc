@@ -1,0 +1,24 @@
+{
+  "camelcase": true,
+  "immed": true,
+  "indent": 2,
+  "latedef": true,
+  "newcap": true,
+  "quotmark": "single",
+  "regexp": true,
+  "unused": true,
+  //"jquery": true,
+  "node": true,
+  "globals": {
+    "describe"   : false,
+    "it"         : false,
+    "to"         : false,
+    "ok"         : false,
+    "be"         : false,
+    "before"     : false,
+    "beforeEach" : false,
+    "after"      : false,
+    "afterEach"  : false,
+    "equal"      : false
+  }
+}
