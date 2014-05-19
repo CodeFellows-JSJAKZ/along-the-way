@@ -2,6 +2,11 @@
 
 ## Required functionality
 
+### Commonly used words explained
+
+location === city, neighborhood etc.
+place === store, business, restaurant etc.
+
 ###Initial simplified version
 
 Client lists a batch of towns or cities along their travel route where they
