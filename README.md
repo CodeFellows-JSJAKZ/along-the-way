@@ -1,4 +1,4 @@
-[Guide to development setup](https://gist.github.com/aisapatino/fb5770a0bcaa87d6f51)
+[Guide to development setup](https://gist.github.com/aisapatino/fb5770a0bcaa87d6f51f)
 
 ## Required functionality
 
