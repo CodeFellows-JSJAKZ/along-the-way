@@ -17,7 +17,7 @@ mongoose.connect(dbUri, function (err) {
 });
 
 // routes
-var apiPrefix = '/api/v0_0_1'
+var apiPrefix = '/api/v0_0_1';
 
 // example fetch all locations
 app.get(apiPrefix + '/locations', function (req, res) {
@@ -27,6 +27,7 @@ app.get(apiPrefix + '/locations', function (req, res) {
       return res.send(500, {error: 'Error querying database'});
     }
     return res.send(books);
+  });
 });
 
 // start server

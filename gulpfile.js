@@ -68,7 +68,8 @@ gulp.task('js', function() {
 
 // html - copy html from SRC to BUILD
 gulp.task('html', function() {
-
+  gulp.src(DIRS.SRC + '/**/*.html', {base: DIRS.SRC + '/'})
+    .pipe(gulp.dest(DIRS.BUILD));
 });
 
 // lint - run jshint on our code
@@ -80,7 +81,7 @@ gulp.task('lint', function() {
 });
 
 // build - runs a series of tasks. see 2nd param
-gulp.task('build', ['clean', 'lint', 'styles', 'js'], function() {
+gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js'], function() {
   console.log('Build complete.');
 }); 
 
