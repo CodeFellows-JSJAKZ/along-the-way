@@ -1,3 +1,5 @@
+[Guide to development setup](https://gist.github.com/aisapatino/fb5770a0bcaa87d6f51)
+
 ## Required functionality
 
 ###Initial simplified version
