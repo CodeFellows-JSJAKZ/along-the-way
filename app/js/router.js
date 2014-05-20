@@ -1,6 +1,8 @@
 var Backbone = require('backbone');
 Backbone.$ = require('jquery');
-var LocationView = require('./views/LocationView.js');
+var Location = require('./models/Location.js');
+//var Place = require('./models/Place.js');
+var Places = require('./collections/Places.js');
 
 var Router = Backbone.Router.extend({
 
