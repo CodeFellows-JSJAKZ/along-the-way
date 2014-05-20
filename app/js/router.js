@@ -1,4 +1,4 @@
-var LocationView = require('./views/LocationView.js');
+/*var LocationView = require('./views/LocationView.js');
 
 var Router = Backbone.Router.extend({
 
@@ -13,5 +13,5 @@ var Router = Backbone.Router.extend({
 
 });
 
-module.exports = Router;
+module.exports = Router;*/
 
