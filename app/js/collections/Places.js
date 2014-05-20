@@ -1,7 +1,7 @@
 var Backbone = require('backbone');
 var Place = require('../models/Place.js');
 
-var Places = Backbone.Model.extend({
+var Places = Backbone.Collection.extend({
   model: Place
 });
 
