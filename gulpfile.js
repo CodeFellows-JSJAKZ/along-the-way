@@ -5,7 +5,7 @@ var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
 var mocha = require('gulp-mocha');
 var nodemon = require('gulp-nodemon');
-var sass = require('gulp-sass');
+var less = require('gulp-less');
 var uglify = require('gulp-uglify');
 var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
@@ -47,11 +47,11 @@ gulp.task('clean', function() {
 
 // styles - turn scss into css, move to BUILD
 gulp.task('styles', function() {
-  var src = DIRS.SRC + DIRS._STYLES + '/*.scss';
-  console.log('Processing scss from ' + src);
+  var src = DIRS.SRC + DIRS._STYLES + '/*.less';
+  console.log('Processing less from ' + src);
   return gulp.src(src)
-    .pipe(sass({outputStyle: 'compressed'}))
-    .pipe(concat('style.css'))
+    .pipe(less({compress: true}))
+    .pipe(concat('main.css'))
     .pipe(gulp.dest(DIRS.BUILD + DIRS._STYLES));
 });
 
@@ -83,11 +83,11 @@ gulp.task('lint', function() {
 // build - runs a series of tasks. see 2nd param
 gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js'], function() {
   console.log('Build complete.');
-}); 
+});
 
 // serve - run express server. see on change
-gulp.task('serve', function() {
-  nodemon({script: 'server.js', ext: 'html js'})
+gulp.task('serve', ['build'], function() {
+  nodemon({script: 'server.js', ext: 'html js less', ignore: ['node_modules', DIRS.BUILD]})
     .on('change', ['build'])
     .on('restart', function() {
       console.log('Server restarted');
