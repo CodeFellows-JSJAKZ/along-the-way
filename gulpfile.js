@@ -83,11 +83,11 @@ gulp.task('lint', function() {
 // build - runs a series of tasks. see 2nd param
 gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js'], function() {
   console.log('Build complete.');
-}); 
+});
 
 // serve - run express server. see on change
 gulp.task('serve', function() {
-  nodemon({script: 'server.js', ext: 'html js'})
+  nodemon({script: 'server.js', ext: 'html js less', ignore: ['node_modules', DIRS.BUILD]})
     .on('change', ['build'])
     .on('restart', function() {
       console.log('Server restarted');
