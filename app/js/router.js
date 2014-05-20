@@ -1,10 +1,12 @@
 var Backbone = require('backbone');
 Backbone.$ = require('jquery');
+var LocationView = require('./views/LocationView.js');
 
 var Router = Backbone.Router.extend({
 
   routes: {
-    'find/:loc': 'getLocations'
+    'find/:loc': 'getLocations',
+    'home': 'viewLocation'
   },
 
   getLocations: function(loc) {
@@ -17,8 +19,11 @@ var Router = Backbone.Router.extend({
         console.log('Error: ' + status);
       }
     });
-  }
+  },
 
+  viewLocation: function () {
+    return new LocationView({});
+  }
 });
 
 //var appRouter =
