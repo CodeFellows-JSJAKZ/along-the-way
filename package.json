@@ -22,6 +22,7 @@
     "gulp-uglify": "^0.3.0",
     "less": "^1.7.0",
     "load-grunt-tasks": "~0.2.1",
+    "underscore": "^1.6.0",
     "vinyl-buffer": "0.0.0",
     "vinyl-source-stream": "^0.1.1"
   }
