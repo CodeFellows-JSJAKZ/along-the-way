@@ -1,17 +1,27 @@
-var LocationView = require('./views/LocationView.js');
+var Backbone = require('backbone');
+Backbone.$ = require('jquery');
 
 var Router = Backbone.Router.extend({
 
   routes: {
-    'home': 'viewLocation' // REPLACE with real routes
+    'find/:loc': 'getLocations'
   },
 
-  // functions here should set html using views
-  viewLocation: function () {
-    return new LocationView({});
+  getLocations: function(loc) {
+    alert('getLocations');
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({'address': loc}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        console.log(results[0].geometry.location);
+      } else {
+        console.log('Error: ' + status);
+      }
+    });
   }
 
 });
 
-module.exports = Router;
+//var appRouter =
+new Router();
+Backbone.history.start();
 
