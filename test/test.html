@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Tests</title>
+    <link rel="stylesheet" type="text/css" href="../../app/js/vendor/mocha.css">
+  </head>
+  <body>
+    <div id="mocha" />
+
+    <!-- JavaScript Test Libraries. -->
+    <script type="text/javascript" src="../../app/js/vendor/mocha.js"></script>
+    <script type="text/javascript" src="../../app/js/vendor/chai.js"></script>
+    <script type="text/javascript" src="../../app/js/vendor/sinon.js"></script>
+    <script type="text/javascript" src="../../app/js/vendor/sinon-chai.js"></script>
+
+    <!-- JavaScript Test Spec. -->
+    <script src="../../app/js-dist/require.js"></script>
+    <script>
+    mocha.checkLeaks();
+    mocha.globals(['jQuery']);
+    mocha.run();
+    </script>
+  </body>
+</html>
