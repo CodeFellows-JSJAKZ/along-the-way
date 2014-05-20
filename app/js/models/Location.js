@@ -1,3 +1,5 @@
+var Backbone = require('backbone');
+
 /* Location should have:
  *    search: {String} the string that the user entered
  *    coords: {Object} {lat: ___, lng: ___}

@@ -1,3 +1,5 @@
+var Backbone = require('backbone');
+
 /* Place should have
  *   name: String
  *   coords: Object {lat: __, lng: __}
