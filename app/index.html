@@ -9,22 +9,9 @@
     <div class="wrapper">
   		<h1>Along The Way</h1>
   		<p><b>Welcome to Along the Way!</b> Using a starting point and multiple locations on the way to a destination, this app pulls sites, restaurants, and other points of interest for you to visit.</p></br>
-
-  		<form class="location-form">
-  		    <label for="location">
-  		    Enter a starting point
-  		    </label>
-  		    <input type="text" name"location" id="location" placeholder="address,zip code, or ladnmark">
-  		    <input type="submit" value="Add Starting Point" id="location-submit">
-  		</form>
-
-  		<ol id="location-list">
-  			<!-- locations inserted here -->
-    	</ol>
-    	<a href="/" class="back-button">Back to Locations</a>
-    	<h2>
-    		{{locationName}}
-    	</h2>
+      <div class="location-wrapper">
+      </div>
+      <!-- TODO move this to separate template -->
     	<ul id="places-list">
     		<li id="place-{{id}}"><p class="place-name">{{name}}</p> <p class="type-of-place">{{typeOfPlace}}</p><a href="{{details}}"> See</a>
   			</li>
