@@ -1,33 +1,30 @@
 var $ = require('jquery');
 var LocationModel = require('./models/LocationModel.js');
+var LocationView = require('./views/locationView.js');
+var LocationList = require('./collections/locationList.js');
+var LocationListView = require('./views/locationListView.js');
 var Place = require('./models/Place.js');
 var Places = require('./collections/Places.js');
 var PlacesCollectionView = require('./views/PlacesCollectionView.js');
 var Backbone = require('backbone');
-var LocationView = require('./views/LocationView');
 Backbone.$ = $;
 
 var Router = Backbone.Router.extend({
 
   routes: {
-    'find/:loc': 'getLocation',
-    'home': 'viewLocation'
+    '': 'home',
   },
 
-  // get places near a given area
-  // takes a user-entered string
-  // creates Location, Places collection
-  getLocation: function getLocation(locationStr) {
-    // start geocoding
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode({'address': locationStr}, function geocodeCallback(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        // create Location and empty Places collection
-        var loc = results[0].geometry.location;
-        console.log(loc);
-        var locObj = new LocationModel({search: locationStr, lat: loc.lat(), lng: loc.lng()});
-        var local = new LocationView({model: locObj, el: $('#location-list')});
-        local.render();
+  home: function home() {
+    // create location list & list view
+    var locationList = new LocationList();
+    var locationListView = new LocationListView({
+      collection: locationList,
+      el: $('.location-wrapper')
+    });
+    locationListView.render();
+  }
+  /* PLACES API CODE
         var places = new Places({location: locObj.id});
         var placesView = new PlacesCollectionView({
           collection: places,
@@ -65,12 +62,7 @@ var Router = Backbone.Router.extend({
         return 'Error: ' + status;
       }
     });
-},
-
-viewLocation: function () {
-  console.log('viewLocation');
-  return new LocationView({});
-}
+    */
 });
 
 module.exports = Router;
