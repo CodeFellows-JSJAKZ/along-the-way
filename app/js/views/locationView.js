@@ -1,11 +1,27 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var handlebars = require('handlebars');
-//var tmpl = require('./../../template/locationTmpl');
+var tmpl = require('./../../template/locationTmpl.hbs');
 
-var locationView = Backbone.View.extend({
-  template: handlebars.compile("<div>{{search}} {{lat}} {{lng}}</div>"),
+/* View for a single Location object.
+ * Handles delete click
+ */
+var LocationView = Backbone.View.extend({
+  template: tmpl,
 
+  initialize: function() {
+    console.log('locationView initialize');
+    this.listenTo(this.model, 'change', this.render);
+  },
+
+  events: {
+    'click .delete': 'destroy'
+  },
+
+  destroy: function() {
+    this.model.destroy();
+    this.remove();
+  },
 
   render: function render () {
     console.log('location view render');
@@ -15,4 +31,4 @@ var locationView = Backbone.View.extend({
   }
 });
 
-module.exports = locationView;
+module.exports = LocationView;
