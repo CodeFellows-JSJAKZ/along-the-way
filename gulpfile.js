@@ -3,6 +3,7 @@ var browserify = require('browserify');
 var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
+var hbsfy = require('hbsfy');
 var mocha = require('gulp-mocha');
 var nodemon = require('gulp-nodemon');
 var less = require('gulp-less');
@@ -57,10 +58,12 @@ gulp.task('styles', function() {
 
 // js - browserify SRC js and reqs into single client.js file
 gulp.task('js', function() {
-  var start = './' + DIRS.SRC + '/js/router.js';
+  var start = './' + DIRS.SRC + '/js/app.js';
   console.log('Bundling reqs starting at ' + start);
-  return browserify(start).bundle()
-    .pipe(source('client.js'))
+  return browserify(start)
+    .transform(hbsfy)
+    .bundle()
+    .pipe(source('js/client.js'))
     .pipe(buffer())
     .pipe(uglify())
     .pipe(gulp.dest(DIRS.BUILD + '/'));

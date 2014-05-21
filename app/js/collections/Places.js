@@ -1,7 +1,8 @@
-var Place = require('../models/Place.js');
+var Backbone = require('backbone');
+var PlaceModel = require('../models/Place.js');
 
-var Places = Backbone.Model.extend({
-  model: Place
+var Places = Backbone.Collection.extend({
+	model: PlaceModel
 });
 
 module.exports = Places;

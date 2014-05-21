@@ -14,7 +14,7 @@
   		    <label for="location">
   		    Enter a starting point
   		    </label>
-  		    <input type="text" name"location" id="location" placeholder="address,zip code, or ladnmark">
+  		    <input type="text" name="location" id="location" placeholder="address,zip code, or ladnmark">
   		    <input type="submit" value="Add Starting Point" id="location-submit">
   		</form>
 
@@ -30,17 +30,21 @@
   			<li class="processing"><span class="location-remove">X</span><p class="location-name">{{name}}</p><p class="message">Looking</p><a href="{{loc}}"> See</a>   <!--w/js hide see and the X -->
   			</li>
     	</ol>
+
+    	<!-- Places collection list -->
     	<a href="/" class="back-button">Back to Locations</a>
-    	<h2>
-    		{{locationName}}
-    	</h2>
-    	<ul id="places-list">
-    		<li id="place-{{id}}"><p class="place-name">{{name}}</p> <p class="type-of-place">{{typeOfPlace}}</p><a href="{{details}}"> See</a>
-  			</li>
-  		</ul>
+    	<h2>{{locationName}}</h2>
+    	<ul id="places-list"></ul>
+    	<!-- end Places collection list -->
+
+			<!-- Single Place -->
+			<div id="single-place"></div>
+			<!-- end Single Place -->
+
     </div>
+    <div id="map" style="display:none;"></div>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
-    <script type="text/javascript" src="client.js"></script>
+    <script type="text/javascript" src="js/client.js"></script>
   </body>
 </html>
 

@@ -1,13 +1,15 @@
-var Backbone = require('backbone');
-Backbone.$ = require('jquery');
+var $ = require('jquery');
 var Location = require('./models/Location.js');
-//var Place = require('./models/Place.js');
+var Place = require('./models/Place.js');
 var Places = require('./collections/Places.js');
+var PlacesCollectionView = require('./views/PlacesCollectionView.js');
+var Backbone = require('backbone');
+Backbone.$ = $;
 
 var Router = Backbone.Router.extend({
 
   routes: {
-    'find/:loc': 'getLocations',
+    'find/:loc': 'getLocation',
     'home': 'viewLocation'
   },
 
@@ -15,17 +17,24 @@ var Router = Backbone.Router.extend({
   // takes a user-entered string
   // creates Location, Places collection
   getLocation: function getLocation(locationStr) {
+    // map prefs
     var map = new google.maps.Map(document.getElementById('map'), {
       center: new google.maps.LatLng(-33.8665433,151.1956316),
       zoom: 15
     });
+    // start geocoding
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode({'address': locationStr}, function geocodeCallback(results, status) {
       if (status == google.maps.GeocoderStatus.OK) {
         // create Location and empty Places collection
         var loc = results[0].geometry.location;
+        console.log(loc);
         var locObj = new Location({search: locationStr, coords: loc});
         var places = new Places({location: locObj.id});
+        var placesView = new PlacesCollectionView({
+          collection: places,
+          el: $('#location-list')
+        });
         // get places
         var service = new google.maps.places.PlacesService(map);
         service.nearbySearch({location: loc, radius: '100'}, function nearbyCallback(results, status) {
@@ -39,8 +48,10 @@ var Router = Backbone.Router.extend({
                 rating: results[i].rating,
                 address: results[i].vicinity
               });
+              console.log(place);
               places.add(place);
             }
+            placesView.render();
           } else {
             console.log('ERROR: ' + status);
           }
@@ -52,11 +63,9 @@ var Router = Backbone.Router.extend({
   },
 
   viewLocation: function () {
+    console.log('viewLocation');
     return new LocationView({});
   }
 });
 
-//var appRouter =
-new Router();
-Backbone.history.start();
-
+module.exports = Router;
