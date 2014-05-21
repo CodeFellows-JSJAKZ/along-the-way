@@ -28,6 +28,7 @@ var placeView = new PlaceView({
 
 placeView.render();
 
+/*
 // List view
 var places = new Places();
 places.reset([place1, place2, place3, place4]);
@@ -35,6 +36,7 @@ places.reset([place1, place2, place3, place4]);
 var placesView = new PlacesView({collection: places});
 
 placesView.render();
+*/
 
 new Router();
 Backbone.history.start();
