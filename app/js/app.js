@@ -2,7 +2,7 @@ var Backbone = require('backbone');
 var Router = require('./router.js');
 
 var Place = require('./models/Place.js');
-var PlaceView = require('./views/placeView.js');
+var PlaceView = require('./views/PlaceView.js');
 
 var Places = require('./collections/Places.js');
 var PlacesView = require('./views/PlacesView.js');
@@ -25,17 +25,13 @@ var placeView = new PlaceView({
 	model: place1
 });
 
-placeView.renderSingle();
-placeView.renderList();
+placeView.render();
 
 // List view
-var places = new Places([
-	place1, place2, place3, place4
-]);
+var places = new Places();
+places.reset([place1, place2, place3, place4]);
 
-var placesView = new PlacesView({
-	collection: places
-});
+var placesView = new PlacesView({collection: places});
 
 placesView.render();
 

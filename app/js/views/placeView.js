@@ -1,26 +1,26 @@
 var Backbone = require('backbone');
 
-//var singlePlaceTpl = require('../../templates/placeView.hbs');
-//var listPlaceTpl = require('../../templates/placeListView.hbs');
+var placeTpl = require('../../templates/placeView.hbs');
+var placeListTpl = require('../../templates/placeListView.hbs');
 
 var PlaceView = Backbone.View.extend({
 
 	el: '#single-place',
 
-	templateSingle: singlePlaceTpl,
-	templateList: listPlaceTpl,
+	template    : placeTpl,
+	templateList: placeListTpl,
 
-  renderSingle: function render() {
-    console.log('Single place is RENDERING!');
-    this.$el.html(this.templateSingle(this.model.toJSON()));
-    return this;
-  },
+	render: function render() {
+		console.log('Single place is RENDERING!');
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	},
 
-  renderList: function render() {
-    console.log('List places is RENDERING!');
-    this.$el.html(this.templateList(this.model.toJSON()));
-    return this;
-  }
+	renderList: function render() {
+		console.log('Single place in a list is RENDERING!');
+		return this.templateList(this.model.toJSON());
+	}
+
 });
 
 module.exports = PlaceView;
