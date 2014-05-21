@@ -1,31 +1,42 @@
-var Backbone = require('backbone');
-Backbone.$ = require('jquery');
-var Location = require('./models/Location.js');
-//var Place = require('./models/Place.js');
+var $ = require('jquery');
+var LocationModel = require('./models/LocationModel.js');
+var LocationView = require('./views/locationView.js');
+var LocationList = require('./collections/locationList.js');
+var LocationListView = require('./views/locationListView.js');
+var Place = require('./models/Place.js');
 var Places = require('./collections/Places.js');
+var PlacesCollectionView = require('./views/PlacesCollectionView.js');
+var Backbone = require('backbone');
+Backbone.$ = $;
 
 var Router = Backbone.Router.extend({
 
   routes: {
-    'find/:loc': 'getLocations',
-    'home': 'viewLocation'
+    '': 'home',
   },
 
-  // get places near a given area
-  // takes a user-entered string
-  // creates Location, Places collection
-  getLocation: function getLocation(locationStr) {
-    var map = new google.maps.Map(document.getElementById('map'), {
-      center: new google.maps.LatLng(-33.8665433,151.1956316),
-      zoom: 15
+  home: function home() {
+    // create location list & list view
+    var locationList = new LocationList();
+    var locationListView = new LocationListView({
+      collection: locationList,
+      el: $('.location-wrapper')
     });
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode({'address': locationStr}, function geocodeCallback(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        // create Location and empty Places collection
-        var loc = results[0].geometry.location;
-        var locObj = new Location({search: locationStr, coords: loc});
+    locationListView.render();
+  }
+  /* PLACES API CODE
         var places = new Places({location: locObj.id});
+        var placesView = new PlacesCollectionView({
+          collection: places,
+          el: $('#places-list')
+        });
+
+        // map prefs
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: new google.maps.LatLng(locObj.lat,locObj.lng),
+          zoom: 15
+        });
+
         // get places
         var service = new google.maps.places.PlacesService(map);
         service.nearbySearch({location: loc, radius: '100'}, function nearbyCallback(results, status) {
@@ -39,8 +50,10 @@ var Router = Backbone.Router.extend({
                 rating: results[i].rating,
                 address: results[i].vicinity
               });
+              console.log(place);
               places.add(place);
             }
+            placesView.render();
           } else {
             console.log('ERROR: ' + status);
           }
@@ -49,14 +62,7 @@ var Router = Backbone.Router.extend({
         return 'Error: ' + status;
       }
     });
-  },
-
-  viewLocation: function () {
-    return new LocationView({});
-  }
+    */
 });
 
-//var appRouter =
-new Router();
-Backbone.history.start();
-
+module.exports = Router;

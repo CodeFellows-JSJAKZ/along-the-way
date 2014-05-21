@@ -3,6 +3,7 @@ var browserify = require('browserify');
 var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
+var hbsfy = require('hbsfy');
 var mocha = require('gulp-mocha');
 var nodemon = require('gulp-nodemon');
 var less = require('gulp-less');
@@ -57,10 +58,12 @@ gulp.task('styles', function() {
 
 // js - browserify SRC js and reqs into single client.js file
 gulp.task('js', function() {
-  var start = './' + DIRS.SRC + '/js/router.js';
+  var start = './' + DIRS.SRC + '/js/app.js';
   console.log('Bundling reqs starting at ' + start);
-  return browserify(start).bundle()
-    .pipe(source('client.js'))
+  return browserify(start)
+    .transform(hbsfy)
+    .bundle()
+    .pipe(source('js/client.js'))
     .pipe(buffer())
     .pipe(uglify())
     .pipe(gulp.dest(DIRS.BUILD + '/'));
@@ -69,6 +72,12 @@ gulp.task('js', function() {
 // html - copy html from SRC to BUILD
 gulp.task('html', function() {
   gulp.src(DIRS.SRC + '/**/*.html', {base: DIRS.SRC + '/'})
+    .pipe(gulp.dest(DIRS.BUILD));
+});
+
+// images - copy images from SRC to BUILD
+gulp.task('img', function() {
+  gulp.src(DIRS.SRC + '/images/*.*', {base: DIRS.SRC + '/'})
     .pipe(gulp.dest(DIRS.BUILD));
 });
 
@@ -81,13 +90,13 @@ gulp.task('lint', function() {
 });
 
 // build - runs a series of tasks. see 2nd param
-gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js'], function() {
+gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js', 'img'], function() {
   console.log('Build complete.');
 });
 
 // serve - run express server. see on change
 gulp.task('serve', ['build'], function() {
-  nodemon({script: 'server.js', ext: 'html js less', ignore: ['node_modules', DIRS.BUILD]})
+  nodemon({script: 'server.js', ext: 'html js less', ignore: ['node_modules/', DIRS.BUILD + '/']})
     .on('change', ['build'])
     .on('restart', function() {
       console.log('Server restarted');

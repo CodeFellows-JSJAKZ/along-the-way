@@ -2,14 +2,33 @@
 <html>
   <head>
     <meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width">
     <title>Along the Way</title>
-    <link href="../dist/styles/main.css" rel="stylesheet">
+		<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+    <link href="styles/main.css" rel="stylesheet">
   </head>
   <body>
     <div class="wrapper">
   		<h1>Along The Way</h1>
-    
+  		<p><b>Welcome to Along the Way!</b> Using a starting point and multiple locations on the way to a destination, this app pulls sites, restaurants, and other points of interest for you to visit.</p></br>
+
+      <div class="location-wrapper">
+      </div>
+
+    	<!-- Places collection list -->
+    	<a href="/" class="back-button">&larr; Back to Locations</a>
+    	<h2>{{locationName}}</h2>
+    	<ul id="places-list" class="item-list"></ul>
+    	<!-- end Places collection list -->
+
+			<!-- Single Place -->
+			<div id="single-place"></div>
+			<!-- end Single Place -->
+
     </div>
+    <div id="map" style="display:none;"></div>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+    <script type="text/javascript" src="js/client.js"></script>
   </body>
 </html>
 
