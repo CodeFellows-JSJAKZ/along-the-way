@@ -5,10 +5,10 @@ var Place = require('./models/Place.js');
 var PlaceView = require('./views/PlaceView.js');
 
 var Places = require('./collections/Places.js');
-var PlacesView= require('./views/PlacesView.js');
+var PlacesView = require('./views/PlacesView.js');
 
 var place1 = new Place({
-	name   : 'A Place 1'
+	name: 'A Place 1'
 });
 var place2 = new Place({
 	name: 'A Place 2'
