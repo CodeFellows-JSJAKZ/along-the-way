@@ -1,7 +1,7 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var handlebars = require('handlebars');
-var tmpl = require('./../../template/locationTmpl.hbs');
+var tmpl = require('./../../templates/locationTmpl.hbs');
 
 /* View for a single Location object.
  * Handles delete click

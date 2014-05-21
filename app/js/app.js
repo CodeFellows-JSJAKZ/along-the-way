@@ -20,6 +20,7 @@ var place4 = new Place({
 	name: 'A Place 4'
 });
 
+
 // Single place page
 var placeView = new PlaceView({
 	model: place1
