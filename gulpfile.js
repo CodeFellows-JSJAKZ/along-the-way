@@ -90,7 +90,7 @@ gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js'], function() {
 
 // serve - run express server. see on change
 gulp.task('serve', ['build'], function() {
-  nodemon({script: 'server.js', ext: 'html js less', ignore: ['node_modules', DIRS.BUILD]})
+  nodemon({script: 'server.js', ext: 'html js less', ignore: ['node_modules/', DIRS.BUILD + '/']})
     .on('change', ['build'])
     .on('restart', function() {
       console.log('Server restarted');
