@@ -75,6 +75,12 @@ gulp.task('html', function() {
     .pipe(gulp.dest(DIRS.BUILD));
 });
 
+// images - copy images from SRC to BUILD
+gulp.task('img', function() {
+  gulp.src(DIRS.SRC + '/images/*.*', {base: DIRS.SRC + '/'})
+    .pipe(gulp.dest(DIRS.BUILD));
+});
+
 // lint - run jshint on our code
 gulp.task('lint', function() {
   return gulp.src(['*.js', DIRS.SRC + '/**/*.js', DIRS.TEST + '/**/*.js'])
@@ -84,7 +90,7 @@ gulp.task('lint', function() {
 });
 
 // build - runs a series of tasks. see 2nd param
-gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js'], function() {
+gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js', 'img'], function() {
   console.log('Build complete.');
 });
 

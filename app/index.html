@@ -2,7 +2,9 @@
 <html>
   <head>
     <meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width">
     <title>Along the Way</title>
+		<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
     <link href="styles/main.css" rel="stylesheet">
   </head>
   <body>
@@ -10,31 +12,24 @@
   		<h1>Along The Way</h1>
   		<p><b>Welcome to Along the Way!</b> Using a starting point and multiple locations on the way to a destination, this app pulls sites, restaurants, and other points of interest for you to visit.</p></br>
 
-  		<form class="location-form">
-  		    <label for="location">
-  		    Enter a starting point
-  		    </label>
-  		    <input type="text" name="location" id="location" placeholder="address,zip code, or ladnmark">
+  		<form class="location-form cf">
+  		    <label for="location">Enter a starting point</label>
+  		    <input type="text" name="location" id="location" placeholder="address, zip code or landmark">
   		    <input type="submit" value="Add Starting Point" id="location-submit">
   		</form>
 
-  		<ol id="location-list">
-  			<li id="location-{{id}}"><span class="location-remove">X</span> <p class="location-name">{{name}}</p> <p class="message"></p><a href="{{loc}}"> See</a>
-  			</li>
-  			<li id="location-{{id}}"><span class="location-remove">X</span><p class="location-name">{{name}}</p><p class="message"></p><a href="{{loc}}"> See</a>
-  			</li>
-  			<li class="error"><span class="location-remove">X</span><p class="location-name">{{name}}</p><p class="message">Error</p><a href="{{loc}}"> See</a> <!--w/js hide 'see' link -->
-  			</li>
-  			<li><span class="location-remove">X</span><p class="location-name">{{name}}</p><p class="message"></p><a href="{{loc}}"> See</a>
-  			</li>
-  			<li class="processing"><span class="location-remove">X</span><p class="location-name">{{name}}</p><p class="message">Looking</p><a href="{{loc}}"> See</a>   <!--w/js hide see and the X -->
-  			</li>
+  		<ol id="location-list" class="item-list">
+  			<li><span class="location-remove">X</span> <p class="location-name">{{name}}</p> <p class="message"></p></li>
+  			<li><span class="location-remove">X</span><p class="location-name">{{name}}</p><p class="message"></p></li>
+  			<li class="error"><span class="location-remove">X</span><p class="location-name">{{name}}</p><p class="message">Error</p></li>
+  			<li><span class="location-remove">X</span><p class="location-name">{{name}}</p><p class="message"></p></li>
+  			<li class="processing"><span class="location-remove">X</span><p class="location-name">{{name}}</p><p class="message">Looking</p></li>
     	</ol>
 
     	<!-- Places collection list -->
-    	<a href="/" class="back-button">Back to Locations</a>
+    	<a href="/" class="back-button">&larr; Back to Locations</a>
     	<h2>{{locationName}}</h2>
-    	<ul id="places-list"></ul>
+    	<ul id="places-list" class="item-list"></ul>
     	<!-- end Places collection list -->
 
 			<!-- Single Place -->
