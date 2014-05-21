@@ -11,13 +11,11 @@ var PlaceView = Backbone.View.extend({
 	templateList: placeListTpl,
 
 	render: function render() {
-		console.log('Single place is RENDERING!');
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	},
 
 	renderList: function render() {
-		console.log('Single place in a list is RENDERING!');
 		return this.templateList(this.model.toJSON());
 	}
 
