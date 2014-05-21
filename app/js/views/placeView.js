@@ -1,7 +1,7 @@
 var Backbone = require('backbone');
 
 var placeTpl = require('../../templates/placeView.hbs');
-var placeListTpl = require('../../templates/placeListView.hbs');
+var placeListTpl = require('../../templates/place.hbs');
 
 var PlaceView = Backbone.View.extend({
 

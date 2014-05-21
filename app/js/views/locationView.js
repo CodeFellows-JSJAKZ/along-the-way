@@ -6,6 +6,7 @@ var tmpl = require('./../../templates/locationTmpl.hbs');
 /* View for a single Location object.
  * Handles delete click
  */
+
 var LocationView = Backbone.View.extend({
   template: tmpl,
 
@@ -15,7 +16,13 @@ var LocationView = Backbone.View.extend({
   },
 
   events: {
-    'click .delete': 'destroy'
+    'click .delete': 'destroy',
+    'click': 'showPlaces'
+  },
+
+  showPlaces: function(){
+    console.log(this.model.get('search'));
+    Backbone.history.navigate(this.model.get('search'), {trigger: true});
   },
 
   destroy: function() {
