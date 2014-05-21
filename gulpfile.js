@@ -63,7 +63,7 @@ gulp.task('js', function() {
   return browserify(start)
     .transform(hbsfy)
     .bundle()
-    .pipe(source('client.js'))
+    .pipe(source('js/client.js'))
     .pipe(buffer())
     .pipe(uglify())
     .pipe(gulp.dest(DIRS.BUILD + '/'));
