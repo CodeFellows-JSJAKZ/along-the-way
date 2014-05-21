@@ -2,7 +2,7 @@ var Backbone = require('backbone');
 var Router = require('./router.js');
 
 var Place = require('./models/Place.js');
-var PlaceView = require('./views/PlaceView.js');
+var PlaceView = require('./views/placeView.js');
 
 var Places = require('./collections/Places.js');
 var PlacesView = require('./views/PlacesView.js');
