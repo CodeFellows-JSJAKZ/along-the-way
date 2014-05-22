@@ -15,7 +15,17 @@ var LocationView = Backbone.View.extend({
   },
 
   events: {
+<<<<<<< Updated upstream
     'click .delete': 'destroy'
+=======
+    'click .location-remove': 'destroy',
+    'click li p': 'showPlaces'
+  },
+
+  showPlaces: function(){
+    console.log(this.model.get('search'));
+    Backbone.history.navigate(this.model.get('search'), {trigger: true});
+>>>>>>> Stashed changes
   },
 
   destroy: function() {
