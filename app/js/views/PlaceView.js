@@ -5,7 +5,7 @@ var placeListTpl = require('../../templates/place.hbs');
 
 var PlaceView = Backbone.View.extend({
 
-	el: '#single-place',
+	el: 'li',
 
 	template    : placeTpl,
 	templateList: placeListTpl,

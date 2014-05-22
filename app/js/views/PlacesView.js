@@ -5,14 +5,20 @@ var $ = require('jquery');
 var PlaceView = require('./PlaceView.js');
 
 var PlacesView = Backbone.View.extend({
+	initialize: function(){
+		_.bind(this.render, this);
+	},
 
 	el: '#places-list',
 
 	render: function render() {
-		this.collection.forEach(function (place) {
+		console.log('places view render', this);
+		function createPlace(place) {
+			console.log(this);
 			var placeView = new PlaceView({ model: place });
-			this.$el.append(placeView.renderList());
-		}, this);
+			this.$el.append(placeView.render().el);
+		}
+		_.each(this.collection, createPlace, {this: this});
 		return this;
 	}
 

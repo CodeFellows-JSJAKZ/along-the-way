@@ -16,7 +16,7 @@ var LocationView = Backbone.View.extend({
 
 
     'click .location-remove': 'destroy',
-    'click li p': 'showPlaces'
+    //'click li p': 'showPlaces'
 
   },
 
