@@ -26,15 +26,12 @@ var Router = Backbone.Router.extend({
   },
 
   placesList: function(location){
-    console.log(Along);
     var placesList = Along[location];
-    console.log(placesList);
     var placesView = new PlacesView({
       collection: placesList,
       el: '#places-list'
     });
     placesView.render();
-    console.log('render called');
   }
 
 });

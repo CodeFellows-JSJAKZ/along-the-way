@@ -14,7 +14,6 @@ var PlacesView = Backbone.View.extend({
 	render: function render() {
 		console.log('places view render', this);
 		function createPlace(place) {
-			console.log(this);
 			var placeView = new PlaceView({ model: place });
 			this.$el.append(placeView.render().el);
 		}
@@ -25,3 +24,4 @@ var PlacesView = Backbone.View.extend({
 });
 
 module.exports = PlacesView;
+

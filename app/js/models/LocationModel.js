@@ -9,7 +9,6 @@ var geocoder = new google.maps.Geocoder();
  */
 var LocationModel = Backbone.Model.extend({
   initialize: function() {
-    console.log('locationmodel initialize');
     var that = this;
     // geocode
     geocoder.geocode({'address': that.get('search')}, function geocodeCallback(results, status) {

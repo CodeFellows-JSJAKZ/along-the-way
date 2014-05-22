@@ -6,7 +6,6 @@ var Along = require('./../app.js');
 var Places = Backbone.Collection.extend({
 	model: PlaceModel,
 	initialize: function(location){
-		console.log('places initialize', location);
 		this.location = location;
 
 		var coords = new google.maps.LatLng(location.get('lat'), location.get('lng'));
@@ -31,12 +30,9 @@ var Places = Backbone.Collection.extend({
             rating: results[i].rating,
             address: results[i].vicinity
           });
-          //console.log(that);
           that.add(place);
-          console.log(that.models);
         }
         Along[location] = that;
-        console.log(Along);
       } else {
         console.log('ERROR: ' + status);
       }

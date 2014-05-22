@@ -8,20 +8,16 @@ var LocationView = Backbone.View.extend({
   template: tmpl,
 
   initialize: function() {
-    console.log('locationView initialize');
     this.listenTo(this.model, 'change', this.render);
   },
 
   events: {
-
-
     'click .location-remove': 'destroy',
-    //'click li p': 'showPlaces'
+    'click li p': 'showPlaces'
 
   },
 
   showPlaces: function(){
-    console.log(this.model.get('search'));
     Backbone.history.navigate(this.model.get('search'), {trigger: true});
 
   },
@@ -32,8 +28,6 @@ var LocationView = Backbone.View.extend({
   },
 
   render: function render () {
-    console.log('location view render');
-    console.log(this.model.toJSON());
     this.$el.html(this.template(this.model.toJSON()));
     return this;
   }
