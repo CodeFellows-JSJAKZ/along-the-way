@@ -1,6 +1,4 @@
-var $ = require('jquery');
 var Backbone = require('backbone');
-var handlebars = require('handlebars');
 var tmpl = require('./../../templates/locationTmpl.hbs');
 
 /* View for a single Location object.

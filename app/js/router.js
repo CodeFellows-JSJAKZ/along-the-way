@@ -1,11 +1,8 @@
 var $ = require('jquery');
-var LocationModel = require('./models/LocationModel.js');
-var LocationView = require('./views/locationView.js');
 var LocationList = require('./collections/locationList.js');
 var LocationListView = require('./views/locationListView.js');
-var Place = require('./models/Place.js');
 var Places = require('./collections/Places.js');
-var PlacesCollectionView = require('./views/PlacesCollectionView.js');
+var PlacesView = require('./views/PlacesView.js');
 var Backbone = require('backbone');
 Backbone.$ = $;
 

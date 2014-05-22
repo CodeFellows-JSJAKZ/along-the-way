@@ -40,5 +40,5 @@ placesView.render();
 var router = new Router();
 $(function(){
   Backbone.history.start();
-  Backbone.history.navigate("");
+  Backbone.history.navigate('');
 });

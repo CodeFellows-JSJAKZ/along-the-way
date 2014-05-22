@@ -18,7 +18,7 @@ var LocationModel = Backbone.Model.extend({
         var loc = results[0].geometry.location;
         that.set({lat: loc.lat(), lng: loc.lng()});
       } else {
-        that.set({error: status})
+        that.set({error: status});
       }
     });
   }
