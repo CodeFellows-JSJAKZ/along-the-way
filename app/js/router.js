@@ -21,6 +21,7 @@ var Router = Backbone.Router.extend({
       el: $('.location-wrapper')
     });
     locationListView.render();
+
   },
 
   placesList: function(location){
@@ -39,13 +40,7 @@ var Router = Backbone.Router.extend({
           el: $('#places-list')
         });
 
-        // map prefs
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: new google.maps.LatLng(locObj.lat,locObj.lng),
-          zoom: 15
-        });
 
->>>>>>> develop
         // get places
         var service = new google.maps.places.PlacesService(map);
         service.nearbySearch({location: loc, radius: '100'}, function nearbyCallback(results, status) {
@@ -72,6 +67,7 @@ var Router = Backbone.Router.extend({
       }
     });
     */
+
 });
 
 module.exports = Router;
