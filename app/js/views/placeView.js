@@ -1,15 +1,24 @@
 var Backbone = require('backbone');
-var _ = require('underscore');
+
+var placeTpl = require('../../templates/placeView.hbs');
+var placeListTpl = require('../../templates/place.hbs');
 
 var PlaceView = Backbone.View.extend({
-  template: _.template('<li><%= name =></li>'),
 
-  render: function render() {
-    console.log('PlaceView render');
-    console.log(this.model.attributes);
-    this.$el.html(this.template(this.model.toJSON()));
-    return this;
-  }
+	el: '#single-place',
+
+	template    : placeTpl,
+	templateList: placeListTpl,
+
+	render: function render() {
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	},
+
+	renderList: function render() {
+		return this.templateList(this.model.toJSON());
+	}
+
 });
 
 module.exports = PlaceView;

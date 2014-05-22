@@ -13,6 +13,7 @@ var Router = Backbone.Router.extend({
 
   routes: {
     '': 'home',
+    '/:location': 'placesList'
   },
 
   home: function home() {
@@ -23,6 +24,16 @@ var Router = Backbone.Router.extend({
       el: $('.location-wrapper')
     });
     locationListView.render();
+  },
+
+  placesList: function(location){
+    console.log(search);
+    var placesList = new Places();
+    var placesView = new PlacesView({
+      collection: placesList
+
+    });
+    placesView.render();
   }
   /* PLACES API CODE
         var places = new Places({location: locObj.id});
@@ -37,6 +48,7 @@ var Router = Backbone.Router.extend({
           zoom: 15
         });
 
+>>>>>>> develop
         // get places
         var service = new google.maps.places.PlacesService(map);
         service.nearbySearch({location: loc, radius: '100'}, function nearbyCallback(results, status) {

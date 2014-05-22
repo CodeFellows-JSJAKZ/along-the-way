@@ -1,7 +1,7 @@
 var $ = require('jquery');
 var _ = require('underscore');
 var Backbone = require('backbone');
-var tmpl = require('./../../template/locationCollectionTemplate.hbs');
+var tmpl = require('./../../templates/locationCollectionTemplate.hbs');
 var LocationView = require('./locationView.js');
 var LocationModel = require('./../models/LocationModel.js');
 
@@ -41,7 +41,7 @@ var LocationListView = Backbone.View.extend({
     console.log('modelAdded');
     console.log(location);
     var view = new LocationView({model: location});
-    this.$el.append(view.render().el);
+    $('#location-list').prepend(view.render().el);
   },
 
   render: function render () {

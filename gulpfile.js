@@ -63,7 +63,7 @@ gulp.task('js', function() {
   return browserify(start)
     .transform(hbsfy)
     .bundle()
-    .pipe(source('client.js'))
+    .pipe(source('js/client.js'))
     .pipe(buffer())
     .pipe(uglify())
     .pipe(gulp.dest(DIRS.BUILD + '/'));
@@ -72,6 +72,12 @@ gulp.task('js', function() {
 // html - copy html from SRC to BUILD
 gulp.task('html', function() {
   gulp.src(DIRS.SRC + '/**/*.html', {base: DIRS.SRC + '/'})
+    .pipe(gulp.dest(DIRS.BUILD));
+});
+
+// images - copy images from SRC to BUILD
+gulp.task('img', function() {
+  gulp.src(DIRS.SRC + '/images/*.*', {base: DIRS.SRC + '/'})
     .pipe(gulp.dest(DIRS.BUILD));
 });
 
@@ -84,7 +90,7 @@ gulp.task('lint', function() {
 });
 
 // build - runs a series of tasks. see 2nd param
-gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js'], function() {
+gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js', 'img'], function() {
   console.log('Build complete.');
 });
 
