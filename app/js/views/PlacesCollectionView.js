@@ -1,7 +1,7 @@
 var $ = require('jquery');
 var _ = require('underscore');
 var Backbone = require('backbone');
-var PlaceView = require('./placeView.js');
+var PlaceView = require('./PlaceView.js');
 
 var PlacesCollectionView = Backbone.View.extend({
 
