@@ -14,6 +14,7 @@ var LocationListView = Backbone.View.extend({
 
   initialize: function() {
     console.log('colview initialize');
+    // listen for models being added to collection
     this.listenTo(this.collection, 'add', this.modelAdded);
     _.bind(this.inputEntered, this);
     _.bind(this.modelAdded, this);
@@ -25,21 +26,25 @@ var LocationListView = Backbone.View.extend({
   },
 
   inputEntered: function(ev) {
-    // on Enter or submit press, trigger a submit
+    // on Enter or submit press, create new LocationModel
     if (ev.type == 'click' || ev.keyCode == 13) {
       var userInput = $('#location-input').val();
       if (userInput.trim() != '') {
         console.log('input entered', userInput);
-        var model = new LocationModel({search: userInput});
-        console.log('Adding model to collection');
+        // clear input
+        $('#location-input').val('');
+        var model = new LocationModel({search: userInput.trim()});
+        console.log('Adding LocationModel to collection');
         this.collection.add(model);
+        // if starting point was entered, change button text
+        if (this.collection.length === 1) {
+          $('#location-submit').val('Add location');
+        }
       }
     }
   },
 
   modelAdded: function(location) {
-    console.log('modelAdded');
-    console.log(location);
     var view = new LocationView({model: location});
     $('#location-list').prepend(view.render().el);
   },
