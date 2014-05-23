@@ -209,6 +209,58 @@ body{
 
 }
 
+#single-place {
+
+	p {
+		padding: 0;
+	}
+
+	.single-place-wrap {
+
+		.col-2 {
+			width: 45%;
+			float: left;
+			padding: 0 5% 0 0;
+			font-size: 0.9em;
+
+			ul {
+				padding: 0;
+				margin: 0;
+				list-style: none;
+
+				li {
+					margin: 0 0 4px;
+
+					a {
+						display: block;
+						background: @c_lightblue;
+						text-decoration: none;
+						font-weight: bold;
+						padding: 4px 10px;
+						color: black;
+						border-radius: 2px;
+						border: @c_brightblue;
+					}
+				}
+			}
+
+			address {
+				line-height: 1.2em;
+				margin: 0 0 8px;
+			}
+		}
+
+		.rating {
+			font-size: 4em;
+			letter-spacing: -3px;
+			font-weight: bold;
+			width: 100px;
+			float: left;
+			line-height: 1em;
+		}
+	}
+}
+
 @media (max-width: 780px) {
 
 	.wrapper {
@@ -216,5 +268,23 @@ body{
 		h1 {
 			font-size: 3em
 		}
+	}
+}
+@media (max-width: 500px) {
+
+	body {
+		line-height: 1.4em;
+		padding: 0;
+		margin: 0;
+	}
+
+	.wrapper {
+		padding: 10px;
+		width: 92%;
+		min-width: 1px;
+		max-width: 500px;
+		border-radius: 0;
+		border: none;
+		box-shadow: none;
 	}
 }

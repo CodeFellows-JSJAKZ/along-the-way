@@ -21,14 +21,6 @@ var place4 = new Place({
 	name: 'A Place 4'
 });
 
-
-// Single place page
-var placeView = new PlaceView({
-	model: place1
-});
-
-placeView.render();
-
 // List view
 var places = new Places();
 places.reset([place1, place2, place3, place4]);
