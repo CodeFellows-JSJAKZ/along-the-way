@@ -17,12 +17,13 @@ var PlacesView = Backbone.View.extend({
 	},
 
 	render: function render() {
-		console.log('places view render', this);
-		function createPlace(place) {
+		console.log('places view render', this.collection);
+		var that = this;
+		_.each(that.collection, function (place) {
+			console.dir('place in _.each: ' + place);
 			var placeView = new PlaceView({ model: place });
-			this.$el.append(placeView.render().el);
-		}
-		_.each(this.collection, createPlace, {this: this});
+			that.$el.append(placeView.render().el);
+		});
 		return this;
 	},
 

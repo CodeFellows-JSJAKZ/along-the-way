@@ -1,4 +1,5 @@
 var Backbone = require('backbone');
+var _ = require('underscore');
 var $ = require('jquery');
 
 var placeTpl = require('../../templates/placeView.hbs');
@@ -11,11 +12,16 @@ var PlaceView = Backbone.View.extend({
 	template    : placeTpl,
 	templateList: placeListTpl,
 
+	initialize: function () {
+		_.bind(this.render, this);
+		_.bind(this.renderSingle, this);
+	},
+
 	events: {
 		'click a.back-button': 'showList'
 	},
 
-	render: function render() {
+	renderSingle: function render() {
 		var attr = this.model.toJSON();
 
 		// Replace newlines with <br>
@@ -27,7 +33,9 @@ var PlaceView = Backbone.View.extend({
 		return this;
 	},
 
-	renderList: function render() {
+	render: function render() {
+		console.dir(this);
+		console.dir(this.model);
 		return this.templateList(this.model.toJSON());
 	},
 

@@ -11,7 +11,7 @@ var Router = Backbone.Router.extend({
 
   routes: {
     '': 'home',
-    ':location': 'placesList'
+    ':locationId': 'placesList'
   },
 
   home: function home() {
@@ -25,13 +25,17 @@ var Router = Backbone.Router.extend({
 
   },
 
-  placesList: function(location){
-    var placesList = Along[location];
+  placesList: function(locationId){
+		var placeCollection = AlongTheWay[locationId];
+		console.log('locationId: ' + locationId);
+		console.log('router ATW global');
+		console.dir(AlongTheWay);
     var placesView = new PlacesView({
-      collection: placesList,
+			collection: placeCollection,
       el: '#places-list'
     });
     placesView.render();
+
   }
 
 });

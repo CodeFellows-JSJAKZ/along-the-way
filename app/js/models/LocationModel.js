@@ -11,17 +11,23 @@ var LocationModel = Backbone.Model.extend({
   initialize: function() {
     var that = this;
     // geocode
-    geocoder.geocode({'address': that.get('search')}, function geocodeCallback(results, status) {
+    geocoder.geocode({
+    	'address': that.get('search')
+    }, function geocodeCallback(results, status) {
       console.log('geocodeCallback');
       if (status == google.maps.GeocoderStatus.OK) {
         var loc = results[0].geometry.location;
 
         that.set({lat: loc.lat(), lng: loc.lng()});
         var placesCollection = new Places(that);
+				AlongTheWay[that.cid] = placesCollection;
       } else {
         that.set({error: status});
       }
     });
+    console.log('location model ATW global');
+    console.dir(AlongTheWay);
+
   }
 });
 

@@ -32,7 +32,6 @@ var Places = Backbone.Collection.extend({
           });
           that.add(place);
         }
-        Along[location] = that;
       } else {
         console.log('ERROR: ' + status);
       }
