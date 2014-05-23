@@ -4,23 +4,27 @@ var $ = require('jquery');
 
 var Place = require('../models/Place.js');
 var PlaceView = require('./PlaceView.js');
+var tmpl = require('./../../templates/placesList.hbs');
 
 var PlacesView = Backbone.View.extend({
 	initialize: function(){
 		_.bind(this.render, this);
 	},
 
-	el: '#places-list',
+  template: tmpl,
 
 	events: {
 		'click p': 'showSingle'
 	},
 
 	render: function render() {
+    console.log(this.$el);
 		console.log('places view render', this.collection);
 		var that = this;
-		_.each(that.collection, function (place) {
-			console.dir('place in _.each: ' + place);
+    var collection = this.collection;
+		_.each(collection.models, function (place, key, list) {
+      console.log('place in _.each');
+			//console.dir(place);
 			var placeView = new PlaceView({ model: place });
 			that.$el.append(placeView.render().el);
 		});
@@ -31,7 +35,8 @@ var PlacesView = Backbone.View.extend({
 
 		console.log('Showing single...');
 
-		$('#places-list-wrap').hide();
+    $('#location-list').hide();
+		$('#places-list').hide();
 		$('#single-place').show();
 
 		// New place instance
@@ -47,10 +52,11 @@ var PlacesView = Backbone.View.extend({
 
 		// New place view
 		var placeView = new PlaceView({
+      el: $('#single-place'),
 			model: place1
 		});
 
-		placeView.render();
+		placeView.renderSingle();
 	}
 
 });

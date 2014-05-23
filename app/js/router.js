@@ -32,7 +32,7 @@ var Router = Backbone.Router.extend({
 		console.dir(AlongTheWay);
     var placesView = new PlacesView({
 			collection: placeCollection,
-      el: '#places-list'
+      el: $('#places-list')
     });
     placesView.render();
 
