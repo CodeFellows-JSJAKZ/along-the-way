@@ -2,15 +2,14 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
 
-var placeTpl = require('../../templates/placeView.hbs');
-var placeListTpl = require('../../templates/place.hbs');
+var template = require('../../templates/place.hbs');
+var templateDetailed = require('../../templates/place-detailed.hbs');
 
+/* View for a single place object. */
 var PlaceView = Backbone.View.extend({
 
-  //el: '#places-list',
-
-	template    : placeTpl,
-	templateList: placeListTpl,
+	template: template,
+	templateDetailed: templateDetailed,
 
 	initialize: function () {
 		_.bind(this.render, this);
@@ -28,12 +27,12 @@ var PlaceView = Backbone.View.extend({
 		attr.address = attr.address.replace(/(?:\r\n|\r|\n)/g, '<br>');
 
 		// Create a URL-friendly name
-		attr.urlName = this.$el.html(this.template(attr));
+		attr.urlName = this.$el.html(this.templateDetailed(attr));
 		return this;
 	},
 
 	render: function render() {
-    this.$el.html(this.templateList(this.model.toJSON()));
+    this.$el.html(this.template(this.model.toJSON()));
     return this;
 	},
 
@@ -45,3 +44,4 @@ var PlaceView = Backbone.View.extend({
 });
 
 module.exports = PlaceView;
+

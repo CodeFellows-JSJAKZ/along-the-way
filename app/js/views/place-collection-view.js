@@ -2,16 +2,16 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
 
-var Place = require('../models/Place.js');
-var PlaceView = require('./PlaceView.js');
-var tmpl = require('./../../templates/placesList.hbs');
+var Place = require('../models/place-model.js');
+var PlaceView = require('./place-view.js');
+var template = require('./../../templates/place-collection.hbs');
 
-var PlacesView = Backbone.View.extend({
+var PlaceCollectionView = Backbone.View.extend({
 	initialize: function(){
 		_.bind(this.render, this);
 	},
 
-  template: tmpl,
+  template: template,
 
 	events: {
 		'click p': 'showSingle'
@@ -61,5 +61,5 @@ var PlacesView = Backbone.View.extend({
 
 });
 
-module.exports = PlacesView;
+module.exports = PlaceCollectionView;
 

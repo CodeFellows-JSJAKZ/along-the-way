@@ -1,8 +1,8 @@
 var $ = require('jquery');
-var LocationList = require('./collections/locationList.js');
-var LocationListView = require('./views/locationListView.js');
-var Places = require('./collections/Places.js');
-var PlacesView = require('./views/PlacesView.js');
+var LocationCollection = require('./collections/location-collection.js');
+var LocationCollectionView = require('./views/location-collection-view.js');
+var PlaceCollection = require('./collections/place-collection.js');
+var PlaceCollectionView = require('./views/place-collection-view.js');
 var Backbone = require('backbone');
 Backbone.$ = $;
 
@@ -16,28 +16,24 @@ var Router = Backbone.Router.extend({
 
   home: function home() {
     // create location list & list view
-    var locationList = new LocationList();
-    var locationListView = new LocationListView({
-      collection: locationList,
+    var locationCollection = new LocationCollection();
+    var locationCollectionView = new LocationCollectionView({
+      collection: locationCollection,
       el: $('.location-wrapper')
     });
-    locationListView.render();
+    locationCollectionView.render();
 
   },
 
   placesList: function(locationId){
-		var placeCollection = AlongTheWay[locationId];
-		console.log('locationId: ' + locationId);
-		console.log('router ATW global');
-		console.dir(AlongTheWay);
-    var placesView = new PlacesView({
-			collection: placeCollection,
+    var placeCollectionView = new PlaceCollectionView({
+			collection: AlongTheWay[locationId],
       el: $('#places-list')
     });
-    placesView.render();
-
+    placeCollectionView.render();
   }
 
 });
 
 module.exports = Router;
+

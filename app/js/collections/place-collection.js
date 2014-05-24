@@ -1,10 +1,12 @@
 var Backbone = require('backbone');
 var $ = require('jquery');
-var PlaceModel = require('../models/Place.js');
+var PlaceModel = require('../models/place-model.js');
 var Along = require('./../app.js');
 
-var Places = Backbone.Collection.extend({
+var PlaceCollection = Backbone.Collection.extend({
+
 	model: PlaceModel,
+
 	initialize: function(location){
 		this.location = location;
 
@@ -36,9 +38,9 @@ var Places = Backbone.Collection.extend({
         console.log('ERROR: ' + status);
       }
     });
-    
+
   }
 });
 
-module.exports = Places;
-	
+module.exports = PlaceCollection;
+
