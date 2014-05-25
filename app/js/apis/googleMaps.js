@@ -1,10 +1,27 @@
-var GeoLocation = require('./geoLocation');
-var geo = new GeoLocation();
-var lat = geo.lat;
-var lng = geo.lng;
+function getGeoLocation() {
+  if ("geolocation" in navigator) {
+    console.log('Trying to get location');
+    navigator.geolocation.getCurrentPosition(initializeAutoComplete);
+  }
+  else {
+    //x.innerHTML=
+    console.warn("Geolocation is not supported by this browser.");
+  }
+};
 
-console.log("WTF!!!!" + lat);
-function initialize() {
+function showPosition(position) {
+  return {
+    lat: position.coords.latitude,
+    lng: position.coords.longitude
+  };
+}
+
+var initializeAutoComplete = function(coords) {
+  var lat = coords.lat;
+  var lng = coords.lng;
+
+  console.log("WTF!!!!" + lat);
+  
   var mapOptions = {
     center: new google.maps.LatLng(lat, lng),
     zoom: 13
@@ -12,16 +29,16 @@ function initialize() {
   var map = new google.maps.Map(document.getElementById('map-canvas'),
     mapOptions);
 
-  var input = /** @type {HTMLInputElement} */(
-      document.getElementById('pac-input'));
+  var input = (document.getElementById('location-input'));
 
-  var types = document.getElementById('type-selector');
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
+  //var types = document.getElementById('type-selector');
+  //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+  //map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
 
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
+  /*
   var infowindow = new google.maps.InfoWindow();
   var marker = new google.maps.Marker({
     map: map,
@@ -43,7 +60,7 @@ function initialize() {
       map.setCenter(place.geometry.location);
       map.setZoom(17);  // Why 17? Because it looks good.
     }
-    marker.setIcon(/** @type {google.maps.Icon} */({
+    marker.setIcon({
       url: place.icon,
       size: new google.maps.Size(71, 71),
       origin: new google.maps.Point(0, 0),
@@ -65,6 +82,7 @@ function initialize() {
     infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
     infowindow.open(map, marker);
   });
+  /*
 
   // Sets a listener on a radio button to change the filter type on Places
   // Autocomplete.
@@ -78,6 +96,8 @@ function initialize() {
   setupClickListener('changetype-all', []);
   setupClickListener('changetype-establishment', ['establishment']);
   setupClickListener('changetype-geocode', ['geocode']);
+  */
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+module.exports = getGeoLocation;
+
