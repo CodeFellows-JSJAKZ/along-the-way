@@ -7,7 +7,7 @@ var PlaceCollection = Backbone.Collection.extend({
 
 	model: PlaceModel,
 
-	initialize: function(location){
+	findPlaces: function(location){
     googleMapServices.getPlacesByLocation(location, this);
   }
 });

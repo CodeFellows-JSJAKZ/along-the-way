@@ -23,7 +23,8 @@ var LocationModel = Backbone.Model.extend({
       that.set({error: status});
     } else {
       that.set({lat: coords.lat(), lng: coords.lng()});
-      AlongTheWay[that.cid] = new PlaceCollection(that);
+      AlongTheWay[that.cid] = new PlaceCollection();
+      AlongTheWay[that.cid].findPlaces(that);
     }
   }
 });
