@@ -2,31 +2,27 @@ var PlaceModel = require('./../models/place-model.js');
 
 var googleMapServices = {
   
-  service: null,
+  // define object properties that are set later
   coords: null,
   map: null,
   placesService: null,
+  geocoder: null,
 
-  /* Get geolocation of user using HTML5 */
-  getGeoLocation: function getGeoLocation() {
-    if ("geolocation" in navigator) {
-      console.log('Trying to get location');
-      var that = this;
-      navigator.geolocation.getCurrentPosition(function(geoposition) {
-        console.log('Received coords');
-        console.log(geoposition.coords);
-        that.createMap(geoposition.coords);
-        that.initializeAutoComplete();
-      });
+  /* Set up maps services */
+  initialize: function initialize(geoposition) {
+    console.log(this);
+    if (geoposition) {
+      console.log('Received coords');
+      console.log(geoposition.coords);
+      googleMapServices.createMap(geoposition.coords);
+      googleMapServices.initializeAutoComplete();
     } else {
-      console.warn("Geolocation is not supported by this browser.");
-      this.createMap({lat: 0, lng: 0});
+      googleMapServices.createMap({lat: 0, lng: 0});
     }
   },
 
   /* create map to be used by all google maps services */
   createMap: function createMap(coords) {
-    console.log('creating a map at ' + coords);
 		this.coords = new google.maps.LatLng(coords.latitude, coords.longitude);
 		this.map = new google.maps.Map(document.getElementById('map'),{
 		  center: this.coords,
@@ -39,10 +35,26 @@ var googleMapServices = {
    * coords: google.maps.LatLng object
    */
   initializeAutoComplete: function initializeAutoComplete() {
-    console.log("initializeAutoComplete!!!!");
     var input = (document.getElementById('location-input'));
     var autocomplete = new google.maps.places.Autocomplete(input);
     autocomplete.bindTo('bounds', this.map);
+  },
+
+  geocodeLocation: function geocodeLocation(location, cb) {
+    // get or create geocoder
+    this.geocoder = this.geocoder || new google.maps.Geocoder();
+                      
+    this.geocoder.geocode({'address': location.get('search')},
+      function(results, status) {
+        var coords = null;
+        var error = null;
+        if (status == google.maps.GeocoderStatus.OK) {
+          coords = results[0].geometry.location;
+        } else {
+          error = status;
+        }
+        cb(location, coords, error);
+      });
   },
 
   getPlacesByLocation: function getPlacesByLocation(location, collection) {
@@ -62,7 +74,6 @@ var googleMapServices = {
             rating: results[i].rating,
             address: results[i].vicinity
           });
-          // console.dir(place)
           collection.add(place);
         }
       } else {

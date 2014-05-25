@@ -25,7 +25,15 @@ var Router = Backbone.Router.extend({
       el: $('.location-wrapper')
     });
     locationCollectionView.render();
-    googleMapServices.getGeoLocation();
+
+    // try to locate user and initialize google maps services
+    if ("geolocation" in navigator) {
+      console.log('Trying to get location');
+      navigator.geolocation.getCurrentPosition(googleMapServices.initialize);
+    } else {
+      console.log('Geolocation not supported by browser.');
+      googleMapServices.initialize(null);
+    }
   },
 
   placesList: function(locationId){

@@ -4,7 +4,6 @@ var Backbone = require('backbone');
 var LocationView = require('./location-view.js');
 var LocationModel = require('./../models/location-model.js');
 var template = require('./../../templates/location-collection.hbs');
-// var Autocomplete = require('../../vendor/google/autoComplete')
 
 /* View for a collection of Location objects.
  *   Handles location input.
@@ -23,11 +22,7 @@ var LocationListView = Backbone.View.extend({
   events: {
     'keypress #location-input': 'inputEntered',
     'click #location-submit': 'inputEntered',
-    // 'keypress #location-input': 'autocomplete'
   },
-  // autocomplete: function () {
-  //   var auto = new Autocomplete();
-  // },
 
   inputEntered: function(ev) {
     // on Enter or submit press, create new LocationModel
