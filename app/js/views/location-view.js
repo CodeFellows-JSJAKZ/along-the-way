@@ -1,12 +1,14 @@
 var Backbone = require('backbone');
 var _ = require('underscore');
-var tmpl = require('./../../templates/locationTmpl.hbs');
+var template = require('./../../templates/location.hbs');
 
 /* View for a single Location object.
+ *
  * Handles delete click
+ * Handles click to view list of places for location
  */
 var LocationView = Backbone.View.extend({
-  template: tmpl,
+  template: template,
 
   initialize: function() {
     this.listenTo(this.model, 'change', this.render);
@@ -21,7 +23,6 @@ var LocationView = Backbone.View.extend({
 
   showPlaces: function(){
     Backbone.history.navigate(this.model.cid, {trigger: true});
-
   },
 
   destroy: function() {
@@ -36,3 +37,4 @@ var LocationView = Backbone.View.extend({
 });
 
 module.exports = LocationView;
+

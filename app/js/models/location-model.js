@@ -1,5 +1,5 @@
 var Backbone = require('backbone');
-var Places = require('./../collections/Places.js');
+var Places = require('./../collections/place-collection.js');
 var geocoder = new google.maps.Geocoder();
 
 /* Locations will be passed in with:
