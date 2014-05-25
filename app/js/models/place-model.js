@@ -11,9 +11,9 @@ var Backbone = require('backbone');
 var Place = Backbone.Model.extend({
 	defaults: {
 		name: '',
-		lat: 0,
-		lng: 0,
-		rating: 0,
+		lat: null,
+		lng: null,
+		rating: null,
     types: [],
 		address: ''
 	}
