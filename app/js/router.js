@@ -7,7 +7,7 @@ var LocationCollectionView = require('./views/location-collection-view.js');
 var PlaceCollection = require('./collections/place-collection.js');
 var PlaceCollectionView = require('./views/place-collection-view.js');
 var PlaceDetailedView = require('./views/place-detailed-view.js');
-var getGeoLocation = require('./apis/googleMaps.js');
+var googleMapServices = require('./apis/googleMaps.js');
 
 var Router = Backbone.Router.extend({
 
@@ -25,7 +25,7 @@ var Router = Backbone.Router.extend({
       el: $('.location-wrapper')
     });
     locationCollectionView.render();
-    getGeoLocation();
+    googleMapServices.getGeoLocation();
   },
 
   placesList: function(locationId){

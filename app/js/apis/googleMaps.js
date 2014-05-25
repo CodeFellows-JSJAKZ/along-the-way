@@ -1,103 +1,77 @@
-function getGeoLocation() {
-  if ("geolocation" in navigator) {
-    console.log('Trying to get location');
-    navigator.geolocation.getCurrentPosition(initializeAutoComplete);
-  }
-  else {
-    //x.innerHTML=
-    console.warn("Geolocation is not supported by this browser.");
-  }
-};
+var PlaceModel = require('./../models/place-model.js');
 
-function showPosition(position) {
-  return {
-    lat: position.coords.latitude,
-    lng: position.coords.longitude
-  };
-}
-
-var initializeAutoComplete = function(coords) {
-  var lat = coords.lat;
-  var lng = coords.lng;
-
-  console.log("WTF!!!!" + lat);
+var googleMapServices = {
   
-  var mapOptions = {
-    center: new google.maps.LatLng(lat, lng),
-    zoom: 13
-  };
-  var map = new google.maps.Map(document.getElementById('map-canvas'),
-    mapOptions);
+  service: null,
+  coords: null,
+  map: null,
+  placesService: null,
 
-  var input = (document.getElementById('location-input'));
-
-  //var types = document.getElementById('type-selector');
-  //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  //map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
-
-  var autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.bindTo('bounds', map);
-
-  /*
-  var infowindow = new google.maps.InfoWindow();
-  var marker = new google.maps.Marker({
-    map: map,
-    anchorPoint: new google.maps.Point(0, -29)
-  });
-
-  google.maps.event.addListener(autocomplete, 'place_changed', function() {
-    infowindow.close();
-    marker.setVisible(false);
-    var place = autocomplete.getPlace();
-    if (!place.geometry) {
-      return;
-    }
-
-    // If the place has a geometry, then present it on a map.
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
+  /* Get geolocation of user using HTML5 */
+  getGeoLocation: function getGeoLocation() {
+    if ("geolocation" in navigator) {
+      console.log('Trying to get location');
+      var that = this;
+      navigator.geolocation.getCurrentPosition(function(geoposition) {
+        console.log('Received coords');
+        console.log(geoposition.coords);
+        that.createMap(geoposition.coords);
+        that.initializeAutoComplete();
+      });
     } else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);  // Why 17? Because it looks good.
+      console.warn("Geolocation is not supported by this browser.");
+      this.createMap({lat: 0, lng: 0});
     }
-    marker.setIcon({
-      url: place.icon,
-      size: new google.maps.Size(71, 71),
-      origin: new google.maps.Point(0, 0),
-      anchor: new google.maps.Point(17, 34),
-      scaledSize: new google.maps.Size(35, 35)
-    }));
-    marker.setPosition(place.geometry.location);
-    marker.setVisible(true);
+  },
 
-    var address = '';
-    if (place.address_components) {
-      address = [
-        (place.address_components[0] && place.address_components[0].short_name || ''),
-        (place.address_components[1] && place.address_components[1].short_name || ''),
-        (place.address_components[2] && place.address_components[2].short_name || '')
-      ].join(' ');
-    }
+  /* create map to be used by all google maps services */
+  createMap: function createMap(coords) {
+    console.log('creating a map at ' + coords);
+		this.coords = new google.maps.LatLng(coords.latitude, coords.longitude);
+		this.map = new google.maps.Map(document.getElementById('map'),{
+		  center: this.coords,
+		  zoom: 15
+    });
+    this.placesService = new google.maps.places.PlacesService(map);
+  },
 
-    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-    infowindow.open(map, marker);
-  });
-  /*
+  /* Set up autocomplete to work when entering locations.
+   * coords: google.maps.LatLng object
+   */
+  initializeAutoComplete: function initializeAutoComplete() {
+    console.log("initializeAutoComplete!!!!");
+    var input = (document.getElementById('location-input'));
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo('bounds', this.map);
+  },
 
-  // Sets a listener on a radio button to change the filter type on Places
-  // Autocomplete.
-  function setupClickListener(id, types) {
-    var radioButton = document.getElementById(id);
-    google.maps.event.addDomListener(radioButton, 'click', function() {
-      autocomplete.setTypes(types);
+  getPlacesByLocation: function getPlacesByLocation(location, collection) {
+    // get places
+    var that = this;
+    var locationCoords = new google.maps.LatLng(location.get('lat'), location.get('lng'));
+    this.placesService.nearbySearch({location: locationCoords, radius: '100'},
+      function nearbyCallback(results, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          // create a new Place and add it to Places
+          var place = new PlaceModel({
+            name: results[i].name,
+            lat: results[i].geometry.location.lat(),
+            lng: results[i].geometry.location.lng(),
+            types: results[i].types,
+            rating: results[i].rating,
+            address: results[i].vicinity
+          });
+          // console.dir(place)
+          collection.add(place);
+        }
+      } else {
+        console.log('ERROR: ' + status);
+      }
     });
   }
 
-  setupClickListener('changetype-all', []);
-  setupClickListener('changetype-establishment', ['establishment']);
-  setupClickListener('changetype-geocode', ['geocode']);
-  */
 }
 
-module.exports = getGeoLocation;
+module.exports = googleMapServices;
 
