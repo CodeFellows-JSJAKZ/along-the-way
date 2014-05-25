@@ -60,7 +60,7 @@ gulp.task('styles', function() {
 gulp.task('js', function() {
   var start = './' + DIRS.SRC + '/js/app.js';
   console.log('Bundling reqs starting at ' + start);
-  return browserify(start)
+  return browserify([start])
     .transform(hbsfy)
     .bundle()
     .pipe(source('js/client.js'))

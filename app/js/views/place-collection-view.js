@@ -22,12 +22,17 @@ var PlaceCollectionView = Backbone.View.extend({
 		//console.log('places view render', this.collection);
 		var that = this;
 		_.each(this.collection.models, function (place, key, list) {
-      console.log('place in _.each');
 			//console.dir(place);
+
 			var placeView = new PlaceView({ model: place });
+			//renders collection of places
+			// that.$el.empty();
+			if(placeView !== null || 0){
 			that.$el.append(placeView.render().el);
+			return this;
+		}
 		});
-		return this;
+
 	}
 
 });

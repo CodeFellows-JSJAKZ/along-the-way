@@ -23,6 +23,7 @@ var PlaceCollection = Backbone.Collection.extend({
       function nearbyCallback(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
+
           // create a new Place and add it to Places
           var place = new PlaceModel({
             name: results[i].name,
@@ -32,6 +33,7 @@ var PlaceCollection = Backbone.Collection.extend({
             rating: results[i].rating,
             address: results[i].vicinity
           });
+          // console.dir(place)
           that.add(place);
         }
       } else {

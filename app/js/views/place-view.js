@@ -20,6 +20,7 @@ var PlaceView = Backbone.View.extend({
 	},
 
 	render: function render() {
+    //individual place view with map
     this.$el.html(this.template(this.model.toJSON()));
     return this;
 	},
