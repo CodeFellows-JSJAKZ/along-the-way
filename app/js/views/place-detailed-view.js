@@ -13,24 +13,17 @@ var PlaceDetailedView = Backbone.View.extend({
 		_.bind(this.render, this);
 	},
 
-	events: {
-		'click a.back-button': 'showList'
-	},
-
 	render: function() {
-		var attr = this.model.toJSON();
+    // scroll to top so they see the new content
+    window.scrollTo(0, 0);
 
+		var attr = this.model.toJSON();
 		// Replace newlines with <br>
 		attr.address = attr.address.replace(/(?:\r\n|\r|\n)/g, '<br>');
 
     this.$el.html(this.template(attr));
 		return this;
 	},
-
-	showList: function () {
-		$('#single-place').hide();
-		$('#places-list-wrap').show();
-	}
 
 });
 
