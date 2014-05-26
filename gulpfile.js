@@ -58,9 +58,9 @@ gulp.task('styles', function() {
 
 // js - browserify SRC js and reqs into single client.js file
 gulp.task('js', function() {
-  var start = './' + DIRS.SRC + '/js/app.js';
+  var start = './' + DIRS.SRC + '/js/router.js';
   console.log('Bundling reqs starting at ' + start);
-  return browserify([start])
+  return browserify(start)
     .transform(hbsfy)
     .bundle()
     .pipe(source('js/client.js'))
