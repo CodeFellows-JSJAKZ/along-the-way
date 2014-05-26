@@ -1,8 +1,6 @@
 var Backbone = require('backbone');
 var _ = require('underscore');
-var $ = require('jquery');
 
-var router = require('./../router.js');
 var template = require('../../templates/place.hbs');
 
 /* View for a single place object within a list. */

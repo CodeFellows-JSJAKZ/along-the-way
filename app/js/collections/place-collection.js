@@ -1,7 +1,5 @@
 var Backbone = require('backbone');
-var $ = require('jquery');
 var PlaceModel = require('../models/place-model.js');
-var Along = require('./../app.js');
 
 var PlaceCollection = Backbone.Collection.extend({
 
