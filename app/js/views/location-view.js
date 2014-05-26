@@ -1,21 +1,28 @@
-var $ = require('jquery');
 var Backbone = require('backbone');
-var handlebars = require('handlebars');
-var tmpl = require('./../../templates/locationTmpl.hbs');
+var _ = require('underscore');
+var template = require('./../../templates/location.hbs');
 
 /* View for a single Location object.
+ *
  * Handles delete click
+ * Handles click to view list of places for location
  */
 var LocationView = Backbone.View.extend({
-  template: tmpl,
+  template: template,
 
   initialize: function() {
-    console.log('locationView initialize');
     this.listenTo(this.model, 'change', this.render);
+		_.bind(this.showPlaces, this);
   },
 
   events: {
-    'click .delete': 'destroy'
+    'click .location-remove': 'destroy',
+    'click li p': 'showPlaces'
+
+  },
+
+  showPlaces: function(){
+    Backbone.history.navigate(this.model.cid, {trigger: true});
   },
 
   destroy: function() {
@@ -24,11 +31,10 @@ var LocationView = Backbone.View.extend({
   },
 
   render: function render () {
-    console.log('location view render');
-    console.log(this.model.toJSON());
     this.$el.html(this.template(this.model.toJSON()));
     return this;
   }
 });
 
 module.exports = LocationView;
+

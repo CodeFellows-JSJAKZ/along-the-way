@@ -58,7 +58,7 @@ gulp.task('styles', function() {
 
 // js - browserify SRC js and reqs into single client.js file
 gulp.task('js', function() {
-  var start = './' + DIRS.SRC + '/js/app.js';
+  var start = './' + DIRS.SRC + '/js/router.js';
   console.log('Bundling reqs starting at ' + start);
   return browserify(start)
     .transform(hbsfy)
@@ -96,8 +96,8 @@ gulp.task('build', ['clean', 'lint', 'html', 'styles', 'js', 'img'], function() 
 
 // serve - run express server. see on change
 gulp.task('serve', ['build'], function() {
-  nodemon({script: 'server.js', ext: 'html js less', ignore: ['node_modules/', DIRS.BUILD + '/']})
-    .on('change', ['build'])
+  nodemon({script: 'server.js', ext: 'html js less hbs', ignore: ['node_modules/', DIRS.BUILD + '/']})
+    .on('change', ['clean', 'build'])
     .on('restart', function() {
       console.log('Server restarted');
     });

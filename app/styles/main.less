@@ -14,7 +14,6 @@
 	color: #666;
 }
 
-
 /* For modern browsers */
 .cf:before,
 .cf:after {
@@ -31,7 +30,7 @@
 	zoom: 1;
 }
 
-body{
+body {
 	background: white url(../images/map-bg.jpg) no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
@@ -42,7 +41,7 @@ body{
 	line-height: 1.5em;
 }
 
-.wrapper{
+.wrapper {
 	margin: 0 auto;
 	background-color: white;
 	padding: 30px;
@@ -209,12 +208,110 @@ body{
 
 }
 
+#single-place {
+
+	p {
+		padding: 0;
+	}
+
+	.single-place-wrap {
+
+		.col-2 {
+			width: 45%;
+			float: left;
+			padding: 0 5% 0 0;
+			font-size: 0.9em;
+
+			ul {
+				padding: 0;
+				margin: 0;
+				list-style: none;
+
+				li {
+					margin: 0 0 4px;
+
+					a {
+						display: block;
+						background: @c_lightblue;
+						text-decoration: none;
+						font-weight: bold;
+						padding: 4px 10px;
+						color: black;
+						border-radius: 2px;
+						border: @c_brightblue;
+					}
+				}
+			}
+
+			address {
+				line-height: 1.2em;
+				margin: 0 0 8px;
+			}
+		}
+
+		.rating {
+			font-size: 4em;
+			letter-spacing: -3px;
+			font-weight: bold;
+			width: 100px;
+			float: left;
+			line-height: 1em;
+			display: block;
+
+			span {
+				font-size: 12px;
+				letter-spacing: 2px;
+				font-weight: normal;
+				display: block;
+				line-height: 1em;
+				text-transform: uppercase;
+			}
+		}
+	}
+}
+#map{
+	height: 40em;
+	width: 60%;
+	margin-left: 20%;
+}
+
 @media (max-width: 780px) {
 
 	.wrapper {
 
 		h1 {
 			font-size: 3em
+		}
+	}
+}
+
+@media (max-width: 500px) {
+
+	body {
+		line-height: 1.4em;
+		padding: 0;
+		margin: 0;
+	}
+
+	.wrapper {
+		padding: 10px;
+		width: 92%;
+		min-width: 1px;
+		max-width: 500px;
+		border-radius: 0;
+		border: none;
+		box-shadow: none;
+	}
+
+	#single-place {
+
+		.single-place-wrap {
+
+			.rating {
+				float: none;
+				margin: 0 0 8px;
+				width: auto;
+			}
 		}
 	}
 }

@@ -7,7 +7,7 @@
   "quotmark": "single",
   "regexp": true,
   "unused": true,
-  "jquery": true,
+  //"jquery": true, // leave out to avoid redef of $ warnings
   "node": true,
   "globals": {
     "describe"   : false,

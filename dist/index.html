@@ -1,34 +1,49 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width">
-    <title>Along the Way</title>
-		<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-    <link href="styles/main.css" rel="stylesheet">
-  </head>
-  <body>
-    <div class="wrapper">
-  		<h1>Along The Way</h1>
-  		<p><b>Welcome to Along the Way!</b> Using a starting point and multiple locations on the way to a destination, this app pulls sites, restaurants, and other points of interest for you to visit.</p></br>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Along the Way</title>
+  <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+  <link href="styles/main.css" rel="stylesheet">
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Along The Way</h1>
+    <p><b>Welcome to Along the Way!</b> Using a starting point and multiple locations on the way to a destination, this app pulls sites, restaurants, and other points of interest for you to visit.</p></br>
 
-      <div class="location-wrapper">
-      </div>
-
-    	<!-- Places collection list -->
-    	<a href="/" class="back-button">&larr; Back to Locations</a>
-    	<h2>{{locationName}}</h2>
-    	<ul id="places-list" class="item-list"></ul>
-    	<!-- end Places collection list -->
-
-			<!-- Single Place -->
-			<div id="single-place"></div>
-			<!-- end Single Place -->
-
+    <div class="location-wrapper">
     </div>
-    <div id="map" style="display:none;"></div>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
-    <script type="text/javascript" src="js/client.js"></script>
-  </body>
+
+    <!-- Places collection list -->
+    <ul id="places-list" class="item-list"></ul>
+    <!-- end Places collection list -->
+
+    <!-- Single Place -->
+    <div id="single-place"></div>
+    <!-- end Single Place -->
+
+  </div>
+  <div id="map"></div>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+  <script type="text/javascript" src="js/client.js"></script>
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+
+  <script >
+!function a(b,c,d){function e(g,h){if(!c[g]){if(!b[g]){var i="function"==typeof require&&require;if(!h&&i)return i(g,!0);if(f)return f(g,!0);throw new Error("Cannot find module '"+g+"'")}var j=c[g]={exports:{}};b[g][0].call(j.exports,function(a){var c=b[g][1][a];return e(c?c:a)},j,j.exports,a,b,c,d)}return c[g].exports}for(var f="function"==typeof require&&require,g=0;g<d.length;g++)e(d[g]);return e}({1:[function(a,b){window.L.Icon.Default.imagePath=("undefined"!=typeof JS_basehref?JS_basehref:"http://www.skobbler.com/")+"images",L.skobbler=b.exports={config:a("./src/config"),map:a("./src/map")}},{"./src/config":2,"./src/map":3}],2:[function(a,b){"use strict";b.exports={VERSION:"2.0",TILE_URL:"http://tiles{s}-{API_KEY}."+("undefined"!=typeof JS_tileserver_host?JS_tileserver_host:"skobblermaps.com")+"/TileService/tiles/2.0/{MAP_OPTIONS}/{MAP_STYLE}/{z}/{x}/{y}.png{SCALE_FACTOR}"}},{}],3:[function(a,b){"use strict";var d=a("./config"),e=L.Map.extend({options:{apiKey:"3a85cbcb21c1bbfc5f9f67102e9d6984",mapStyle:"outdoor",bicycleLanes:!0,onewayArrows:!0,pois:"all",primaryLanguage:"en",fallbackLanguage:"en",mapLabels:"localNaming",retinaDisplay:"auto",zoomControl:!0,zoomControlPosition:"top-left",geolocation:!0,geolocationPosition:"bottom-left",center:[47.6062095, -122.3320708],zoom:"15"},initialize:function(a,b){L.Util.setOptions(this,b),L.Map.prototype.initialize.call(this,a,b);var c=new L.TileLayer(this._getURL(),{subdomains:[1,2,3,4],detectRetina:!1,attribution:'<a href="http://developer.skobbler.com/" target="_blank">Scout</a>, <a href="http://www.leafletjs.com" target="_blank">Leaflet</a>, <a href="http://www.openstreetmap.org" target="_blank">OpenStreetMap</a>'});this.addLayer(c),this.attributionControl.setPrefix(!1),this._handleZoomControl(this.options.zoomControl,this.options.zoomControlPosition.split("-").join(""))},_getURL:function(){var a=(this.options.bicycleLanes?"1":"0")+(this.options.onewayArrows?"1":"0")+"0"+this._mapPois(this.options.pois)+this._mapLanguage(this.options.primaryLanguage)+this._mapLanguage(this.options.fallbackLanguage)+this._mapMapLabels(this.options.mapLabels)+"0",b=d.TILE_URL.replace("{API_KEY}",this.options.apiKey).replace("{MAP_OPTIONS}",a).replace("{MAP_STYLE}",this._mapMapStyle(this.options.mapStyle)).replace("{SCALE_FACTOR}",this._mapRetinaDisplay(this.options.retinaDisplay));return b},_mapMapStyle:function(a){switch(a){case"day":a="0";break;case"lite":a="7";break;case"night":a="2";break;case"bike":a="10";break;case"outdoor":a="5";break;default:a="0"}return a},_mapPois:function(a){switch(a){case"all":a="2";break;case"none":a="0";break;case"important":a="1";break;default:a="0"}return a},_mapLanguage:function(a){switch(a){case"en":a="1";break;case"de":a="2";break;case"fr":a="3";break;case"it":a="4";break;case"es":a="5";break;case"ru":a="6";break;default:a="1"}return a},_mapMapLabels:function(a){switch(a){case"localNaming":a="1010";break;case"transliterationOnly":a="3211";break;case"noTransliteration":a="3110";break;case"nativeLocalized":a="1321";break;case"transliterationNative":a="2320";break;default:a="1010"}return a},_mapRetinaDisplay:function(a){return"auto"==a?window.devicePixelRatio&&window.devicePixelRatio>1||L.Browser.retina?"@2x":"":"yes"==a?"@2x":""},_handleZoomControl:function(a,b){a&&this.zoomControl.setPosition(b)}});b.exports=function(a,b){return new e(a,b)}},{"./config":2}]},{},[1]);
+
+  </script>
+<script>
+    var map = L.skobbler.map('map', {
+        // apiKey: '3a85cbcb21c1bbfc5f9f67102e9d6984',
+        // center: [47.6062095, -122.3320708],
+
+    });
+    var marker = L.marker([47.6062095, -122.3320708]).addTo(map);
+</script>
+<script src="http://3a85cbcb21c1bbfc5f9f67102e9d6984.tor.skobbler.net/tor/RSngx/RealReach/json/13_1/ro/3a85cbcb21c1bbfc5f9f67102e9d6984?start=47.6062095,-122.3320708&transport=pedestrian&range=180&units=sec&toll=1&highways=1&nonReachable=0&response_type=gps">
+</script>
+</body>
 </html>
 

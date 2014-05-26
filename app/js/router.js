@@ -1,68 +1,78 @@
 var $ = require('jquery');
-var LocationModel = require('./models/LocationModel.js');
-var LocationView = require('./views/locationView.js');
-var LocationList = require('./collections/locationList.js');
-var LocationListView = require('./views/locationListView.js');
-var Place = require('./models/Place.js');
-var Places = require('./collections/Places.js');
-var PlacesCollectionView = require('./views/PlacesCollectionView.js');
+var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.$ = $;
 
+var LocationCollection = require('./collections/location-collection.js');
+var LocationCollectionView = require('./views/location-collection-view.js');
+var PlaceCollection = require('./collections/place-collection.js');
+var PlaceCollectionView = require('./views/place-collection-view.js');
+var PlaceDetailedView = require('./views/place-detailed-view.js');
+var googleMapServices = require('./apis/googleMaps.js');
+
+global.AlongTheWay = {};
+
 var Router = Backbone.Router.extend({
+
+  // views to cache
+  locationCollectionView: null,
+
+  initialize: function(opts) {
+    AlongTheWay.router = this;
+    _.bind(this.home, this);
+    _.bind(this.placesList, this);
+    _.bind(this.placeDetails, this);
+  },
 
   routes: {
     '': 'home',
+    ':locationId': 'placesList',
+    ':locationId/:placeId': 'placeDetails'
   },
 
   home: function home() {
     // create location list & list view
-    var locationList = new LocationList();
-    var locationListView = new LocationListView({
-      collection: locationList,
-      el: $('.location-wrapper')
-    });
-    locationListView.render();
-  }
-  /* PLACES API CODE
-        var places = new Places({location: locObj.id});
-        var placesView = new PlacesCollectionView({
-          collection: places,
-          el: $('#places-list')
-        });
-
-        // map prefs
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: new google.maps.LatLng(locObj.lat,locObj.lng),
-          zoom: 15
-        });
-
-        // get places
-        var service = new google.maps.places.PlacesService(map);
-        service.nearbySearch({location: loc, radius: '100'}, function nearbyCallback(results, status) {
-          if (status == google.maps.places.PlacesServiceStatus.OK) {
-            for (var i = 0; i < results.length; i++) {
-              // create a new Place and add it to Places
-              var place = new Place({
-                name: results[i].name,
-                coords: results[i].geometry.location,
-                types: results[i].types,
-                rating: results[i].rating,
-                address: results[i].vicinity
-              });
-              console.log(place);
-              places.add(place);
-            }
-            placesView.render();
-          } else {
-            console.log('ERROR: ' + status);
-          }
+    if (!this.locationCollectionView) {
+      var locationCollection = new LocationCollection();
+      this.locationCollectionView = new LocationCollectionView({
+        collection: locationCollection,
+        el: $('#inner-wrapper')
+      });
+      // try to locate user and initialize google maps services
+      if ("geolocation" in navigator) {
+        console.log('Geolocating..');
+        navigator.geolocation.getCurrentPosition(function(geoposition) {
+          googleMapServices.initialize(geoposition);
         });
       } else {
-        return 'Error: ' + status;
+        console.log('Geolocation not supported by browser.');
+        googleMapServices.initialize(null);
       }
+    }
+    this.locationCollectionView.render();
+  },
+
+  placesList: function(locationId){
+    var placeCollectionView = new PlaceCollectionView({
+			collection: AlongTheWay[locationId],
+      el: $('#inner-wrapper')
     });
-    */
+    // hacky - may want to replace
+    var locationObj = this.locationCollectionView.collection.get({cid: locationId})
+    placeCollectionView.render(locationObj.get('search'));
+  },
+
+  placeDetails: function(locationId, placeId) {
+    var placeDetailedView = new PlaceDetailedView({
+      model: AlongTheWay[locationId].get(placeId),
+      el: $('#inner-wrapper')
+    });
+    placeDetailedView.render();
+    // set url on back button
+    $('.back-button').attr('href', '#' + locationId);
+  }
 });
 
-module.exports = Router;
+new Router();
+Backbone.history.start();
+
