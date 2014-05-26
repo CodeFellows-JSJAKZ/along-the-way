@@ -1,5 +1,4 @@
 var Backbone = require('backbone');
-var _ = require('underscore');
 var $ = require('jquery');
 
 var template = require('../../templates/place-detailed.hbs');
@@ -7,17 +6,16 @@ var template = require('../../templates/place-detailed.hbs');
 /* View for a single place object. */
 var PlaceDetailedView = Backbone.View.extend({
 
+	events: {
+		'click a.back-button': 'showPlaces'
+	},
+
 	template: template,
 
-	initialize: function () {
-		_.bind(this.render, this);
-	},
-
-	events: {
-		'click a.back-button': 'showList'
-	},
+	el: '#single-place',
 
 	render: function() {
+
 		var attr = this.model.toJSON();
 
 		// Replace newlines with <br>
@@ -27,9 +25,9 @@ var PlaceDetailedView = Backbone.View.extend({
 		return this;
 	},
 
-	showList: function () {
-		$('#single-place').hide();
-		$('#places-list-wrap').show();
+	showPlaces: function () {
+		this.$el.hide();
+		$('#places-wrapper').show();
 	}
 
 });

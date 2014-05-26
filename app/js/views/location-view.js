@@ -1,5 +1,5 @@
 var Backbone = require('backbone');
-var _ = require('underscore');
+var $ = require('jquery');
 var template = require('./../../templates/location.hbs');
 
 /* View for a single Location object.
@@ -8,21 +8,21 @@ var template = require('./../../templates/location.hbs');
  * Handles click to view list of places for location
  */
 var LocationView = Backbone.View.extend({
-  template: template,
 
   initialize: function() {
     this.listenTo(this.model, 'change', this.render);
-		_.bind(this.showPlaces, this);
   },
 
   events: {
     'click .location-remove': 'destroy',
     'click li p': 'showPlaces'
-
   },
+
+	template: template,
 
   showPlaces: function(){
     Backbone.history.navigate(this.model.cid, {trigger: true});
+    $('#places-wrapper').show();
   },
 
   destroy: function() {
@@ -31,7 +31,7 @@ var LocationView = Backbone.View.extend({
   },
 
   render: function render () {
-    this.$el.html(this.template(this.model.toJSON()));
+		$(this.$el.html(this.template(this.model.toJSON()))).prependTo('#location-list');
     return this;
   }
 });
