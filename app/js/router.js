@@ -7,7 +7,6 @@ var LocationCollectionView = require('./views/location-collection-view.js');
 var PlaceCollectionView = require('./views/place-collection-view.js');
 var PlaceDetailedView = require('./views/place-detailed-view.js');
 
-
 var Router = Backbone.Router.extend({
 
   routes: {
@@ -17,31 +16,41 @@ var Router = Backbone.Router.extend({
   },
 
   home: function home() {
+
     // create location list & list view
-    var locationCollection = new LocationCollection();
     var locationCollectionView = new LocationCollectionView({
-      collection: locationCollection,
-      el: $('#location-wrapper')
+      collection: new LocationCollection()
     });
-    locationCollectionView.render();
+		locationCollectionView.render();
 
   },
 
   placesList: function(locationId){
-  	$('#location-wrapper').hide();
+
+		if (AlongTheWay[locationId] === undefined) {
+			Backbone.history.navigate('');
+			return false;
+		}
+
+		$('#location-wrapper').hide();
+		$('#places-wrapper').show();
+
     var placeCollectionView = new PlaceCollectionView({
-			collection: AlongTheWay[locationId],
-      el: $('#places-list')
+			collection: AlongTheWay[locationId]
     });
-    placeCollectionView.render();
+		placeCollectionView.render();
+
   },
 
   placeDetails: function(locationId, placeId) {
+
+		$('#places-wrapper').hide();
+
     var placeDetailedView = new PlaceDetailedView({
-      model: AlongTheWay[locationId].get(placeId),
-      el: $('.wrapper')
+      model: AlongTheWay[locationId].get(placeId)
     });
-    placeDetailedView.render();
+		placeDetailedView.render();
+
   }
 });
 

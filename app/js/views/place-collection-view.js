@@ -1,5 +1,6 @@
 var Backbone = require('backbone');
 var _ = require('underscore');
+var $ = require('jquery');
 
 var PlaceView = require('./place-view.js');
 var template = require('./../../templates/place-collection.hbs');
@@ -9,31 +10,33 @@ var template = require('./../../templates/place-collection.hbs');
  *
  */
 var PlaceCollectionView = Backbone.View.extend({
-	initialize: function(){
-		_.bind(this.render, this);
+
+	events: {
+		'click a.back-button': 'showLocations'
 	},
+
+	el: '#places-wrapper',
 
   template: template,
 
 	render: function render() {
 
-    // If there is no Places collection, back to the home page
-		if (typeof this.collection.models === undefined) {
-			Backbone.history.navigate('');
-			return false;
-		}
-
-		var that = this;
+		this.$el.html(this.template());
 
 		_.each(this.collection.models, function (place) {
-      // console.log('place in _.each');
-			// console.dir(place);
-			if (typeof place.attributes.name !== 'undefined') {
-				var placeView = new PlaceView({ model: place });
-				that.$el.append(placeView.render().el);
+			if (place.attributes.name !== undefined) {
+				var placeView = new PlaceView({
+					model: place
+				});
+				placeView.render();
 			}
 		});
 		return this;
+	},
+
+	showLocations: function () {
+		$('#places-wrapper').hide();
+		$('#location-wrapper').show();
 	}
 
 });

@@ -1,30 +1,26 @@
 var Backbone = require('backbone');
-var _ = require('underscore');
+var $ = require('jquery');
 
 var template = require('../../templates/place.hbs');
 
 /* View for a single place object within a list. */
 var PlaceView = Backbone.View.extend({
 
+	events: {
+		'click li p': 'showDetails'
+	},
+
 	template: template,
 
-	initialize: function () {
-		_.bind(this.render, this);
-		_.bind(this.showDetails, this);
-	},
-
-	events: {
-		'click': 'showDetails'
-	},
-
 	render: function render() {
-    this.$el.html(this.template(this.model.toJSON()));
+    $(this.$el.html(this.template(this.model.toJSON()))).prependTo('#places-list');
     return this;
 	},
 
 	showDetails: function () {
-    Backbone.history.navigate(Backbone.history.fragment + '/' + this.model.cid,
-      {trigger: true});
+    Backbone.history.navigate(Backbone.history.fragment + '/' + this.model.cid, {
+			trigger: true
+		});
 	}
 
 });
