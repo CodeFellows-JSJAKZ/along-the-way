@@ -1,7 +1,8 @@
 var PlaceModel = require('./../models/place-model.js');
+var $ = require('jquery');
 
 var googleMapServices = {
-  
+
   // define object properties that are set later
   coords: null,
   map: null,
@@ -65,6 +66,12 @@ var googleMapServices = {
   initialize: function initialize(geoposition) {
     if (geoposition) {
       googleMapServices.createMap(geoposition.coords);
+      this.geocoder = this.geocoder || new google.maps.Geocoder();
+      var latlng = new google.maps.LatLng(geoposition.coords.latitude, geoposition.coords.longitude);
+      this.geocoder.geocode({'latLng': latlng}, function (results, status) {
+        console.log(results); 
+        $('#location-input').val(results[0].formatted_address);
+      });
     } else {
       googleMapServices.createMap({lat: 0, lng: 0});
     }
@@ -74,11 +81,12 @@ var googleMapServices = {
   /* create map to be used by all google maps services */
   createMap: function createMap(coords) {
 		this.coords = new google.maps.LatLng(coords.latitude, coords.longitude);
-		this.map = new google.maps.Map(document.getElementById('map'),{
+		this.map = new google.maps.Map(document.getElementById('gmap'),{
 		  center: this.coords,
 		  zoom: 15
     });
-    this.placesService = new google.maps.places.PlacesService(map);
+    this.placesService = new google.maps.places.PlacesService(this.map);
+    this.startMarker = new google.maps.Marker({map: this.map, position: this.coords, visible: true});
   },
 
   /* Set up autocomplete to work when entering locations.
@@ -93,12 +101,14 @@ var googleMapServices = {
   geocodeLocation: function geocodeLocation(location, cb) {
     // get or create geocoder
     this.geocoder = this.geocoder || new google.maps.Geocoder();
-                      
+
     this.geocoder.geocode({'address': location.get('search')},
       function(results, status) {
         var coords = null;
         var error = null;
         if (status == google.maps.GeocoderStatus.OK) {
+          console.log(results);
+          //$('#location-input').val(res
           coords = results[0].geometry.location;
         } else {
           error = status;
@@ -133,9 +143,31 @@ var googleMapServices = {
         console.log('ERROR: ' + status);
       }
     });
+  },
+
+  getDirections: function getDirections(start, end) {
+    this.directionsService = this.directionService || new google.maps.DirectionsService()
+    var directionsDisplay = new google.maps.DirectionsRenderer();
+    directionsDisplay.setMap(this.map);
+
+    var opts = {
+      origin: start,
+      destination: end,
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+
+    this.directionsService.route(opts, function(result, status) {
+      if (status == google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(result);
+      } else {
+        console.warn(err);
+        return;
+      }
+    });
   }
 
 }
 
+global.googlemapsZ = googleMapServices;
 module.exports = googleMapServices;
 

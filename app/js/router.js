@@ -13,7 +13,7 @@ var googleMapServices = require('./apis/googleMaps.js');
 global.AlongTheWay = {};
 
 var Router = Backbone.Router.extend({
-  
+
   // views to cache
   locationCollectionView: null,
 
@@ -41,7 +41,9 @@ var Router = Backbone.Router.extend({
       // try to locate user and initialize google maps services
       if ("geolocation" in navigator) {
         console.log('Geolocating..');
-        navigator.geolocation.getCurrentPosition(googleMapServices.initialize);
+        navigator.geolocation.getCurrentPosition(function(geoposition) {
+          googleMapServices.initialize(geoposition);
+        });
       } else {
         console.log('Geolocation not supported by browser.');
         googleMapServices.initialize(null);
