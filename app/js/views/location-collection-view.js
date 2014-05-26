@@ -27,11 +27,11 @@ var LocationListView = Backbone.View.extend({
   inputEntered: function(ev) {
     // on Enter or submit press, create new LocationModel
     if (ev.type == 'click' || ev.keyCode == 13) {
-      var userInput = $('#location-input').val();
-      if (userInput.trim() !== '') {
+      var userInput = $('#location-input').val().trim();
+      if (userInput !== '') {
         // clear input
         $('#location-input').val('');
-        var model = new LocationModel({search: userInput.trim()});
+        var model = new LocationModel({search: userInput});
         this.collection.add(model);
         // if starting point was entered, change button text
         if (this.collection.length === 1) {

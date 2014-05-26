@@ -26,7 +26,7 @@ var PlaceView = Backbone.View.extend({
 	},
 
 	showDetails: function () {
-    Backbone.history.navigate(Backbone.history.fragment + '/' + this.model.cid,
+   Backbone.history.navigate(Backbone.history.fragment + '/' + this.model.cid,
       {trigger: true});
 	}
 
