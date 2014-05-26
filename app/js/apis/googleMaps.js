@@ -8,17 +8,67 @@ var googleMapServices = {
   placesService: null,
   geocoder: null,
 
+  // types to search for when returning places
+  // see https://developers.google.com/places/documentation/supported_types
+  types: [
+    'amusement_park',
+    'aquarium',
+    'art_gallery',
+    'bakery',
+    'bar',
+    'beauty_salon',
+    'bicycle_store',
+    'book_store',
+    'bowling_alley',
+    'cafe',
+    'casino',
+    'church',
+    'clothing_store',
+    'department_store',
+    'electronics_store',
+    'establishment',
+    'florist',
+    'food',
+    'grocery_or_supermarket',
+    'gym',
+    'hair_care',
+    'hardware_store',
+    'health',
+    'hindu_temple',
+    'home_goods_store',
+    'jewelry_store',
+    'library',
+    'liquor_store',
+    'meal_takeaway',
+    'mosque',
+    'movie_rental',
+    'movie_theater',
+    'museum',
+    'night_club',
+    'park',
+    'pet_store',
+    'pharmacy',
+    'physiotherapist',
+    'place_of_worship',
+    'post_office',
+    'restaurant',
+    'shoe_store',
+    'shopping_mall',
+    'spa',
+    'stadium',
+    'store',
+    'synagogue',
+    'zoo',
+  ],
+
   /* Set up maps services */
   initialize: function initialize(geoposition) {
-    console.log(this);
     if (geoposition) {
-      console.log('Received coords');
-      console.log(geoposition.coords);
       googleMapServices.createMap(geoposition.coords);
-      googleMapServices.initializeAutoComplete();
     } else {
       googleMapServices.createMap({lat: 0, lng: 0});
     }
+    googleMapServices.initializeAutoComplete();
   },
 
   /* create map to be used by all google maps services */
@@ -60,9 +110,12 @@ var googleMapServices = {
   getPlacesByLocation: function getPlacesByLocation(location, collection) {
     // get places
     var that = this;
-    var locationCoords = new google.maps.LatLng(location.get('lat'), location.get('lng'));
-    this.placesService.nearbySearch({location: locationCoords, radius: '100'},
-      function nearbyCallback(results, status) {
+    var opts = {
+      location: new google.maps.LatLng(location.get('lat'), location.get('lng')),
+      radius: '100',
+      types: that.types
+    }
+    this.placesService.nearbySearch(opts, function nearbyCallback(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
           // create a new Place and add it to Places
