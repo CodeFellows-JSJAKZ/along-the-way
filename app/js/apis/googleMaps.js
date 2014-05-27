@@ -18,7 +18,12 @@ var googleMapServices = {
   end: null,
   placeTypes: null,
 
-  /* Set up maps services */
+  /* Set up maps services:
+   *   Create map
+   *   Initialize geocoder
+   *   Reverse geocode starting location
+   *   Initialize autocomplete
+   */
   initialize: function initialize(geoposition) {
     if (geoposition) {
       googleMapServices.createMap(geoposition.coords);
@@ -33,7 +38,9 @@ var googleMapServices = {
     googleMapServices.initializeAutoComplete();
   },
 
-  /* create map to be used by all google maps services */
+  /* Create map to be used by all google maps services.
+   * Initiate PlacesService using map
+   */
   createMap: function createMap(coords) {
 		var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
 		this.map = new google.maps.Map(document.getElementById('gmap'),{
@@ -43,8 +50,8 @@ var googleMapServices = {
     this.placesService = new google.maps.places.PlacesService(this.map);
   },
 
-  /* Set up autocomplete to work when entering locations.
-   * coords: google.maps.LatLng object
+  /* Set up autocomplete to work when entering locations:
+   *  Bind to start and end input fields
    */
    initializeAutoComplete: function initializeAutoComplete() {
     var startInput = (document.getElementById('start-input'));
@@ -55,6 +62,9 @@ var googleMapServices = {
     autocomplete2.bindTo('bounds', this.map);
   },
 
+  /* Geocode the given location (get lat and lng corresponding to its search string).
+   * When coords are received, call the passed in function cb
+   */
   geocodeLocation: function geocodeLocation(location, cb) {
     // get or create geocoder
     this.geocoder = this.geocoder || new google.maps.Geocoder();
@@ -65,14 +75,18 @@ var googleMapServices = {
         if (status == google.maps.GeocoderStatus.OK) {
           coords = results[0].geometry.location;
         } else {
-          error = status;
+          error = status; // set error property on location if geocode failed
         }
         cb(location, coords, error);
       });
   },
 
-  /* Receive start, end, and type filters.  Wait for all 3 to proceed */
+  /* Track whether we have all the information ro start building a route.
+   *   Receive start, end, and type filters.  Wait for all 3 to proceed
+   *   When ready, clear route and markers from map, call getDirections */
   buildRoute: function(location, placeTypes) {
+    console.log('buildRoute location');
+    console.log(location);
     if (placeTypes) {
       this.placeTypes = placeTypes;
     } else if (location) {
@@ -94,6 +108,9 @@ var googleMapServices = {
     }
   },
 
+  /* Given start and end points, get a route. (Assumes driving)
+   *   Puts route on map and calls createRouteBoxes
+   */
   getDirections: function getDirections(start, end) {
     var startLL = new google.maps.LatLng(start.get('lat'), start.get('lng'));
     var endLL = new google.maps.LatLng(end.get('lat'), end.get('lng'));
@@ -120,26 +137,21 @@ var googleMapServices = {
     });
   },
 
-  /* creates LatLngBounds that cover the entire route and can be used in nearbySeach */
+  /* creates LatLngBounds that cover the entire route
+   *   used to get places all along the way
+  */
   createRouteBoxes: function(overview_path) {
     var boxes = this.routeBoxer.box(overview_path, .125);
-    // show boxes on map (for devel)
-    var rectangleOpts = {
-      strokeColor: '#000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
-      map: this.map,
-    };
     // find places in each box
     for (var i = 0; i < boxes.length; i++) {
-      //rectangleOpts.bounds = boxes[i];
-      //new google.maps.Rectangle(rectangleOpts);
       this.getNearbyPlaces(boxes[i]);
     }
   },
 
+  /* Get places for the given bounds. When results are received
+   * Creates a marker for each on the map.
+   * Sets click listener on the marker to show an InfoWindow
+   */
   getNearbyPlaces: function getNearbyPlaces(latLngBounds) {
     var opts = {
       bounds: latLngBounds,
@@ -201,6 +213,7 @@ var googleMapServices = {
     education: ['school', 'university', 'library']
   },
 
+  /* Compile user filters based on form input */
   filterFunc: function filterFunc(checked){
     var finalFilter = [];
     for(var i=0; i < checked.length; i++){
@@ -210,17 +223,16 @@ var googleMapServices = {
 
   },
   
+  /* Remove all markers from the map
+   * (Used to reset between routes) 
+   */
   clearAllMarkers: function() {
     for (var i = 0; i < this.markers.length; i++) {
       this.markers[i].setMap(null);
     }
     this.markers.length = 0;
   }
-
-
-
 }
 
-global.GOOOGZ = googleMapServices;
 module.exports = googleMapServices;
 
