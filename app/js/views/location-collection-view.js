@@ -9,7 +9,7 @@ var googleMapServices = require('./../apis/googleMaps.js');
 /* View for a collection of Location objects.
  *   Handles location input.
  */
-var LocationListView = Backbone.View.extend({
+ var LocationListView = Backbone.View.extend({
 
   template: template,
 
@@ -24,23 +24,30 @@ var LocationListView = Backbone.View.extend({
   },
 
   inputEntered: function(ev) {
-    // on Enter or submit press, create new LocationModel
+
     var start = $('#start-input').val().trim();
     var end = $('#destination-input').val().trim();
-    var filteredArray = [];
-    var filter = $('#filter').find('input:checked');
-    for(var i=0; i < filter.length; i++){
+    if(!end){
+      alert("Please add an end location");
+    }else if(!start){
+      alert("Please add a start point");
+    }
+    else{
+      var filteredArray = [];
+      var filter = $('#filter').find('input:checked');
+      for(var i=0; i < filter.length; i++){
         var val = filter[i].value;
         filteredArray.push(val);
-    }
-    console.log(filteredArray);
-    googleMapServices.filterFunc(filteredArray);
-    if (start !== '' && end !== '') {
+      }
+      console.log(filteredArray);
+      googleMapServices.filterFunc(filteredArray);
+      if (start !== '' && end !== '') {
       // create both location objects and add to collection
-      var model = new LocationModel({search: start, order: 0});
-      this.collection.add(model);
-      model = new LocationModel({search: end, order: 1});
-      this.collection.add(model);
+        var model = new LocationModel({search: start, order: 0});
+        this.collection.add(model);
+        model = new LocationModel({search: end, order: 1});
+        this.collection.add(model);
+      }
     }
   },
 

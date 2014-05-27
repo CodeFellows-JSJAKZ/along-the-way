@@ -31,6 +31,7 @@ var googleMapServices = {
       var latlng = new google.maps.LatLng(geoposition.coords.latitude, geoposition.coords.longitude);
       this.geocoder.geocode({'latLng': latlng}, function (results, status) {
         $('#start-input').val(results[0].formatted_address);
+        $('#loading-gif').hide();
       });
     } else {
       googleMapServices.createMap({lat: 0, lng: 0});
@@ -42,10 +43,10 @@ var googleMapServices = {
    * Initiate PlacesService using map
    */
   createMap: function createMap(coords) {
-		var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
-		this.map = new google.maps.Map(document.getElementById('gmap'),{
-		  center: coords,
-		  zoom: 15
+    var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
+    this.map = new google.maps.Map(document.getElementById('gmap'),{
+      center: coords,
+      zoom: 15
     });
     this.placesService = new google.maps.places.PlacesService(this.map);
   },
@@ -222,9 +223,9 @@ var googleMapServices = {
     this.buildRoute(null, finalFilter);
 
   },
-  
+
   /* Remove all markers from the map
-   * (Used to reset between routes) 
+   * (Used to reset between routes)
    */
   clearAllMarkers: function() {
     for (var i = 0; i < this.markers.length; i++) {

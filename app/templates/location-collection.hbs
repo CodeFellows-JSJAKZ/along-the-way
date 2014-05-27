@@ -1,6 +1,8 @@
 <p><b>Welcome to Along the Way!</b> Using a starting point and multiple locations on the way to a destination, this app pulls sites, restaurants, and other points of interest for you to visit.</p></br>
 <div class="location-form cf">
-
+	<div class="loading"id="loading-gif">
+		<img src="./../images/ajax-loader.gif"/>geolocating...
+	</div>
   <label for="location-input">Enter a starting point</label>
   <input type="text" name="location" class="location-input" id="start-input" placeholder="address, zip code or landmark">
 
@@ -10,12 +12,12 @@
   <input type="submit" value="Go" id="location-submit">
   <fieldset id="filter">
     <legend>Filter</legend>
- 	 		<input type="checkbox" name="filter" value="entertain">Entertainment 
+ 	 		<input type="checkbox" name="filter" value="entertainment">Entertainment 
  	 		<input type="checkbox" name="filter" value="stores">Stores
  	 		<input type="checkbox" name="filter" value="services">Services <br />
  	 		<input type="checkbox" name="filter" value="food">Food 
  	 		<input type="checkbox" name="filter" value="aesthetics">Aesthetics
- 	 		<input type="checkbox" name="filter" value="trans">Transportation<br />
+ 	 		<input type="checkbox" name="filter" value="transport">Transportation<br />
  	 		<input type="checkbox" name="filter" value="banking">Banking
  	 		<input type="checkbox" name="filter" value="education">Education
   </fieldset>
