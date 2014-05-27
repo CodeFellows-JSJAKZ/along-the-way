@@ -5,6 +5,8 @@
 ### Commonly used words explained
 
 location === city, neighborhood etc.
+
+
 place === store, business, restaurant etc.
 
 ###Initial simplified version
