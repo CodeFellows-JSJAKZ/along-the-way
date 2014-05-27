@@ -34,8 +34,8 @@ var googleMapServices = {
     var finalFilter = [];
     for(var i=0; i < checked.length; i++){
       finalFilter = finalFilter.concat(this.filter[checked[i]]);
+      console.log(finalFilter);
     }
-    console.log('filterfunc call: '+ finalFilter);
     this.buildRoute(null, finalFilter);
 
   },
@@ -157,7 +157,6 @@ var googleMapServices = {
   getNearbyPlaces: function getNearbyPlaces(latLngBounds) {
     console.log('getNearbyPlaces');
     console.log(this.placeTypes);
-    console.log(['bank', 'atm']);
     var that = this;
     var opts = {
       bounds: latLngBounds,
