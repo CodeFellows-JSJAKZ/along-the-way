@@ -29,7 +29,12 @@ var googleMapServices = {
     banking: ['atm', 'bank', 'post_office'],
     education: ['school', 'university', 'library']
   },
-
+   /* if(finalFilter.length === 0){
+      finalFilter = finalFilter.entertainment.concat(filter.stores,
+        filter.services, filter.food, filter.aesthetics, filter. transportation,
+        filter.banking, filter.education);
+    }*/
+  
   filterFunc: function filterFunc(checked){
     var finalFilter = [];
     for(var i=0; i < checked.length; i++){
@@ -37,7 +42,6 @@ var googleMapServices = {
       console.log(finalFilter);
     }
     this.buildRoute(null, finalFilter);
-
   },
 
   /* Set up maps services */
@@ -48,6 +52,7 @@ var googleMapServices = {
       var latlng = new google.maps.LatLng(geoposition.coords.latitude, geoposition.coords.longitude);
       this.geocoder.geocode({'latLng': latlng}, function (results, status) {
         $('#start-input').val(results[0].formatted_address);
+        $('#loading-gif').hide();
       });
     } else {
       googleMapServices.createMap({lat: 0, lng: 0});
@@ -57,10 +62,10 @@ var googleMapServices = {
 
   /* create map to be used by all google maps services */
   createMap: function createMap(coords) {
-		var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
-		this.map = new google.maps.Map(document.getElementById('gmap'),{
-		  center: coords,
-		  zoom: 15
+    var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
+    this.map = new google.maps.Map(document.getElementById('gmap'),{
+      center: coords,
+      zoom: 15
     });
     this.placesService = new google.maps.places.PlacesService(this.map);
   },
@@ -176,10 +181,10 @@ var googleMapServices = {
           });
           collection.add(place);
           */
-      } else {
-        console.log('ERROR: ' + status);
-      }
-    }, this);
+        } else {
+          console.log('ERROR: ' + status);
+        }
+      }, this);
   },
 
   putPlacesOnMap: function(i, results) {
@@ -193,9 +198,9 @@ var googleMapServices = {
       visible: true
     });
     var placeContent = template({
-        name: result.name,
-        rating: result.rating,
-        address: result.vicinity
+      name: result.name,
+      rating: result.rating,
+      address: result.vicinity
     });
     marker.info = new google.maps.InfoWindow({
       content: placeContent

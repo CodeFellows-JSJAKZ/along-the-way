@@ -43,18 +43,18 @@ var googleMapServices = require('./../apis/googleMaps.js');
       googleMapServices.filterFunc(filteredArray);
       if (start !== '' && end !== '') {
       // create both location objects and add to collection
-      var model = new LocationModel({search: start, order: 0});
-      this.collection.add(model);
-      model = new LocationModel({search: end, order: 1});
-      this.collection.add(model);
+        var model = new LocationModel({search: start, order: 0});
+        this.collection.add(model);
+        model = new LocationModel({search: end, order: 1});
+        this.collection.add(model);
+      }
     }
-  }
-},
+  },
 
-render: function render () {
-  this.$el.html(this.template({}));
-  return this;
-}
+  render: function render () {
+    this.$el.html(this.template({}));
+    return this;
+  }
 });
 
 module.exports = LocationListView;
