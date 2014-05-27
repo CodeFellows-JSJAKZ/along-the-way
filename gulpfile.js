@@ -35,12 +35,33 @@ gulp.task('default', function() {
   }
 });
 
-// test - run mocha on js files in TEST
-gulp.task('test', function() {
+/*
+Testing!
+*/
+gulp.task('unit-test', function() {
   console.log('Running tests in ' + DIRS.TEST);
-  return gulp.src(DIRS.TEST + '**/*.js')
+  return gulp.src(DIRS.TEST + 'unit/**/*.test.js')
     .pipe(mocha({reporter: 'list'}));
 });
+
+gulp.task('js-test', function () {
+	return browserify(DIRS.TEST + 'browser/requirements.js')
+			//.transform(hbsfy)
+			.bundle()
+			.pipe(source('test.js'))
+			.pipe(buffer())
+			.pipe(gulp.dest(DIRS.TEST + 'browser/'));
+});
+
+gulp.task('test-watch', function () {
+	gulp
+		.watch([DIRS.TEST + 'browser/*.js', '!' + DIRS.TEST + 'browser/test.js'], ['js-test'])
+			.on('change', function(event) {
+				console.log('Oh, a change!');
+			});
+})
+
+gulp.task('test', ['js-test', 'unit-test', 'test-watch']);
 
 // clean - empty out the /dist folder
 gulp.task('clean', function() {
@@ -62,7 +83,7 @@ gulp.task('styles', ['clean'], function() {
 
 // js - browserify SRC js and reqs into single client.js file
 gulp.task('js', ['clean'], function() {
-  var start = './' + DIRS.SRC + 'js/router.js';
+  var start = DIRS.SRC + 'js/router.js';
   console.log('Bundling reqs starting at ' + start);
   return browserify(start)
     .transform(hbsfy)
