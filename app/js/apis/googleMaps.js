@@ -1,5 +1,6 @@
 var PlaceModel = require('./../models/place-model.js');
 var $ = require('jquery');
+var template = require('./../../templates/place-detailed.hbs');
 
 var googleMapServices = {
 
@@ -7,6 +8,7 @@ var googleMapServices = {
   map: null,
   placesService: null,
   geocoder: null,
+  routeBoxer: new RouteBoxer(),
 
   // types to search for when returning places
   // see https://developers.google.com/places/documentation/supported_types
@@ -68,7 +70,6 @@ var googleMapServices = {
       this.geocoder = this.geocoder || new google.maps.Geocoder();
       var latlng = new google.maps.LatLng(geoposition.coords.latitude, geoposition.coords.longitude);
       this.geocoder.geocode({'latLng': latlng}, function (results, status) {
-        console.log(results); 
         $('#start-input').val(results[0].formatted_address);
       });
     } else {
@@ -102,13 +103,11 @@ var googleMapServices = {
   geocodeLocation: function geocodeLocation(location, cb) {
     // get or create geocoder
     this.geocoder = this.geocoder || new google.maps.Geocoder();
-
     this.geocoder.geocode({'address': location.get('search')},
       function(results, status) {
         var coords = null;
         var error = null;
         if (status == google.maps.GeocoderStatus.OK) {
-          console.log(results);
           coords = results[0].geometry.location;
         } else {
           error = status;
@@ -117,55 +116,25 @@ var googleMapServices = {
       });
   },
 
-  getPlacesByLocation: function getPlacesByLocation(location, collection) {
-    // get places
-    var that = this;
-    var opts = {
-      location: new google.maps.LatLng(location.get('lat'), location.get('lng')),
-      radius: '100',
-      types: that.types
-    }
-    this.placesService.nearbySearch(opts, function nearbyCallback(results, status) {
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        for (var i = 0; i < results.length; i++) {
-          // create a new Place and add it to Places
-          var place = new PlaceModel({
-            name: results[i].name,
-            lat: results[i].geometry.location.lat(),
-            lng: results[i].geometry.location.lng(),
-            types: results[i].types,
-            rating: results[i].rating,
-            address: results[i].vicinity
-          });
-          collection.add(place);
-        }
-      } else {
-        console.log('ERROR: ' + status);
-      }
-    });
-  },
-
   /* Receive geocoded start or end point. */
-  buildRoute: function(location) {
-    console.log('buildRoute');
-    console.log(location.get('order'));
-    if (location.get('order') == 0) {
-      this.start = location
-    } else { // assuming only 2
-      this.end = location
+  buildRoute: function(location, placeTypes) {
+    if (placeTypes) {
+      this.placeTypes = placeTypes;
+    } else if (location) {
+      if (location.get('order') == 0) {
+        this.start = location
+      } else { // assuming only 2
+        this.end = location
+      }
     }
-    if (this.start && this.end) {
+    if (this.start && this.end) {//&& this.placeTypes) {
       this.getDirections(this.start, this.end);
     }
   },
 
   getDirections: function getDirections(start, end) {
-    console.log('getDirections');
-    console.log(start);
     var startLL = new google.maps.LatLng(start.get('lat'), start.get('lng'));
     var endLL = new google.maps.LatLng(end.get('lat'), end.get('lng'));
-    console.log(startLL);
-    console.log(endLL);
     this.directionsService = this.directionService || new google.maps.DirectionsService()
     var directionsDisplay = new google.maps.DirectionsRenderer();
     directionsDisplay.setMap(this.map);
@@ -176,13 +145,11 @@ var googleMapServices = {
       travelMode: google.maps.TravelMode.DRIVING
     };
 
-    console.log(opts);
-
+    var that = this;
     this.directionsService.route(opts, function(result, status) {
-      console.log(result);
       if (status == google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(result);
-        that.findPlacesOnRoute(result.routes[0].overview_path);
+        that.createRouteBoxes(result.routes[0].overview_path);
       } else {
         console.warn(status);
         return;
@@ -190,30 +157,76 @@ var googleMapServices = {
     });
   },
 
-  findPlacesOnRoute: function(overview_path) {
-    var routeBoxer = new RouteBoxer();
-    var boxes = routeBoxer.box(overview_path, 50);
-    console.log(boxes);
-    for (var i = 0; i < boxes.length; i++) {
-      new google.maps.Rectangle(boxes[i]);
-    }
-    /*
-    console.log(overview_path);
-    var populationOptions = {
-      strokeColor: '#FF0000',
+  /* creates LatLngBounds that cover the entire route and can be used in nearbySeach */
+  createRouteBoxes: function(overview_path) {
+    var boxes = this.routeBoxer.box(overview_path, 1);
+    // show boxes on map (for devel)
+    var rectangleOpts = {
+      strokeColor: '#000',
       strokeOpacity: 0.8,
       strokeWeight: 2,
       fillColor: '#FF0000',
       fillOpacity: 0.35,
       map: this.map,
-      radius: 100
     };
-    for (var i = 0; i < overview_path.length; i++) {
-      var point = overview_path[i];
-      populationOptions.center = new google.maps.LatLng(point.lat(), point.lng());
-      new google.maps.Circle(populationOptions);
+    // find places in each box
+    for (var i = 0; i < boxes.length; i++) {
+      //rectangleOpts.bounds = boxes[i];
+      //new google.maps.Rectangle(rectangleOpts);
+      this.getNearbyPlaces(boxes[i]);
     }
-    */
+  },
+
+  getNearbyPlaces: function getNearbyPlaces(latLngBounds) {
+    console.log('getNearbyPlaces');
+    var that = this;
+    var opts = {
+      bounds: latLngBounds,
+      types: that.types
+    }
+    this.placesService.nearbySearch(opts, function(results, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        that.putPlacesOnMap(0, results);
+          /*
+          var place = new PlaceModel({
+            name: results[i].name,
+            lat: results[i].geometry.location.lat(),
+            lng: results[i].geometry.location.lng(),
+            types: results[i].types,
+            rating: results[i].rating,
+            address: results[i].vicinity
+          });
+          collection.add(place);
+          */
+      } else {
+        console.log('ERROR: ' + status);
+      }
+    }, this);
+  },
+
+  putPlacesOnMap: function(i, results) {
+    console.log(this);
+    if (i >= results.length) {
+      return false;
+    }
+    var result = results[i];
+    var marker = new google.maps.Marker({
+      position: result.geometry.location,
+      map: this.map,
+      visible: true
+    });
+    var placeContent = template({
+        name: result.name,
+        rating: result.rating,
+        address: result.vicinity
+    });
+    marker.info = new google.maps.InfoWindow({
+      content: placeContent
+    });
+    google.maps.event.addListener(marker, 'click', function() {
+      marker.info.open(this.map, marker);
+    });
+    this.putPlacesOnMap(i+1, results);
   }
 
 }
