@@ -15,7 +15,7 @@ var googleMapServices = {
   // see https://developers.google.com/places/documentation/supported_types
   filter: {
     entertainment: ['amusement_park', 'aquarium', 'art_gallery',
-    'bowling_alley', 'casino', 'movie_rental', 'movie_theater',
+    'bowling_alley', 'bar', 'casino', 'movie_rental', 'movie_theater',
     'stadium', 'museum', 'night_club', 'park','zoo'],
     stores: ['bicycle_store', 'book_store', 'clothing_store', 'convenience_store',
     'department_store', 'electronics_store', 'home_goods_store', 'jewelry_store',
