@@ -1,6 +1,10 @@
 {
   "name": "package",
   "version": "0.0.0",
+  "engines": {
+    "node": "0.10.28",
+    "npm": "1.4.9"
+  },
   "dependencies": {
     "backbone": "1.1.2",
     "express": "4.1.1",
