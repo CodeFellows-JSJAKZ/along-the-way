@@ -29,7 +29,10 @@ var googleMapServices = require('./../apis/googleMaps.js');
     var end = $('#destination-input').val().trim();
     if(!end){
       alert("Please add an end location");
-    }else{
+    }else if(!start){
+      alert("Please add a start point");
+    }
+    else{
       var filteredArray = [];
       var filter = $('#filter').find('input:checked');
       for(var i=0; i < filter.length; i++){
