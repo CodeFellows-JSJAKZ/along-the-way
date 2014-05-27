@@ -18328,35 +18328,63 @@ var googleMapServices = require('../../app/js/apis/googleMaps.js');
 
 describe('Location', function () {
 
-	var location;
+	var location1, location2;
 
-	beforeEach(function () {
-		location = new Location({
+	before(function () {
+
+		location1 = new Location({
 			search: 'Seattle, WA',
 			order: 0
 		});
+
+		location2 = new Location({
+			search: 'Portland, OR',
+			order : 1
+		});
+
 	});
 
 	describe('model', function () {
 
-	this.timeout(4000);
+		this.timeout(4000);
 
-		it('should exist', function (done) {
-			expect(location).to.be.ok;
+		it('#1 and #2 should both exist', function (done) {
+			expect(location1).to.be.ok;
+			expect(location2).to.be.ok;
 			setTimeout(done, 3000);
 		});
 
-		it('should geocode an address or provide an error', function() {
-			console.dir(location);
-			console.log('Lat: ' + location.attributes.lat);
-			console.log('Lng: ' + location.get('lng'));
-			expect(location.get('lat')).to.be.ok;
-			expect(location.get('lng')).to.be.ok;
+		it('#1 should have a valid latitude', function () {
+//			expect(location1.get('lat')).to.be.ok;
+//			expect(location1.get('lat')).to.be.at.least(-90);
+//			expect(location1.get('lat')).to.be.at.most(90);
 		});
 
-		it('should have a latitude');
+		it('#1 should have a valid longitude', function () {
+//			expect(location1.get('lng')).to.be.ok;
+//			expect(location1.get('lng')).to.be.at.least(-180);
+//			expect(location1.get('lng')).to.be.at.most(180);
+		});
 
-		it('should have a longitude');
+		it('#2 should have a valid latitude', function () {
+//			expect(location2.get('lat')).to.be.ok;
+//			expect(location2.get('lat')).to.be.at.least(-90);
+//			expect(location2.get('lat')).to.be.at.most(90);
+		});
+
+		it('#2 should have a valid longitude', function () {
+//			expect(location2.get('lng')).to.be.ok;
+//			expect(location2.get('lng')).to.be.at.least(-180);
+//			expect(location2.get('lng')).to.be.at.most(180);
+		});
+
+		it('should build a route', function () {
+			googleMapServices.getDirections(location1, location1);
+		});
+
+	});
+
+	describe('collection', function () {
 
 		it('should build a route');
 
