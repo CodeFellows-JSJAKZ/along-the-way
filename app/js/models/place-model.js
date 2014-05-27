@@ -14,7 +14,7 @@ var Place = Backbone.Model.extend({
 		lat: null,
 		lng: null,
 		rating: null,
-    types: [],
+        types: [],
 		address: ''
 	}
 });
