@@ -4,7 +4,6 @@ var $ = require('jquery');
 var googleMapServices = {
 
   // define object properties that are set later
-  coords: null,
   map: null,
   placesService: null,
   geocoder: null,
@@ -80,13 +79,13 @@ var googleMapServices = {
 
   /* create map to be used by all google maps services */
   createMap: function createMap(coords) {
-		this.coords = new google.maps.LatLng(coords.latitude, coords.longitude);
+		var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
 		this.map = new google.maps.Map(document.getElementById('gmap'),{
-		  center: this.coords,
+		  center: coords,
 		  zoom: 15
     });
-    this.placesService = new google.maps.places.PlacesService(this.map);
-    this.startMarker = new google.maps.Marker({map: this.map, position: this.coords, visible: true});
+    this.placesService = 
+    this.startMarker = new google.maps.Marker({map: this.map, position: coords, visible: true});
   },
 
   /* Set up autocomplete to work when entering locations.
@@ -157,17 +156,44 @@ var googleMapServices = {
     };
 
     this.directionsService.route(opts, function(result, status) {
+      console.log(result);
       if (status == google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(result);
+        that.findPlacesOnRoute(result.routes[0].overview_path);
       } else {
         console.warn(err);
         return;
       }
     });
+  },
+
+  findPlacesOnRoute: function(overview_path) {
+    var routeBoxer = new RouteBoxer();
+    var boxes = routeBoxer.box(overview_path, 50);
+    console.log(boxes);
+    for (var i = 0; i < boxes.length; i++) {
+      new google.maps.Rectangle(boxes[i]);
+    }
+    /*
+    console.log(overview_path);
+    var populationOptions = {
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: this.map,
+      radius: 100
+    };
+    for (var i = 0; i < overview_path.length; i++) {
+      var point = overview_path[i];
+      populationOptions.center = new google.maps.LatLng(point.lat(), point.lng());
+      new google.maps.Circle(populationOptions);
+    }
+    */
   }
 
 }
 
-global.googlemapsZ = googleMapServices;
 module.exports = googleMapServices;
 
