@@ -69,7 +69,7 @@ var googleMapServices = {
       var latlng = new google.maps.LatLng(geoposition.coords.latitude, geoposition.coords.longitude);
       this.geocoder.geocode({'latLng': latlng}, function (results, status) {
         console.log(results); 
-        $('#location-input').val(results[0].formatted_address);
+        $('#start-input').val(results[0].formatted_address);
       });
     } else {
       googleMapServices.createMap({lat: 0, lng: 0});
@@ -84,17 +84,19 @@ var googleMapServices = {
 		  center: coords,
 		  zoom: 15
     });
-    this.placesService = 
-    this.startMarker = new google.maps.Marker({map: this.map, position: coords, visible: true});
+    this.placesService = new google.maps.places.PlacesService(this.map);
   },
 
   /* Set up autocomplete to work when entering locations.
    * coords: google.maps.LatLng object
    */
   initializeAutoComplete: function initializeAutoComplete() {
-    var input = (document.getElementById('location-input'));
-    var autocomplete = new google.maps.places.Autocomplete(input);
+    var startInput = (document.getElementById('start-input'));
+    var destInput = (document.getElementById('destination-input'));
+    var autocomplete = new google.maps.places.Autocomplete(startInput);
+    var autocomplete2 = new google.maps.places.Autocomplete(destInput);
     autocomplete.bindTo('bounds', this.map);
+    autocomplete2.bindTo('bounds', this.map);
   },
 
   geocodeLocation: function geocodeLocation(location, cb) {
@@ -107,7 +109,6 @@ var googleMapServices = {
         var error = null;
         if (status == google.maps.GeocoderStatus.OK) {
           console.log(results);
-          //$('#location-input').val(res
           coords = results[0].geometry.location;
         } else {
           error = status;
@@ -144,16 +145,38 @@ var googleMapServices = {
     });
   },
 
+  /* Receive geocoded start or end point. */
+  buildRoute: function(location) {
+    console.log('buildRoute');
+    console.log(location.get('order'));
+    if (location.get('order') == 0) {
+      this.start = location
+    } else { // assuming only 2
+      this.end = location
+    }
+    if (this.start && this.end) {
+      this.getDirections(this.start, this.end);
+    }
+  },
+
   getDirections: function getDirections(start, end) {
+    console.log('getDirections');
+    console.log(start);
+    var startLL = new google.maps.LatLng(start.get('lat'), start.get('lng'));
+    var endLL = new google.maps.LatLng(end.get('lat'), end.get('lng'));
+    console.log(startLL);
+    console.log(endLL);
     this.directionsService = this.directionService || new google.maps.DirectionsService()
     var directionsDisplay = new google.maps.DirectionsRenderer();
     directionsDisplay.setMap(this.map);
 
     var opts = {
-      origin: start,
-      destination: end,
+      origin: startLL,
+      destination: endLL,
       travelMode: google.maps.TravelMode.DRIVING
     };
+
+    console.log(opts);
 
     this.directionsService.route(opts, function(result, status) {
       console.log(result);
@@ -161,7 +184,7 @@ var googleMapServices = {
         directionsDisplay.setDirections(result);
         that.findPlacesOnRoute(result.routes[0].overview_path);
       } else {
-        console.warn(err);
+        console.warn(status);
         return;
       }
     });

@@ -1,8 +1,13 @@
 <p><b>Welcome to Along the Way!</b> Using a starting point and multiple locations on the way to a destination, this app pulls sites, restaurants, and other points of interest for you to visit.</p></br>
 <div class="location-form cf">
+
   <label for="location-input">Enter a starting point</label>
-  <input type="text" name="location" id="location-input" placeholder="address, zip code or landmark">
-  <input type="submit" value="Add Starting Point" id="location-submit">
+  <input type="text" name="location" class="location-input" id="start-input" placeholder="address, zip code or landmark">
+
+  <label for="destination-input">Enter a destination</label>
+  <input type="text" name="destination" class="location-input" id="destination-input" placeholder="address, zip code or landmark">
+
+  <input type="submit" value="Go" id="location-submit">
 </div>
 <ol id="location-list" class="item-list">
   <!-- locations inserted here -->
