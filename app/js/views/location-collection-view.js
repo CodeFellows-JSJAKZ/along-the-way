@@ -24,7 +24,7 @@ var LocationListView = Backbone.View.extend({
 
   inputEntered: function(ev) {
     // on Enter or submit press, create new LocationModel
-    var start = $('#location-input').val().trim();
+    var start = $('#start-input').val().trim();
     var end = $('#destination-input').val().trim();
     if (start !== '' && end !== '') {
       // create both location objects and add to collection

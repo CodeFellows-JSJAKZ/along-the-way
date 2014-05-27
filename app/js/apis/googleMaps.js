@@ -86,7 +86,7 @@ var googleMapServices = {
 		  zoom: 15
     });
     this.placesService = new google.maps.places.PlacesService(this.map);
-    this.startMarker = new google.maps.Marker({map: this.map, position: this.coords, visible: true});
+    //this.startMarker = new google.maps.Marker({map: this.map, position: this.coords, visible: true});
   },
 
   /* Set up autocomplete to work when entering locations.
