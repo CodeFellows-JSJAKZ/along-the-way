@@ -16,34 +16,23 @@ var LocationListView = Backbone.View.extend({
     // listen for models being added to collection
     this.listenTo(this.collection, 'add', this.modelAdded);
     _.bind(this.inputEntered, this);
-    _.bind(this.modelAdded, this);
   },
 
   events: {
-    'keypress #location-input': 'inputEntered',
     'click #location-submit': 'inputEntered',
   },
 
   inputEntered: function(ev) {
     // on Enter or submit press, create new LocationModel
-    if (ev.type == 'click' || ev.keyCode == 13) {
-      var userInput = $('#location-input').val().trim();
-      if (userInput !== '') {
-        // clear input
-        $('#location-input').val('');
-        var model = new LocationModel({search: userInput});
-        this.collection.add(model);
-        // if starting point was entered, change button text
-        if (this.collection.length === 1) {
-          $('#location-submit').val('Add location');
-        }
-      }
+    var start = $('#location-input').val().trim();
+    var end = $('#destination-input').val().trim();
+    if (start !== '' && end !== '') {
+      // create both location objects and add to collection
+      var model = new LocationModel({search: start, order: 0});
+      this.collection.add(model);
+      model = new LocationModel({search: end, order: 1});
+      this.collection.add(model);
     }
-  },
-
-  modelAdded: function(location) {
-    var view = new LocationView({model: location});
-    $('#location-list').prepend(view.render().el);
   },
 
   render: function render () {
