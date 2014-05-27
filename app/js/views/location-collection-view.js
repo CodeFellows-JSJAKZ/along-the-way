@@ -4,6 +4,7 @@ var Backbone = require('backbone');
 var LocationView = require('./location-view.js');
 var LocationModel = require('./../models/location-model.js');
 var template = require('./../../templates/location-collection.hbs');
+var googleMapServices = require('./../apis/googleMaps.js');
 
 /* View for a collection of Location objects.
  *   Handles location input.
@@ -26,6 +27,14 @@ var LocationListView = Backbone.View.extend({
     // on Enter or submit press, create new LocationModel
     var start = $('#start-input').val().trim();
     var end = $('#destination-input').val().trim();
+    var filteredArray = [];
+    var filter = $('#filter').find('input:checked');
+    for(var i=0; i < filter.length; i++){
+        var val = filter[i].value;
+        filteredArray.push(val);
+    }
+    console.log(filteredArray);
+    googleMapServices.filterFunc(filteredArray);
     if (start !== '' && end !== '') {
       // create both location objects and add to collection
       var model = new LocationModel({search: start, order: 0});

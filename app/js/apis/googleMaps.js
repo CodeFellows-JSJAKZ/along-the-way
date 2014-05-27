@@ -1,6 +1,7 @@
 var PlaceModel = require('./../models/place-model.js');
 var $ = require('jquery');
 var template = require('./../../templates/place-detailed.hbs');
+var _ = require('underscore');
 
 var googleMapServices = {
 
@@ -10,58 +11,34 @@ var googleMapServices = {
   geocoder: null,
   routeBoxer: new RouteBoxer(),
 
-  // types to search for when returning places
+  // types:[] to search for when returning places
   // see https://developers.google.com/places/documentation/supported_types
-  types: [
-    'amusement_park',
-    'aquarium',
-    'art_gallery',
-    'bakery',
-    'bar',
-    'beauty_salon',
-    'bicycle_store',
-    'book_store',
-    'bowling_alley',
-    'cafe',
-    'casino',
-    'church',
-    'clothing_store',
-    'department_store',
-    'electronics_store',
-    'establishment',
-    'florist',
-    'food',
-    'grocery_or_supermarket',
-    'gym',
-    'hair_care',
-    'hardware_store',
-    'health',
-    'hindu_temple',
-    'home_goods_store',
-    'jewelry_store',
-    'library',
-    'liquor_store',
-    'meal_takeaway',
-    'mosque',
-    'movie_rental',
-    'movie_theater',
-    'museum',
-    'night_club',
-    'park',
-    'pet_store',
-    'pharmacy',
-    'physiotherapist',
-    'place_of_worship',
-    'post_office',
-    'restaurant',
-    'shoe_store',
-    'shopping_mall',
-    'spa',
-    'stadium',
-    'store',
-    'synagogue',
-    'zoo',
-  ],
+  filter: {
+    entertainment: ['amusement_park', 'aquarium', 'art_gallery',
+    'bowling_alley', 'casino', 'movie_rental', 'movie_theater',
+    'stadium', 'museum', 'night_club', 'park','zoo'],
+    stores: ['bicycle_store', 'book_store', 'clothing_store', 'convenience_store',
+    'department_store', 'electronics_store', 'home_goods_store', 'jewelry_store',
+    'liquor_store', 'hardware_store', 'store', 'shoe_store', 'shopping_mall',
+    'pet_store', 'grocery_or_supermarket', 'florist'],
+    services: ['car_repair', 'car_wash', 'gas_station', 'laundry'],
+    food: ['bakery', 'bar', 'cafe', 'food', 'meal_delivery',
+    'meal_takeaway', 'restaurant'],
+    aesthetics: ['beauty_salon', 'gym', 'hair_care', 'spa'],
+    transportation: ['bus_station', 'subway_station', 'taxi_stand', 'train_station'],
+    banking: ['atm', 'bank', 'post_office'],
+    education: ['school', 'university', 'library']
+  },
+
+  filterFunc: function filterFunc(checked){
+    var finalFilter = [];
+    for(var i=0; i < checked.length; i++){
+      finalFilter = finalFilter.concat(this.filter[checked[i]]);
+    }
+    console.log('filterfunc call: '+ finalFilter);
+    this.buildRoute(null, finalFilter);
+
+  },
 
   /* Set up maps services */
   initialize: function initialize(geoposition) {
@@ -91,7 +68,7 @@ var googleMapServices = {
   /* Set up autocomplete to work when entering locations.
    * coords: google.maps.LatLng object
    */
-  initializeAutoComplete: function initializeAutoComplete() {
+   initializeAutoComplete: function initializeAutoComplete() {
     var startInput = (document.getElementById('start-input'));
     var destInput = (document.getElementById('destination-input'));
     var autocomplete = new google.maps.places.Autocomplete(startInput);
@@ -127,7 +104,7 @@ var googleMapServices = {
         this.end = location
       }
     }
-    if (this.start && this.end) {//&& this.placeTypes) {
+    if (this.start && this.end && this.placeTypes) {
       this.getDirections(this.start, this.end);
     }
   },
@@ -179,10 +156,12 @@ var googleMapServices = {
 
   getNearbyPlaces: function getNearbyPlaces(latLngBounds) {
     console.log('getNearbyPlaces');
+    console.log(this.placeTypes);
+    console.log(['bank', 'atm']);
     var that = this;
     var opts = {
       bounds: latLngBounds,
-      types: that.types
+      types: that.placeTypes
     }
     this.placesService.nearbySearch(opts, function(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -205,7 +184,6 @@ var googleMapServices = {
   },
 
   putPlacesOnMap: function(i, results) {
-    console.log(this);
     if (i >= results.length) {
       return false;
     }
