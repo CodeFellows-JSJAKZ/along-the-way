@@ -12,7 +12,7 @@ var less = require('gulp-less');
 var uglify = require('gulp-uglify');
 var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
-var watchify = require('watchify');
+//var watchify = require('watchify');
 
 // define paths once
 var DIRS = {
@@ -59,7 +59,7 @@ gulp.task('test-watch', function () {
 			.on('change', function(event) {
 				console.log('Oh, a change!');
 			});
-})
+});
 
 gulp.task('test', ['js-test', 'unit-test', 'test-watch']);
 
@@ -128,8 +128,8 @@ gulp.task('ship', ['clean', 'html', 'styles', 'lint', 'js', 'uglify', 'img']);
 // serve - run express server. see on change
 gulp.task('serve', ['build'], function() {
   nodemon({
-		script: "server.js",
-		ext: "html js less hbs",
+		script: 'server.js',
+		ext: 'html js less hbs',
 		ignore: [
 			'node_modules/**/*',
 			DIRS.DIST + '**/*'
