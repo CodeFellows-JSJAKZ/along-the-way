@@ -191,7 +191,8 @@ var googleMapServices = {
       var marker = new google.maps.Marker({
         position: result.geometry.location,
         map: this.map,
-        visible: true
+        visible: true,
+        icon: '../../images/map_marker.png'
       });
       marker.name = result.name;
       marker.rating = result.rating;
