@@ -23,7 +23,7 @@ var googleMapServices = {
    *   Reverse geocode starting location
    *   Initialize autocomplete
    */
-  initialize: function initialize(geoposition) {
+  initialize: function(geoposition) {
     if (geoposition) {
       googleMapServices.createMap(geoposition.coords);
       this.geocoder = this.geocoder || new google.maps.Geocoder();
@@ -36,13 +36,16 @@ var googleMapServices = {
       googleMapServices.createMap({lat: 0, lng: 0});
     }
     googleMapServices.initializeAutoComplete();
+  
   },
 
   /* Create map to be used by all google maps services.
    * Initiate PlacesService using map
    */
+
   createMap: function createMap(coords) {
     var googCoords = new google.maps.LatLng(coords.latitude, coords.longitude);
+
     this.map = new google.maps.Map(document.getElementById('gmap'),{
       center: googCoords,
       zoom: 15
@@ -53,7 +56,7 @@ var googleMapServices = {
   /* Set up autocomplete to work when entering locations:
    *  Bind to start and end input fields
    */
-   initializeAutoComplete: function initializeAutoComplete() {
+  initializeAutoComplete: function() {
     var startInput = (document.getElementById('start-input'));
     var destInput = (document.getElementById('destination-input'));
     var autocomplete = new google.maps.places.Autocomplete(startInput);
@@ -65,7 +68,7 @@ var googleMapServices = {
   /* Geocode the given location (get lat and lng corresponding to its search string).
    * When coords are received, call the passed in function cb
    */
-  geocodeLocation: function geocodeLocation(location, cb) {
+  geocodeLocation: function(location, cb) {
     // get or create geocoder
     this.geocoder = this.geocoder || new google.maps.Geocoder();
     this.geocoder.geocode({'address': location.get('search')},
@@ -85,8 +88,6 @@ var googleMapServices = {
    *   Receive start, end, and type filters.  Wait for all 3 to proceed
    *   When ready, clear route and markers from map, call getDirections */
   buildRoute: function(location, placeTypes) {
-    console.log('buildRoute location');
-    console.log(location);
     if (placeTypes) {
       this.placeTypes = placeTypes;
     } else if (location) {
@@ -104,14 +105,13 @@ var googleMapServices = {
       this.getDirections(this.start, this.end);
       this.start = null;
       this.end = null;
-      this.placeTypes = null;
     }
   },
 
   /* Given start and end points, get a route. (Assumes driving)
    *   Puts route on map and calls createRouteBoxes
    */
-  getDirections: function getDirections(start, end) {
+  getDirections: function(start, end) {
     var startLL = new google.maps.LatLng(start.get('lat'), start.get('lng'));
     var endLL = new google.maps.LatLng(end.get('lat'), end.get('lng'));
     this.directionsService = this.directionsService || new google.maps.DirectionsService();
@@ -154,15 +154,16 @@ var googleMapServices = {
    * When results are received, creates a marker for each on the map.
    * Sets click listener on the marker to show an InfoWindow
    */
-  getNearbyPlaces: function getNearbyPlaces(latLngBounds) {
+  getNearbyPlaces: function(latLngBounds) {
     var opts = {
       bounds: latLngBounds,
     };
     // use given types, or null if none are specified
     if (this.placeTypes && this.placeTypes !== []) {
       opts.types = this.placeTypes;
+      console.log('opts.type: ');
+      console.log(opts.types);
     }
-
     // scope for the search callback
     var that = this;
     this.placesService.nearbySearch(opts, function(results, status) {
@@ -235,7 +236,7 @@ var googleMapServices = {
   },
 
   /* Compile user filters based on form input */
-  filterFunc: function filterFunc(checked){
+  filterFunc: function(checked){
     var finalFilter = [];
     if(checked.length === 0){
       finalFilter = this.filter.entertainment.concat(this.filter.stores,
@@ -246,7 +247,7 @@ var googleMapServices = {
         finalFilter = finalFilter.concat(this.filter[checked[i]]);
       }
     }
-    console.log('Default filter:');
+    console.log('filter:');
     console.log(finalFilter);
     this.buildRoute(null, finalFilter);
   },
