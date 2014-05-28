@@ -1,5 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var PlaceModel = require('./../models/place-model.js');
 var $ = require('jquery');
 var template = require('./../../templates/place-detailed.hbs');
 var _ = require('underscore');
@@ -44,9 +43,9 @@ var googleMapServices = {
    * Initiate PlacesService using map
    */
   createMap: function createMap(coords) {
-    var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
+    var googCoords = new google.maps.LatLng(coords.latitude, coords.longitude);
     this.map = new google.maps.Map(document.getElementById('gmap'),{
-      center: coords,
+      center: googCoords,
       zoom: 15
     });
     this.placesService = new google.maps.places.PlacesService(this.map);
@@ -92,10 +91,10 @@ var googleMapServices = {
     if (placeTypes) {
       this.placeTypes = placeTypes;
     } else if (location) {
-      if (location.get('order') == 0) {
-        this.start = location
+      if (location.get('order') === 0) {
+        this.start = location;
       } else { // assuming only 2
-        this.end = location
+        this.end = location;
       }
     }
     if (this.start && this.end && this.placeTypes) {
@@ -144,7 +143,7 @@ var googleMapServices = {
    *   used to get places all along the way
   */
   createRouteBoxes: function(overview_path) {
-    var boxes = this.routeBoxer.box(overview_path, .125);
+    var boxes = this.routeBoxer.box(overview_path, 0.125);
     // find places in each box
     for (var i = 0; i < boxes.length; i++) {
       this.getNearbyPlaces(boxes[i]);
@@ -152,50 +151,68 @@ var googleMapServices = {
   },
 
 
-  /* Get places for the given bounds. When results are received
-   * Creates a marker for each on the map.
+  /* Get places for the given bounds.
+   * When results are received, creates a marker for each on the map.
    * Sets click listener on the marker to show an InfoWindow
    */
   getNearbyPlaces: function getNearbyPlaces(latLngBounds) {
     var opts = {
       bounds: latLngBounds,
-    }
+    };
+    // use given types, or null if none are specified
     if (this.placeTypes && this.placeTypes !== []) {
-      opts.types = this.placeTypes
+      opts.types = this.placeTypes;
     }
 
+    // scope for the search callback
     var that = this;
     this.placesService.nearbySearch(opts, function(results, status) {
+      // handle place results
       if (status == google.maps.places.PlacesServiceStatus.OK) {
-        // re-use the same infowindow for all markers
-        this.infoWindow = this.infoWindow || new google.maps.InfoWindow();
-        for (var i = 0; i < results.length; i++) {
-          var result = results[i];
-          var marker = new google.maps.Marker({
-            position: result.geometry.location,
-            map: that.map,
-            visible: true
-          });
-          that.markers.push(marker);
-          var placeContent = template({
-              name: result.name,
-              rating: result.rating,
-              address: result.vicinity
-          });
-
-          google.maps.event.addListener(marker, 'click', function(result) {
-            this.infoWindow.setContent(template({
-              name: result.name,
-              rating: result.rating,
-              address: result.vicinity
-            }));
-            this.infoWindow.open(that.map, marker);
-          }(result, that));
-        }
+        that.putPlacesOnMap(results);
       } else {
         console.log('ERROR: ' + status);
+        return false;
       }
-    }, this);
+    });
+  },
+
+
+  putPlacesOnMap: function putPlacesOnMap(results) {
+    // re-use the same infowindow for all markers
+    this.infoWindow = new google.maps.InfoWindow();
+
+    // set maximum places per routebox
+    var maxPlaces = Math.min(5, results.length);
+
+    for (var i = 0; i < maxPlaces; i++) {
+      var result = results[i];
+
+      // create marker, set place properties on it too
+      var marker = new google.maps.Marker({
+        position: result.geometry.location,
+        map: this.map,
+        visible: true
+      });
+      marker.name = result.name;
+      marker.rating = result.rating;
+      marker.vicinity = result.vicinity;
+
+      // keep all markers in array so we can delete if needed
+      this.markers.push(marker);
+
+      // when marker is clicked, show infowindow
+      var that = this;
+      google.maps.event.addListener(marker, 'click', function() {
+        // inside callback, this = marker
+        that.infoWindow.open(that.map, this);
+        that.infoWindow.setContent(template({
+          name: this.name,
+          rating: this.rating,
+          address: this.vicinity
+        }));
+      });
+    }
   },
 
   // types:[] to search for when returning places
@@ -243,12 +260,12 @@ var googleMapServices = {
     }
     this.markers.length = 0;
   }
-}
+};
 
 module.exports = googleMapServices;
 
 
-},{"./../../templates/place-detailed.hbs":15,"./../models/place-model.js":5,"jquery":27,"underscore":28}],2:[function(require,module,exports){
+},{"./../../templates/place-detailed.hbs":15,"jquery":27,"underscore":28}],2:[function(require,module,exports){
 var Backbone = require('backbone');
 var LocationModel = require('../models/location-model.js');
 
@@ -719,7 +736,7 @@ function program1(depth0,data) {
   if (helper = helpers.phone) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.phone); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "</span>\n    </div>\n    <div class=\"col-2\">\n      <ul>\n        <li><a href=\"#\">View on map</a></li>\n        <li><a href=\"#\">Call</a></li>\n        <li><a href=\"https://twitter.com/intent/tweet?text=I%27m%20heading%20to%20";
+    + "</span>\n    </div>\n    <div class=\"col-2\">\n      <ul>\n        <li><a href=\"#\">Call</a></li>\n        <li><a href=\"https://twitter.com/intent/tweet?text=I%27m%20heading%20to%20";
   if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
