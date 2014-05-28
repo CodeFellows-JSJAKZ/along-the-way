@@ -24,7 +24,6 @@ var googleMapServices = require('./../apis/googleMaps.js');
   },
 
   inputEntered: function(ev) {
-
     var start = $('#start-input').val().trim();
     var end = $('#destination-input').val().trim();
     if(!end){

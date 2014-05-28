@@ -24,7 +24,7 @@ var googleMapServices = {
    *   Reverse geocode starting location
    *   Initialize autocomplete
    */
-  initialize: function initialize(geoposition) {
+  initialize: function(geoposition) {
     if (geoposition) {
       googleMapServices.createMap(geoposition.coords);
       this.geocoder = this.geocoder || new google.maps.Geocoder();
@@ -37,12 +37,13 @@ var googleMapServices = {
       googleMapServices.createMap({lat: 0, lng: 0});
     }
     googleMapServices.initializeAutoComplete();
+  
   },
 
   /* Create map to be used by all google maps services.
    * Initiate PlacesService using map
    */
-  createMap: function createMap(coords) {
+  createMap: function(coords) {
     var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
     this.map = new google.maps.Map(document.getElementById('gmap'),{
       center: coords,
@@ -54,7 +55,7 @@ var googleMapServices = {
   /* Set up autocomplete to work when entering locations:
    *  Bind to start and end input fields
    */
-   initializeAutoComplete: function initializeAutoComplete() {
+  initializeAutoComplete: function() {
     var startInput = (document.getElementById('start-input'));
     var destInput = (document.getElementById('destination-input'));
     var autocomplete = new google.maps.places.Autocomplete(startInput);
@@ -66,7 +67,7 @@ var googleMapServices = {
   /* Geocode the given location (get lat and lng corresponding to its search string).
    * When coords are received, call the passed in function cb
    */
-  geocodeLocation: function geocodeLocation(location, cb) {
+  geocodeLocation: function(location, cb) {
     // get or create geocoder
     this.geocoder = this.geocoder || new google.maps.Geocoder();
     this.geocoder.geocode({'address': location.get('search')},
@@ -112,7 +113,7 @@ var googleMapServices = {
   /* Given start and end points, get a route. (Assumes driving)
    *   Puts route on map and calls createRouteBoxes
    */
-  getDirections: function getDirections(start, end) {
+  getDirections: function(start, end) {
     var startLL = new google.maps.LatLng(start.get('lat'), start.get('lng'));
     var endLL = new google.maps.LatLng(end.get('lat'), end.get('lng'));
     this.directionsService = this.directionsService || new google.maps.DirectionsService();
@@ -155,7 +156,7 @@ var googleMapServices = {
    * Creates a marker for each on the map.
    * Sets click listener on the marker to show an InfoWindow
    */
-  getNearbyPlaces: function getNearbyPlaces(latLngBounds) {
+  getNearbyPlaces: function(latLngBounds) {
     var opts = {
       bounds: latLngBounds,
     }
@@ -173,7 +174,8 @@ var googleMapServices = {
           var marker = new google.maps.Marker({
             position: result.geometry.location,
             map: that.map,
-            visible: true
+            visible: true,
+            icon: '../../images/blue_markerA.png'
           });
           that.markers.push(marker);
           var placeContent = template({
@@ -217,7 +219,7 @@ var googleMapServices = {
   },
 
   /* Compile user filters based on form input */
-  filterFunc: function filterFunc(checked){
+  filterFunc: function(checked){
     var finalFilter = [];
     if(checked.length === 0){
       finalFilter = this.filter.entertainment.concat(this.filter.stores,
