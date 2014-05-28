@@ -1,6 +1,6 @@
 //variables
 
-@c_lightgrey: #eee;
+@c_lightgrey: #f2f2f2;
 @c_medgrey: #ccc;
 @c_lightblue: #e5f0fb;
 @c_brightblue: #0074e1;
@@ -48,12 +48,24 @@ body {
 	margin: 0 auto;
 	background-color: white;
 	padding: 30px;
-	width: 60%;
+	width: 80%;
 	min-width: 400px;
 	max-width: 800px;
 	border-radius: 4px;
 	box-shadow: 0 2px 5px #aaa;
 	border: 6px solid @c_lightblue;
+
+	.loading {
+		color: #999;
+		font-style: italic;
+		font-size: 1.3em;
+		padding: 12px 0;
+
+		img {
+			display: inline-block;
+			margin: 0 8px 0 0;
+		}
+	}
 
 	.back-button {
 		text-decoration: none;
@@ -79,20 +91,56 @@ body {
 	p {
 		margin: 0;
 		padding: 0 0 1.5em;
+
+		&.intro {
+			padding: 0;
+			margin: 0;
+
+			b {
+				display: block;
+				font-size: 1.2em;
+			}
+		}
+	}
+
+	#gmap {
+		height: 35em !important;
+		border: 1px solid #888;
 	}
 }
 
 .location-form {
 	padding: 20px 0;
 	border-top: 1px solid @c_lightgrey;
-	border-bottom: 1px solid @c_lightgrey;
-	margin: 0 0 20px;
 
 	label {
-		font-size: 0.9em;
-		font-weight: bold;
 		display: block;
-		margin: 0 0 5px;
+		margin: 14px 0 3px;
+	}
+
+	fieldset {
+		padding: 0;
+		border: none;
+
+		legend {
+			padding: 14px 0 5px;
+		}
+
+		.checkbox-wrap {
+			display: inline-block;
+			padding: 4px 8px;
+			border-radius: 3px;
+			background: @c_lightgrey;
+			margin: 0 6px 8px 0;
+			width: 28%;
+
+			label {
+				font-size: 0.9em;
+				font-weight: bold;
+				display: inline;
+				margin: 0;
+			}
+		}
 	}
 
 	input {
@@ -100,6 +148,11 @@ body {
 		color: inherit;
 		font: inherit;
 		margin: 0;
+
+		&[type=checkbox] {
+			display: inline-block;
+			margin: 0 8px 0 0;
+		}
 
 		&.location-input {
 			display: block;
@@ -113,16 +166,27 @@ body {
 		}
 
 		&#location-submit {
-			float: right;
+			-webkit-appearance: none;
+			-moz-appearance: none;
 			border: none;
 			background: @c_brightblue;
 			color: white;
 			font-weight: bold;
-			display: inline-block;
-			padding: 4px 16px;
+			display: block;
+			padding: 6px;
 			border-radius: 2px;
 			box-shadow: 0 2px 5px @c_medgrey;
 			cursor: pointer;
+			clear: both;
+			font-size: 1.2em;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			width: 33%;
+			margin: 14px auto 0;
+
+			&:hover {
+				opacity: 0.8;
+			}
 		}
 	}
 }
@@ -272,18 +336,27 @@ body {
 		}
 	}
 }
-#map{
-	height: 40em;
-	width: 60%;
-	margin-left: 20%;
-}
 
-@media (max-width: 780px) {
+@media (max-width: 820px) {
 
 	.wrapper {
 
 		h1 {
 			font-size: 3em
+		}
+
+		#gmap {
+			height: 25em !important;
+		}
+	}
+
+	.location-form {
+
+		fieldset {
+
+			.checkbox-wrap {
+				width: 43%;
+			}
 		}
 	}
 }
@@ -304,6 +377,38 @@ body {
 		border-radius: 0;
 		border: none;
 		box-shadow: none;
+
+		h1 {
+			font-size: 2.5em
+		}
+
+		#gmap {
+			height: 20em !important;
+		}
+	}
+
+	.location-form {
+
+		input.location-input {
+			width: 97%;
+		}
+
+		fieldset {
+
+			.checkbox-wrap {
+				padding-left: 6px;
+				padding-right: 0;
+				width: 42%;
+
+				input {
+					margin-right: 4px;
+				}
+
+				label {
+					font-weight: normal;
+				}
+			}
+		}
 	}
 
 	#single-place {
