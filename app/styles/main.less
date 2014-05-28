@@ -1,6 +1,6 @@
 //variables
 
-@c_lightgrey: #eee;
+@c_lightgrey: #f2f2f2;
 @c_medgrey: #ccc;
 @c_lightblue: #e5f0fb;
 @c_brightblue: #0074e1;
@@ -77,19 +77,43 @@ body {
 		margin: 0;
 		padding: 0 0 1.5em;
 	}
+
+	#gmap {
+		height: 30em !important;
+	}
 }
 
 .location-form {
 	padding: 20px 0;
 	border-top: 1px solid @c_lightgrey;
-	border-bottom: 1px solid @c_lightgrey;
-	margin: 0 0 20px;
 
 	label {
-		font-size: 0.9em;
-		font-weight: bold;
 		display: block;
-		margin: 0 0 5px;
+		margin: 10px 0 6px;
+	}
+
+	fieldset {
+		padding: 12px 0 8px;
+		border: none;
+
+		legend {
+			margin: 0 0 8px;
+		}
+
+		.checkbox-wrap {
+			display: inline-block;
+			padding: 4px 8px;
+			border-radius: 3px;
+			background: @c_lightgrey;
+			margin: 0 6px 8px 0;
+
+			label {
+				font-size: 0.9em;
+				font-weight: bold;
+				display: inline;
+				margin: 0;
+			}
+		}
 	}
 
 	input {
@@ -97,6 +121,11 @@ body {
 		color: inherit;
 		font: inherit;
 		margin: 0;
+
+		&[type=checkbox] {
+			display: inline-block;
+			margin: 0 8px 0 0;
+		}
 
 		&.location-input {
 			display: block;
@@ -110,16 +139,27 @@ body {
 		}
 
 		&#location-submit {
-			float: right;
+			-webkit-appearance: none;
+			-moz-appearance: none;
 			border: none;
 			background: @c_brightblue;
 			color: white;
 			font-weight: bold;
-			display: inline-block;
-			padding: 4px 16px;
+			display: block;
+			padding: 6px;
 			border-radius: 2px;
 			box-shadow: 0 2px 5px @c_medgrey;
 			cursor: pointer;
+			clear: both;
+			font-size: 1.2em;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			width: 33%;
+			margin: 0 auto;
+
+			&:hover {
+				opacity: 0.8;
+			}
 		}
 	}
 }
@@ -268,11 +308,6 @@ body {
 			}
 		}
 	}
-}
-#map{
-	height: 40em;
-	width: 60%;
-	margin-left: 20%;
 }
 
 @media (max-width: 780px) {

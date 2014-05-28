@@ -35,9 +35,11 @@ gulp.task('default', function() {
   }
 });
 
+
 /*
 Testing!
 */
+
 gulp.task('unit-test', function() {
   console.log('Running tests in ' + DIRS.TEST);
   return gulp.src(DIRS.TEST + 'unit/**/*.test.js')
@@ -61,25 +63,32 @@ gulp.task('test-watch', function () {
 			});
 });
 
-gulp.task('test', ['js-test', 'unit-test', 'test-watch']);
 
-// clean - empty out the /dist folder
-gulp.task('clean', function() {
-  console.log('Cleaning ' + DIRS.DIST);
-  gulp
-		.src([DIRS.DIST + '**/*', DIRS.DIST + '*.*'], {read: false})
-    .pipe(clean());
-});
+/*
+Styling!
+*/
 
 // styles - turn scss into css, move to BUILD
-gulp.task('styles', ['clean'], function() {
-  var src = DIRS.SRC + DIRS.STYLES + '*.less';
-  console.log('Processing less from ' + src);
-  return gulp.src(src)
-    .pipe(less({compress: true}))
-    .pipe(concat('main.css'))
-    .pipe(gulp.dest(DIRS.DIST + DIRS.STYLES));
+gulp.task('styles', function () {
+	var src = DIRS.SRC + DIRS.STYLES + '*.less';
+	console.log('Processing less from ' + src);
+	return gulp.src(src)
+			.pipe(less({compress: true}))
+			.pipe(concat('main.css'))
+			.pipe(gulp.dest(DIRS.DIST + DIRS.STYLES));
 });
+
+gulp.task('styles-watch', function () {
+	gulp
+			.watch(DIRS.SRC + DIRS.STYLES + '*.less', ['styles'])
+			.on('change', function (event) {
+				console.log('LESS converting to CSS ...');
+			});
+});
+
+/*
+JavaScript!
+*/
 
 // js - browserify SRC js and reqs into single client.js file
 gulp.task('js', ['clean'], function() {
@@ -98,6 +107,19 @@ gulp.task('uglify', function () {
 	return gulp.src(DIRS.DIST + 'js/client.js')
 			.pipe(uglify())
 			.pipe(gulp.dest(DIRS.DIST));
+});
+
+
+/*
+Other stuff!
+*/
+
+// clean - empty out the /dist folder
+gulp.task('clean', function () {
+	console.log('Cleaning ' + DIRS.DIST);
+	gulp
+			.src([DIRS.DIST + '**/*', DIRS.DIST + '*.*'], {read: false})
+			.pipe(clean());
 });
 
 // html - copy html from SRC to BUILD
@@ -119,12 +141,6 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('default'));
 });
 
-// build - runs a series of tasks. see 2nd param
-gulp.task('build', ['clean', 'html', 'styles', 'js', 'img']);
-
-// build - runs a series of tasks. see 2nd param
-gulp.task('ship', ['clean', 'html', 'styles', 'lint', 'js', 'uglify', 'img']);
-
 // serve - run express server. see on change
 gulp.task('serve', ['build'], function() {
   nodemon({
@@ -140,3 +156,20 @@ gulp.task('serve', ['build'], function() {
       console.log('Server restarted');
     });
 });
+
+
+/*
+Task groups!
+*/
+
+// build - runs the standard suite of development building
+gulp.task('build', ['clean', 'html', 'styles', 'js', 'img']);
+
+// ship - ready to deploy
+gulp.task('ship', ['clean', 'html', 'styles', 'lint', 'js', 'uglify', 'img']);
+
+// test - pared down process for testing
+gulp.task('test', ['js-test', 'unit-test', 'test-watch']);
+
+// test - pared down process for testing
+gulp.task('styling', ['styles', 'styles-watch']);
