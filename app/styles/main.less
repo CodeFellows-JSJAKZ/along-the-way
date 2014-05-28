@@ -41,19 +41,20 @@ body {
 	background-size: cover;
 	padding: 20px 0;
 	font-family: sans-serif;
+  font-size: 1.2em;
 	line-height: 1.5em;
 }
 
 .wrapper {
 	margin: 0 auto;
-	background-color: white;
+	background-color: #eee;
 	padding: 30px;
 	width: 80%;
 	min-width: 400px;
 	max-width: 800px;
 	border-radius: 4px;
 	box-shadow: 0 2px 5px #aaa;
-	border: 6px solid @c_lightblue;
+	border: 6px solid #333;//@c_lightgrey;
 
 	.loading {
 		color: #999;
@@ -81,12 +82,15 @@ body {
 		text-align: center;
 		margin: 0 0 30px;
 		font-family: Lobster, cursive;
-		font-size: 4.5em;
+		font-size: 4em;
 		line-height: 1em;
 		color: @c_brightblue;
-		//text-shadow: rgba(255, 255, 255, 0.0980392) -1px -1px 1px, rgba(0, 0, 0, 0.498039) 1px 1px 1px;
 		text-shadow: rgb(224, 224, 224) 1px 1px 0px, rgba(0, 0, 0, 0.498039) 1px 1px 1px;
 	}
+
+  h3 {
+    text-align: center;
+  }
 
 	p {
 		margin: 0;
@@ -110,7 +114,6 @@ body {
 }
 
 .location-form {
-	padding: 20px 0;
 	border-top: 1px solid @c_lightgrey;
 
 	label {
@@ -128,15 +131,15 @@ body {
 
 		.checkbox-wrap {
 			display: inline-block;
-			padding: 4px 8px;
 			border-radius: 3px;
-			background: @c_lightgrey;
+			background: white;
+      padding: 2px;
 			margin: 0 6px 8px 0;
 			width: 28%;
 
 			label {
-				font-size: 0.9em;
-				font-weight: bold;
+				//font-size: 0.9em;
+				//font-weight: bold;
 				display: inline;
 				margin: 0;
 			}
@@ -161,7 +164,7 @@ body {
 			border-radius: 2px;
 			border: 1px solid @c_medgrey;
 			margin: 0 0 5px;
-			font-size: 1.6em;
+			font-size: 1.3em;
 			line-height: 1em;
 		}
 
@@ -284,9 +287,9 @@ body {
 	.single-place-wrap {
 
 		.col-2 {
-			width: 45%;
+			width: 47%;
 			float: left;
-			padding: 0 5% 0 0;
+			padding: 0 3% 0 0;
 			font-size: 0.9em;
 
 			ul {
@@ -393,18 +396,24 @@ body {
 			width: 97%;
 		}
 
+    input#location-submit {
+      width: 98%;
+    }
+
 		fieldset {
 
 			.checkbox-wrap {
 				padding-left: 6px;
 				padding-right: 0;
-				width: 42%;
+        display: block;
+        width: 98%;
 
 				input {
 					margin-right: 4px;
 				}
 
 				label {
+          margin: 0 auto;
 					font-weight: normal;
 				}
 			}
