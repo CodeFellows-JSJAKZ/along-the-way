@@ -145,9 +145,7 @@ var googleMapServices = {
   createRouteBoxes: function(overview_path) {
     var boxes = this.routeBoxer.box(overview_path, 0.125);
     // find places in each box
-    for (var i = 0; i < boxes.length; i++) {
-      this.getNearbyPlaces(boxes[i]);
-    }
+    this.getNearbyPlaces(boxes, 0);
   },
 
 
@@ -155,9 +153,13 @@ var googleMapServices = {
    * When results are received, creates a marker for each on the map.
    * Sets click listener on the marker to show an InfoWindow
    */
-  getNearbyPlaces: function(latLngBounds) {
+  getNearbyPlaces: function(boxes, i) {
+    if (i === boxes.length) {
+      console.log('done searching for places');
+      return;
+    }
     var opts = {
-      bounds: latLngBounds,
+      bounds: boxes[i]
     };
     // use given types, or null if none are specified
     if (this.placeTypes && this.placeTypes !== []) {
@@ -168,11 +170,18 @@ var googleMapServices = {
     var that = this;
     this.placesService.nearbySearch(opts, function(results, status) {
       // handle place results
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        console.log('places received; adding to map');
         that.putPlacesOnMap(results);
+        that.getNearbyPlaces(boxes, i+1);
+      } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+        console.log('Over query limit; waiting 1 second');
+        setTimeout(function() {
+          that.getNearbyPlaces(boxes, i);
+        }, 1000);
       } else {
         console.log('ERROR: ' + status);
-        return false;
+        that.getNearbyPlaces(boxes, i+1);
       }
     });
   },
@@ -200,13 +209,15 @@ var googleMapServices = {
       marker.vicinity = result.vicinity;
       marker.price_level = result.price_level;
       marker.type_icon = result.icon;
+      /*
       if (result.opening_hours.open_now !== undefined)
      		marker.open_now = result.opening_hours.open_now;
      	else
 				marker.open_now = false;
+        */
 
 
-					// keep all markers in array so we can delete if needed
+      // keep all markers in array so we can delete if needed
       this.markers.push(marker);
 
       // when marker is clicked, show infowindow
@@ -667,7 +678,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<div class=\"location-form cf\">\n	<div class=\"loading\"id=\"loading-gif\">\n		<img src=\"./../images/ajax-loader.gif\"/>geolocating...\n	</div>\n  <label for=\"location-input\">Enter a starting point</label>\n  <input type=\"text\" name=\"location\" class=\"location-input\" id=\"start-input\" placeholder=\"address, zip code or landmark\">\n    <fieldset id=\"filter\">\n    <legend>Filter results by type</legend>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"entertainment\" id=\"check-entertainment\">\n        <label for=\"check-entertainment\">Entertainment</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"stores\" id=\"check-stores\">\n        <label for=\"check-stores\">Stores</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"services\" id=\"check-services\">\n        <label for=\"check-services\">Services</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"food\" id=\"check-food\">\n        <label for=\"check-food\">Food</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"aesthetics\" id=\"check-aesthetics\">\n        <label for=\"check-aesthetics\">Aesthetics</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"transport\" id=\"check-transport\">\n        <label for=\"check-transport\">Transportation</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"banking\" id=\"check-banking\">\n        <label for=\"check-banking\">Banking</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"education\" id=\"check-education\">\n        <label for=\"check-education\">Education</label>\n      </span>\n  </fieldset>\n\n  <label for=\"destination-input\">Enter a destination</label>\n  <input type=\"text\" name=\"destination\" class=\"location-input\" id=\"destination-input\" placeholder=\"address, zip code or landmark\">\n\n\n  <p>\n  	<input type=\"submit\" value=\"Go\" id=\"location-submit\">\n  </p>\n</div>\n<ol id=\"location-list\" class=\"item-list\">\n  <!-- locations inserted here -->\n</ol>\n\n";
+  return "<h3>Find places to visit along your route.</h3>\n<div class=\"location-form cf\">\n	<div class=\"loading\"id=\"loading-gif\">\n		<img src=\"./../images/ajaxloader.gif\"/>geolocating...\n	</div>\n  <label for=\"location-input\">Starting point:</label>\n  <input type=\"text\" name=\"location\" class=\"location-input\" id=\"start-input\" placeholder=\"address, zip code or landmark\">\n    <fieldset id=\"filter\">\n    <legend>Filter results by type</legend>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"entertainment\" id=\"check-entertainment\">\n        <label for=\"check-entertainment\">Entertainment</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"stores\" id=\"check-stores\">\n        <label for=\"check-stores\">Stores</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"services\" id=\"check-services\">\n        <label for=\"check-services\">Services</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"food\" id=\"check-food\">\n        <label for=\"check-food\">Food</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"aesthetics\" id=\"check-aesthetics\">\n        <label for=\"check-aesthetics\">Aesthetics</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"transport\" id=\"check-transport\">\n        <label for=\"check-transport\">Transportation</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"banking\" id=\"check-banking\">\n        <label for=\"check-banking\">Banking</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"education\" id=\"check-education\">\n        <label for=\"check-education\">Education</label>\n      </span>\n  </fieldset>\n\n  <label for=\"destination-input\">Destination:</label>\n  <input type=\"text\" name=\"destination\" class=\"location-input\" id=\"destination-input\" placeholder=\"address, zip code or landmark\">\n\n\n  <p>\n  	<input type=\"submit\" value=\"Go\" id=\"location-submit\">\n  </p>\n</div>\n<ol id=\"location-list\" class=\"item-list\">\n  <!-- locations inserted here -->\n</ol>\n\n";
   });
 
 },{"hbsfy/runtime":26}],13:[function(require,module,exports){

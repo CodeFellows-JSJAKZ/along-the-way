@@ -144,9 +144,7 @@ var googleMapServices = {
   createRouteBoxes: function(overview_path) {
     var boxes = this.routeBoxer.box(overview_path, 0.125);
     // find places in each box
-    for (var i = 0; i < boxes.length; i++) {
-      this.getNearbyPlaces(boxes[i]);
-    }
+    this.getNearbyPlaces(boxes, 0);
   },
 
 
@@ -154,9 +152,13 @@ var googleMapServices = {
    * When results are received, creates a marker for each on the map.
    * Sets click listener on the marker to show an InfoWindow
    */
-  getNearbyPlaces: function(latLngBounds) {
+  getNearbyPlaces: function(boxes, i) {
+    if (i === boxes.length) {
+      console.log('done searching for places');
+      return;
+    }
     var opts = {
-      bounds: latLngBounds,
+      bounds: boxes[i]
     };
     // use given types, or null if none are specified
     if (this.placeTypes && this.placeTypes !== []) {
@@ -167,11 +169,18 @@ var googleMapServices = {
     var that = this;
     this.placesService.nearbySearch(opts, function(results, status) {
       // handle place results
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        console.log('places received; adding to map');
         that.putPlacesOnMap(results);
+        that.getNearbyPlaces(boxes, i+1);
+      } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+        console.log('Over query limit; waiting 1 second');
+        setTimeout(function() {
+          that.getNearbyPlaces(boxes, i);
+        }, 1000);
       } else {
         console.log('ERROR: ' + status);
-        return false;
+        that.getNearbyPlaces(boxes, i+1);
       }
     });
   },
@@ -199,13 +208,15 @@ var googleMapServices = {
       marker.vicinity = result.vicinity;
       marker.price_level = result.price_level;
       marker.type_icon = result.icon;
+      /*
       if (result.opening_hours.open_now !== undefined)
      		marker.open_now = result.opening_hours.open_now;
      	else
 				marker.open_now = false;
+        */
 
 
-					// keep all markers in array so we can delete if needed
+      // keep all markers in array so we can delete if needed
       this.markers.push(marker);
 
       // when marker is clicked, show infowindow
