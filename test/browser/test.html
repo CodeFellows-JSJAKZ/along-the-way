@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Tests</title>
+		<link rel="stylesheet" media="all" href="../../node_modules/mocha/mocha.css">
+		<style type="text/css">
+			body #mocha {
+				font-size: 28px !important
+			}
+
+			body #mocha h2 {
+				font-size: 16px !important
+			}
+		</style>
+  </head>
+  <body>
+    <div id="mocha" />
+
+    <!-- JavaScript Test Libraries. -->
+    <script type="text/javascript" src="../../node_modules/mocha/mocha.js"></script>
+    <script type="text/javascript" src="../../node_modules/chai/chai.js"></script>
+
+    <!-- JavaScript Test Spec. -->
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+
+		<script>
+		mocha.setup('bdd');
+		mocha.setup({
+			ignoreLeaks: true,
+			globals: ['hasCert']
+		});
+    mocha.globals(['jQuery']);
+    </script>
+
+		<script type="text/javascript" src="test.js"></script>
+
+    <script>mocha.run();</script>
+  </body>
+</html>
