@@ -185,9 +185,10 @@ var googleMapServices = {
     this.directionsService.route(opts, function(result, status) {
       if (status == google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(result);
+        return true;
       } else {
         console.warn(status);
-        return;
+        return false;
       }
     });
   }
@@ -18351,35 +18352,35 @@ describe('Location', function () {
 		it('#1 and #2 should both exist', function (done) {
 			expect(location1).to.be.ok;
 			expect(location2).to.be.ok;
-			setTimeout(done, 3000);
+			setTimeout(done, 2000);
 		});
 
 		it('#1 should have a valid latitude', function () {
-//			expect(location1.get('lat')).to.be.ok;
-//			expect(location1.get('lat')).to.be.at.least(-90);
-//			expect(location1.get('lat')).to.be.at.most(90);
+			expect(location1.get('lat')).to.be.ok;
+			expect(location1.get('lat')).to.be.at.least(-90);
+			expect(location1.get('lat')).to.be.at.most(90);
 		});
 
 		it('#1 should have a valid longitude', function () {
-//			expect(location1.get('lng')).to.be.ok;
-//			expect(location1.get('lng')).to.be.at.least(-180);
-//			expect(location1.get('lng')).to.be.at.most(180);
+			expect(location1.get('lng')).to.be.ok;
+			expect(location1.get('lng')).to.be.at.least(-180);
+			expect(location1.get('lng')).to.be.at.most(180);
 		});
 
 		it('#2 should have a valid latitude', function () {
-//			expect(location2.get('lat')).to.be.ok;
-//			expect(location2.get('lat')).to.be.at.least(-90);
-//			expect(location2.get('lat')).to.be.at.most(90);
+			expect(location2.get('lat')).to.be.ok;
+			expect(location2.get('lat')).to.be.at.least(-90);
+			expect(location2.get('lat')).to.be.at.most(90);
 		});
 
 		it('#2 should have a valid longitude', function () {
-//			expect(location2.get('lng')).to.be.ok;
-//			expect(location2.get('lng')).to.be.at.least(-180);
-//			expect(location2.get('lng')).to.be.at.most(180);
+			expect(location2.get('lng')).to.be.ok;
+			expect(location2.get('lng')).to.be.at.least(-180);
+			expect(location2.get('lng')).to.be.at.most(180);
 		});
 
-		it('should build a route', function () {
-			googleMapServices.getDirections(location1, location1);
+		it('should build a route object', function () {
+			googleMapServices.getDirections(location1, location2);
 		});
 
 	});

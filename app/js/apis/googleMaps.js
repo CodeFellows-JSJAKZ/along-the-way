@@ -183,9 +183,10 @@ var googleMapServices = {
     this.directionsService.route(opts, function(result, status) {
       if (status == google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(result);
+        return true;
       } else {
         console.warn(status);
-        return;
+        return false;
       }
     });
   }
