@@ -1,0 +1,13 @@
+# language setting
+language: node_js
+  - 0.10.28
+
+# only run on master
+branches:
+  only:
+    - master
+
+#npm install is run automatically
+
+script: gulp test
+
