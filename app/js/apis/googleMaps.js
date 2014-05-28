@@ -150,6 +150,7 @@ var googleMapServices = {
     }
   },
 
+
   /* Get places for the given bounds. When results are received
    * Creates a marker for each on the map.
    * Sets click listener on the marker to show an InfoWindow
@@ -218,11 +219,18 @@ var googleMapServices = {
   /* Compile user filters based on form input */
   filterFunc: function filterFunc(checked){
     var finalFilter = [];
-    for(var i=0; i < checked.length; i++){
-      finalFilter = finalFilter.concat(this.filter[checked[i]]);
+    if(checked.length === 0){
+      finalFilter = this.filter.entertainment.concat(this.filter.stores,
+      this.filter.services, this.filter.food, this.filter.aesthetics, 
+      this.filter.transportation, this.filter.banking, this.filter.education);
+    }else{
+      for(var i=0; i < checked.length; i++){
+        finalFilter = finalFilter.concat(this.filter[checked[i]]);
+      }
     }
+    console.log('Default filter:');
+    console.log(finalFilter);
     this.buildRoute(null, finalFilter);
-
   },
 
   /* Remove all markers from the map

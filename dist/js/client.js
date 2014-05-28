@@ -132,9 +132,10 @@ var googleMapServices = {
       if (status == google.maps.DirectionsStatus.OK) {
         that.directionsDisplay.setDirections(result);
         that.createRouteBoxes(result.routes[0].overview_path);
+        return true;
       } else {
         console.warn(status);
-        return;
+        return false;
       }
     });
   },
@@ -149,6 +150,7 @@ var googleMapServices = {
       this.getNearbyPlaces(boxes[i]);
     }
   },
+
 
   /* Get places for the given bounds. When results are received
    * Creates a marker for each on the map.
@@ -218,11 +220,18 @@ var googleMapServices = {
   /* Compile user filters based on form input */
   filterFunc: function filterFunc(checked){
     var finalFilter = [];
-    for(var i=0; i < checked.length; i++){
-      finalFilter = finalFilter.concat(this.filter[checked[i]]);
+    if(checked.length === 0){
+      finalFilter = this.filter.entertainment.concat(this.filter.stores,
+      this.filter.services, this.filter.food, this.filter.aesthetics, 
+      this.filter.transportation, this.filter.banking, this.filter.education);
+    }else{
+      for(var i=0; i < checked.length; i++){
+        finalFilter = finalFilter.concat(this.filter[checked[i]]);
+      }
     }
+    console.log('Default filter:');
+    console.log(finalFilter);
     this.buildRoute(null, finalFilter);
-
   },
 
   /* Remove all markers from the map
@@ -452,9 +461,9 @@ var googleMapServices = require('./../apis/googleMaps.js');
       var filter = $('#filter').find('input:checked');
       for(var i=0; i < filter.length; i++){
         var val = filter[i].value;
+        console.log(val);
         filteredArray.push(val);
       }
-      console.log(filteredArray);
       googleMapServices.filterFunc(filteredArray);
       if (start !== '' && end !== '') {
       // create both location objects and add to collection
