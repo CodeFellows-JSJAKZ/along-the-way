@@ -29,46 +29,48 @@ var googleMapServices = {
     banking: ['atm', 'bank', 'post_office'],
     education: ['school', 'university', 'library']
   },
-   /* if(finalFilter.length === 0){
-      finalFilter = finalFilter.entertainment.concat(filter.stores,
-        filter.services, filter.food, filter.aesthetics, filter. transportation,
-        filter.banking, filter.education);
-    }*/
-  
-  filterFunc: function filterFunc(checked){
-    var finalFilter = [];
+
+ filterFunc: function filterFunc(checked){
+  var finalFilter = [];
+  if(checked.length === 0){
+    finalFilter = this.filter.entertainment.concat(this.filter.stores,
+    this.filter.services, this.filter.food, this.filter.aesthetics, 
+    this.filter.transportation, this.filter.banking, this.filter.education);
+  }else{
     for(var i=0; i < checked.length; i++){
       finalFilter = finalFilter.concat(this.filter[checked[i]]);
-      console.log(finalFilter);
     }
-    this.buildRoute(null, finalFilter);
-  },
+  }
+  console.log('Default filter:');
+  console.log(finalFilter);
+  this.buildRoute(null, finalFilter);
+},
 
-  /* Set up maps services */
-  initialize: function initialize(geoposition) {
-    if (geoposition) {
-      googleMapServices.createMap(geoposition.coords);
-      this.geocoder = this.geocoder || new google.maps.Geocoder();
-      var latlng = new google.maps.LatLng(geoposition.coords.latitude, geoposition.coords.longitude);
-      this.geocoder.geocode({'latLng': latlng}, function (results, status) {
-        $('#start-input').val(results[0].formatted_address);
-        $('#loading-gif').hide();
-      });
-    } else {
-      googleMapServices.createMap({lat: 0, lng: 0});
-    }
-    googleMapServices.initializeAutoComplete();
-  },
-
-  /* create map to be used by all google maps services */
-  createMap: function createMap(coords) {
-    var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
-    this.map = new google.maps.Map(document.getElementById('gmap'),{
-      center: coords,
-      zoom: 15
+/* Set up maps services */
+initialize: function initialize(geoposition) {
+  if (geoposition) {
+    googleMapServices.createMap(geoposition.coords);
+    this.geocoder = this.geocoder || new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(geoposition.coords.latitude, geoposition.coords.longitude);
+    this.geocoder.geocode({'latLng': latlng}, function (results, status) {
+      $('#start-input').val(results[0].formatted_address);
+      $('#loading-gif').hide();
     });
-    this.placesService = new google.maps.places.PlacesService(this.map);
-  },
+  } else {
+    googleMapServices.createMap({lat: 0, lng: 0});
+  }
+  googleMapServices.initializeAutoComplete();
+},
+
+/* create map to be used by all google maps services */
+createMap: function createMap(coords) {
+  var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
+  this.map = new google.maps.Map(document.getElementById('gmap'),{
+    center: coords,
+    zoom: 15
+  });
+  this.placesService = new google.maps.places.PlacesService(this.map);
+},
 
   /* Set up autocomplete to work when entering locations.
    * coords: google.maps.LatLng object
@@ -160,8 +162,6 @@ var googleMapServices = {
   },
 
   getNearbyPlaces: function getNearbyPlaces(latLngBounds) {
-    console.log('getNearbyPlaces');
-    console.log(this.placeTypes);
     var that = this;
     var opts = {
       bounds: latLngBounds,

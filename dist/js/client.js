@@ -31,40 +31,47 @@ var googleMapServices = {
     education: ['school', 'university', 'library']
   },
 
-  filterFunc: function filterFunc(checked){
-    var finalFilter = [];
+ filterFunc: function filterFunc(checked){
+  var finalFilter = [];
+  if(checked.length === 0){
+    finalFilter = this.filter.entertainment.concat(this.filter.stores,
+    this.filter.services, this.filter.food, this.filter.aesthetics, 
+    this.filter.transportation, this.filter.banking, this.filter.education);
+  }else{
     for(var i=0; i < checked.length; i++){
       finalFilter = finalFilter.concat(this.filter[checked[i]]);
-      console.log(finalFilter);
     }
-    this.buildRoute(null, finalFilter);
+  }
+  console.log('Default filter:');
+  console.log(finalFilter);
+  this.buildRoute(null, finalFilter);
+},
 
-  },
-
-  /* Set up maps services */
-  initialize: function initialize(geoposition) {
-    if (geoposition) {
-      googleMapServices.createMap(geoposition.coords);
-      this.geocoder = this.geocoder || new google.maps.Geocoder();
-      var latlng = new google.maps.LatLng(geoposition.coords.latitude, geoposition.coords.longitude);
-      this.geocoder.geocode({'latLng': latlng}, function (results, status) {
-        $('#start-input').val(results[0].formatted_address);
-      });
-    } else {
-      googleMapServices.createMap({lat: 0, lng: 0});
-    }
-    googleMapServices.initializeAutoComplete();
-  },
-
-  /* create map to be used by all google maps services */
-  createMap: function createMap(coords) {
-		var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
-		this.map = new google.maps.Map(document.getElementById('gmap'),{
-		  center: coords,
-		  zoom: 15
+/* Set up maps services */
+initialize: function initialize(geoposition) {
+  if (geoposition) {
+    googleMapServices.createMap(geoposition.coords);
+    this.geocoder = this.geocoder || new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(geoposition.coords.latitude, geoposition.coords.longitude);
+    this.geocoder.geocode({'latLng': latlng}, function (results, status) {
+      $('#start-input').val(results[0].formatted_address);
+      $('#loading-gif').hide();
     });
-    this.placesService = new google.maps.places.PlacesService(this.map);
-  },
+  } else {
+    googleMapServices.createMap({lat: 0, lng: 0});
+  }
+  googleMapServices.initializeAutoComplete();
+},
+
+/* create map to be used by all google maps services */
+createMap: function createMap(coords) {
+  var coords = new google.maps.LatLng(coords.latitude, coords.longitude);
+  this.map = new google.maps.Map(document.getElementById('gmap'),{
+    center: coords,
+    zoom: 15
+  });
+  this.placesService = new google.maps.places.PlacesService(this.map);
+},
 
   /* Set up autocomplete to work when entering locations.
    * coords: google.maps.LatLng object
@@ -156,8 +163,6 @@ var googleMapServices = {
   },
 
   getNearbyPlaces: function getNearbyPlaces(latLngBounds) {
-    console.log('getNearbyPlaces');
-    console.log(this.placeTypes);
     var that = this;
     var opts = {
       bounds: latLngBounds,
@@ -177,10 +182,10 @@ var googleMapServices = {
           });
           collection.add(place);
           */
-      } else {
-        console.log('ERROR: ' + status);
-      }
-    }, this);
+        } else {
+          console.log('ERROR: ' + status);
+        }
+      }, this);
   },
 
   putPlacesOnMap: function(i, results) {
@@ -194,9 +199,9 @@ var googleMapServices = {
       visible: true
     });
     var placeContent = template({
-        name: result.name,
-        rating: result.rating,
-        address: result.vicinity
+      name: result.name,
+      rating: result.rating,
+      address: result.vicinity
     });
     marker.info = new google.maps.InfoWindow({
       content: placeContent
@@ -425,24 +430,24 @@ var googleMapServices = require('./../apis/googleMaps.js');
       var filter = $('#filter').find('input:checked');
       for(var i=0; i < filter.length; i++){
         var val = filter[i].value;
+        console.log(val);
         filteredArray.push(val);
       }
-      console.log(filteredArray);
       googleMapServices.filterFunc(filteredArray);
       if (start !== '' && end !== '') {
       // create both location objects and add to collection
-      var model = new LocationModel({search: start, order: 0});
-      this.collection.add(model);
-      model = new LocationModel({search: end, order: 1});
-      this.collection.add(model);
+        var model = new LocationModel({search: start, order: 0});
+        this.collection.add(model);
+        model = new LocationModel({search: end, order: 1});
+        this.collection.add(model);
+      }
     }
-  }
-},
+  },
 
-render: function render () {
-  this.$el.html(this.template({}));
-  return this;
-}
+  render: function render () {
+    this.$el.html(this.template({}));
+    return this;
+  }
 });
 
 module.exports = LocationListView;
@@ -604,7 +609,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<p><b>Welcome to Along the Way!</b> Using a starting point and multiple locations on the way to a destination, this app pulls sites, restaurants, and other points of interest for you to visit.</p></br>\n<div class=\"location-form cf\">\n\n  <label for=\"location-input\">Enter a starting point</label>\n  <input type=\"text\" name=\"location\" class=\"location-input\" id=\"start-input\" placeholder=\"address, zip code or landmark\">\n\n  <label for=\"destination-input\">Enter a destination</label>\n  <input type=\"text\" name=\"destination\" class=\"location-input\" id=\"destination-input\" placeholder=\"address, zip code or landmark\">\n\n  <input type=\"submit\" value=\"Go\" id=\"location-submit\">\n  <fieldset id=\"filter\">\n    <legend>Filter</legend>\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"entertainment\">Entertainment \n 	 		<input type=\"checkbox\" name=\"filter\" value=\"stores\">Stores\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"services\">Services <br />\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"food\">Food \n 	 		<input type=\"checkbox\" name=\"filter\" value=\"aesthetics\">Aesthetics\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"transport\">Transportation<br />\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"banking\">Banking\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"education\">Education\n  </fieldset>\n</div>\n<ol id=\"location-list\" class=\"item-list\">\n  <!-- locations inserted here -->\n</ol>\n\n";
+  return "<p><b>Welcome to Along the Way!</b> Using a starting point and multiple locations on the way to a destination, this app pulls sites, restaurants, and other points of interest for you to visit.</p></br>\n<div class=\"location-form cf\">\n	<div class=\"loading\"id=\"loading-gif\">\n		<img src=\"./../images/ajax-loader.gif\"/>geolocating...\n	</div>\n  <label for=\"location-input\">Enter a starting point</label>\n  <input type=\"text\" name=\"location\" class=\"location-input\" id=\"start-input\" placeholder=\"address, zip code or landmark\">\n\n  <label for=\"destination-input\">Enter a destination</label>\n  <input type=\"text\" name=\"destination\" class=\"location-input\" id=\"destination-input\" placeholder=\"address, zip code or landmark\">\n\n  <input type=\"submit\" value=\"Go\" id=\"location-submit\">\n  <fieldset id=\"filter\">\n    <legend>Filter</legend>\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"entertainment\">Entertainment \n 	 		<input type=\"checkbox\" name=\"filter\" value=\"stores\">Stores\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"services\">Services <br />\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"food\">Food \n 	 		<input type=\"checkbox\" name=\"filter\" value=\"aesthetics\">Aesthetics\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"transport\">Transportation<br />\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"banking\">Banking\n 	 		<input type=\"checkbox\" name=\"filter\" value=\"education\">Education\n  </fieldset>\n</div>\n<ol id=\"location-list\" class=\"item-list\">\n  <!-- locations inserted here -->\n</ol>\n\n";
   });
 
 },{"hbsfy/runtime":25}],13:[function(require,module,exports){

@@ -37,9 +37,9 @@ var googleMapServices = require('./../apis/googleMaps.js');
       var filter = $('#filter').find('input:checked');
       for(var i=0; i < filter.length; i++){
         var val = filter[i].value;
+        console.log(val);
         filteredArray.push(val);
       }
-      console.log(filteredArray);
       googleMapServices.filterFunc(filteredArray);
       if (start !== '' && end !== '') {
       // create both location objects and add to collection
