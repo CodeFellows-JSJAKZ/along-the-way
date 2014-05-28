@@ -131,9 +131,10 @@ var googleMapServices = {
       if (status == google.maps.DirectionsStatus.OK) {
         that.directionsDisplay.setDirections(result);
         that.createRouteBoxes(result.routes[0].overview_path);
+        return true;
       } else {
         console.warn(status);
-        return;
+        return false;
       }
     });
   },
