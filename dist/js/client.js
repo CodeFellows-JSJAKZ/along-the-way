@@ -162,9 +162,8 @@ var googleMapServices = {
     // use given types, or null if none are specified
     if (this.placeTypes && this.placeTypes !== []) {
       opts.types = this.placeTypes;
-      console.log('opts.type: ');
-      console.log(opts.types);
     }
+
     // scope for the search callback
     var that = this;
     this.placesService.nearbySearch(opts, function(results, status) {
@@ -199,8 +198,15 @@ var googleMapServices = {
       marker.name = result.name;
       marker.rating = result.rating;
       marker.vicinity = result.vicinity;
+      marker.price_level = result.price_level;
+      marker.type_icon = result.icon;
+      if (result.opening_hours.open_now !== undefined)
+     		marker.open_now = result.opening_hours.open_now;
+     	else
+				marker.open_now = false;
 
-      // keep all markers in array so we can delete if needed
+
+					// keep all markers in array so we can delete if needed
       this.markers.push(marker);
 
       // when marker is clicked, show infowindow
@@ -211,7 +217,10 @@ var googleMapServices = {
         that.infoWindow.setContent(template({
           name: this.name,
           rating: this.rating,
-          address: this.vicinity
+          address: this.vicinity,
+					price_level: this.price_level,
+					type_icon: this.type_icon,
+					open_now: this.open_now
         }));
       });
     }
@@ -722,22 +731,45 @@ function program1(depth0,data) {
   return buffer;
   }
 
+function program3(depth0,data) {
+  
+  var buffer = "", stack1, helper;
+  buffer += "\n				<li><strong>Price:</strong> ";
+  if (helper = helpers.price_level) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.price_level); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</li>\n				";
+  return buffer;
+  }
+
+function program5(depth0,data) {
+  
+  
+  return "\n        <li><strong>Open now!</strong></li>\n        ";
+  }
+
   buffer += "<div id=\"single-place\">\n  <div class=\"single-place-wrap cf\">\n    <h2>";
   if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "</h2>\n    <div class=\"col-2\">\n      ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.rating), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n      <address>";
+    + "</h2>\n    <address>";
   if (helper = helpers.address) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.address); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</address>\n      <span class=\"phone\">";
-  if (helper = helpers.phone) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.phone); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += "</address>\n    <img src=\"";
+  if (helper = helpers.type_icon) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.type_icon); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "</span>\n    </div>\n    <div class=\"col-2\">\n      <ul>\n        <li><a href=\"#\">Call</a></li>\n        <li><a href=\"https://twitter.com/intent/tweet?text=I%27m%20heading%20to%20";
+    + "\" width=\"30px\">\n    <div class=\"col-2\">\n      ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.rating), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n    </div>\n    <div class=\"col-2\">\n      <ul>\n      	";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.price_level), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n\n       	";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.open_now), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n        <li><a href=\"https://twitter.com/intent/tweet?text=I%27m%20heading%20to%20";
   if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)

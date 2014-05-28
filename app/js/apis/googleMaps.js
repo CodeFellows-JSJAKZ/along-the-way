@@ -161,9 +161,8 @@ var googleMapServices = {
     // use given types, or null if none are specified
     if (this.placeTypes && this.placeTypes !== []) {
       opts.types = this.placeTypes;
-      console.log('opts.type: ');
-      console.log(opts.types);
     }
+
     // scope for the search callback
     var that = this;
     this.placesService.nearbySearch(opts, function(results, status) {
@@ -198,8 +197,15 @@ var googleMapServices = {
       marker.name = result.name;
       marker.rating = result.rating;
       marker.vicinity = result.vicinity;
+      marker.price_level = result.price_level;
+      marker.type_icon = result.icon;
+      if (result.opening_hours.open_now !== undefined)
+     		marker.open_now = result.opening_hours.open_now;
+     	else
+				marker.open_now = false;
 
-      // keep all markers in array so we can delete if needed
+
+					// keep all markers in array so we can delete if needed
       this.markers.push(marker);
 
       // when marker is clicked, show infowindow
@@ -210,7 +216,10 @@ var googleMapServices = {
         that.infoWindow.setContent(template({
           name: this.name,
           rating: this.rating,
-          address: this.vicinity
+          address: this.vicinity,
+					price_level: this.price_level,
+					type_icon: this.type_icon,
+					open_now: this.open_now
         }));
       });
     }
