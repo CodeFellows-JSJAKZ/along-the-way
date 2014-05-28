@@ -1,8 +1,8 @@
-# language setting
 language: node_js
-  - 0.10.28
 
-# only run on master
+nodejs:
+  - "0.10.28"
+
 branches:
   only:
     - master
