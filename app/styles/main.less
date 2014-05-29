@@ -280,9 +280,32 @@ body {
 
 #single-place {
 
+  h2 {
+    margin: 0;
+  }
+
 	p {
 		padding: 0;
 	}
+
+  .open-now {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: green;
+  }
+
+  hr {
+    height: 1px;
+    border: 0;
+    background-color: #bbb;
+  }
+
+  address {
+    font-size: 1em;
+    font-style: normal;
+    line-height: 1.2em;
+    margin-bottom: 8px;
+  }
 
 	.single-place-wrap {
 
@@ -291,6 +314,10 @@ body {
 			float: left;
 			padding: 0 3% 0 0;
 			font-size: 0.9em;
+
+      &.right {
+        text-align: right;
+      }
 
 			ul {
 				padding: 0;
@@ -301,11 +328,12 @@ body {
 					margin: 0 0 4px;
 
 					a {
-						display: block;
+						display: inline;
+            width: 85%;
 						background: @c_lightblue;
 						text-decoration: none;
 						font-weight: bold;
-						padding: 4px 10px;
+						padding: 4px 15px;
 						color: black;
 						border-radius: 2px;
 						border: @c_brightblue;
@@ -313,18 +341,13 @@ body {
 				}
 			}
 
-			address {
-				line-height: 1.2em;
-				margin: 0 0 8px;
-			}
 		}
 
 		.rating {
+      margin-bottom: 5px;
 			font-size: 4em;
 			letter-spacing: -3px;
 			font-weight: bold;
-			width: 100px;
-			float: left;
 			line-height: 1em;
 			display: block;
 

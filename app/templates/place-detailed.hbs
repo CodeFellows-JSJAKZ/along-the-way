@@ -1,22 +1,25 @@
 <div id="single-place">
   <div class="single-place-wrap cf">
     <h2>{{name}}</h2>
-    <address>{{{address}}}</address>
-    <img src="{{type_icon}}" width="30px">
+     <address>{{{address}}}</address>
+     <hr>
     <div class="col-2">
-      {{#if rating}}
-        <span class="rating"><span>Rating:</span>{{rating}}</span>
-      {{/if}}
-    </div>
-    <div class="col-2">
+      <img src="{{type_icon}}" width="25">
       <ul>
       	{{#if price_level}}
-				<li><strong>Price:</strong> {{price_level}}</li>
+				<li><strong>Price:</strong> {{price_level}}/4</li>
 				{{/if}}
 
        	{{#if open_now}}
-        <li><strong>Open now!</strong></li>
+        <li class="open-now">Open now!</li>
         {{/if}}
+      </ul>
+    </div>
+    <div class="col-2 right">
+      <ul>
+      {{#if rating}}
+        <span class="rating"><span>Rating:</span>{{rating}}</span>
+      {{/if}}
         <li><a href="https://twitter.com/intent/tweet?text=I%27m%20heading%20to%20{{name}}">Tweet</a></li>
       </ul>
     </div>

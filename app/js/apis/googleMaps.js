@@ -208,13 +208,11 @@ var googleMapServices = {
       marker.vicinity = result.vicinity;
       marker.price_level = result.price_level;
       marker.type_icon = result.icon;
-      /*
-      if (result.opening_hours.open_now !== undefined)
+      if (result.opening_hours) {
      		marker.open_now = result.opening_hours.open_now;
-     	else
+      } else {
 				marker.open_now = false;
-        */
-
+      }
 
       // keep all markers in array so we can delete if needed
       this.markers.push(marker);
@@ -240,9 +238,8 @@ var googleMapServices = {
   // see https://developers.google.com/places/documentation/supported_types
   filter: {
     entertainment: [
-      'amusement_park', 'aquarium', 'art_gallery',
-      'bowling_alley', 'casino', 'movie_rental', 'movie_theater',
-      'stadium', 'museum', 'night_club', 'park','zoo'
+      'amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'casino',
+      'movie_rental', 'movie_theater', 'stadium', 'museum', 'night_club', 'park','zoo'
     ],
     stores: [
       'bicycle_store', 'book_store', 'clothing_store', 'convenience_store',
@@ -251,10 +248,7 @@ var googleMapServices = {
       'pet_store', 'grocery_or_supermarket', 'florist'
     ],
     services: ['car_repair', 'car_wash', 'gas_station', 'laundry'],
-    food: [
-      'bakery', 'bar', 'cafe', 'food', 'meal_delivery', 'meal_takeaway',
-      'restaurant'
-    ],
+    food: ['bakery', 'bar', 'cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant'],
     aesthetics: ['beauty_salon', 'gym', 'hair_care', 'spa'],
     transportation: ['bus_station', 'subway_station', 'taxi_stand', 'train_station'],
     banking: ['atm', 'bank', 'post_office'],
