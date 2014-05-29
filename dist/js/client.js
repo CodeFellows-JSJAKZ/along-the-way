@@ -209,13 +209,11 @@ var googleMapServices = {
       marker.vicinity = result.vicinity;
       marker.price_level = result.price_level;
       marker.type_icon = result.icon;
-      /*
-      if (result.opening_hours.open_now !== undefined)
+      if (result.opening_hours) {
      		marker.open_now = result.opening_hours.open_now;
-     	else
+      } else {
 				marker.open_now = false;
-        */
-
+      }
 
       // keep all markers in array so we can delete if needed
       this.markers.push(marker);
@@ -240,16 +238,18 @@ var googleMapServices = {
   // types:[] to search for when returning places
   // see https://developers.google.com/places/documentation/supported_types
   filter: {
-    entertainment: ['amusement_park', 'aquarium', 'art_gallery',
-    'bowling_alley', 'casino', 'movie_rental', 'movie_theater',
-    'stadium', 'museum', 'night_club', 'park','zoo'],
-    stores: ['bicycle_store', 'book_store', 'clothing_store', 'convenience_store',
-    'department_store', 'electronics_store', 'home_goods_store', 'jewelry_store',
-    'liquor_store', 'hardware_store', 'store', 'shoe_store', 'shopping_mall',
-    'pet_store', 'grocery_or_supermarket', 'florist'],
+    entertainment: [
+      'amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'casino',
+      'movie_rental', 'movie_theater', 'stadium', 'museum', 'night_club', 'park','zoo'
+    ],
+    stores: [
+      'bicycle_store', 'book_store', 'clothing_store', 'convenience_store',
+      'department_store', 'electronics_store', 'home_goods_store', 'jewelry_store',
+      'liquor_store', 'hardware_store', 'store', 'shoe_store', 'shopping_mall',
+      'pet_store', 'grocery_or_supermarket', 'florist'
+    ],
     services: ['car_repair', 'car_wash', 'gas_station', 'laundry'],
-    food: ['bakery', 'bar', 'cafe', 'food', 'meal_delivery',
-    'meal_takeaway', 'restaurant'],
+    food: ['bakery', 'bar', 'cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant'],
     aesthetics: ['beauty_salon', 'gym', 'hair_care', 'spa'],
     transportation: ['bus_station', 'subway_station', 'taxi_stand', 'train_station'],
     banking: ['atm', 'bank', 'post_office'],
@@ -678,7 +678,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<h3>Find places to visit along your route.</h3>\n<div class=\"location-form cf\">\n	<div class=\"loading\"id=\"loading-gif\">\n		<img src=\"./../images/ajaxloader.gif\"/>geolocating...\n	</div>\n  <label for=\"location-input\">Starting point:</label>\n  <input type=\"text\" name=\"location\" class=\"location-input\" id=\"start-input\" placeholder=\"address, zip code or landmark\">\n    <fieldset id=\"filter\">\n    <legend>Filter results by type</legend>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"entertainment\" id=\"check-entertainment\">\n        <label for=\"check-entertainment\">Entertainment</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"stores\" id=\"check-stores\">\n        <label for=\"check-stores\">Stores</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"services\" id=\"check-services\">\n        <label for=\"check-services\">Services</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"food\" id=\"check-food\">\n        <label for=\"check-food\">Food</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"aesthetics\" id=\"check-aesthetics\">\n        <label for=\"check-aesthetics\">Aesthetics</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"transport\" id=\"check-transport\">\n        <label for=\"check-transport\">Transportation</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"banking\" id=\"check-banking\">\n        <label for=\"check-banking\">Banking</label>\n      </span>\n      <span class=\"checkbox-wrap\">\n        <input type=\"checkbox\" name=\"filter\" value=\"education\" id=\"check-education\">\n        <label for=\"check-education\">Education</label>\n      </span>\n  </fieldset>\n\n  <label for=\"destination-input\">Destination:</label>\n  <input type=\"text\" name=\"destination\" class=\"location-input\" id=\"destination-input\" placeholder=\"address, zip code or landmark\">\n\n\n  <p>\n  	<input type=\"submit\" value=\"Go\" id=\"location-submit\">\n  </p>\n</div>\n<ol id=\"location-list\" class=\"item-list\">\n  <!-- locations inserted here -->\n</ol>\n\n";
+  return "<h3>Find places to visit along your route.</h3>\n<div class=\"location-form cf\">\n	<div class=\"loading\"id=\"loading-gif\">\n		<img src=\"./../images/ajaxloader.gif\"/>geolocating...\n	</div>\n\n	<fieldset>\n		<label for=\"location-input\" class=\"field-header\">Where does your route start?</label>\n		<input type=\"text\" name=\"location\" class=\"location-input\" id=\"start-input\" placeholder=\"address, zip code or landmark\">\n		<p class=\"description\">Enter an address, city, or landmark where your route will start.</p>\n	</fieldset>\n\n	<fieldset>\n		<label for=\"destination-input\" class=\"field-header\">Where does your route end?</label>\n    <input type=\"text\" name=\"destination\" class=\"location-input\" id=\"destination-input\" placeholder=\"address, zip code or landmark\">\n    <p class=\"description\">Enter a location where your route will end.</p>\n  </fieldset>\n\n  <fieldset id=\"filter\">\n    <legend class=\"field-header\">Only show places that are...</legend>\n      <label class=\"checkbox-wrap\" for=\"check-entertainment\">\n        <input type=\"checkbox\" name=\"filter\" value=\"entertainment\" id=\"check-entertainment\">\n        <span>Entertainment</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-stores\">\n        <input type=\"checkbox\" name=\"filter\" value=\"stores\" id=\"check-stores\">\n        <span>Stores</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-services\">\n        <input type=\"checkbox\" name=\"filter\" value=\"services\" id=\"check-services\">\n        <span>Services</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-food\">\n        <input type=\"checkbox\" name=\"filter\" value=\"food\" id=\"check-food\">\n        <span>Food</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-aesthetics\">\n        <input type=\"checkbox\" name=\"filter\" value=\"aesthetics\" id=\"check-aesthetics\">\n        <span>Aesthetics</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-transport\">\n        <input type=\"checkbox\" name=\"filter\" value=\"transportation\" id=\"check-transport\">\n        <span>Transportation</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-banking\">\n        <input type=\"checkbox\" name=\"filter\" value=\"banking\" id=\"check-banking\">\n        <span>Banking</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-education\">\n        <input type=\"checkbox\" name=\"filter\" value=\"education\" id=\"check-education\">\n        <span>Education</span>\n      </label>\n  </fieldset>\n\n  <p>\n  	<input type=\"submit\" value=\"Map it!\" id=\"location-submit\">\n  </p>\n</div>\n<ol id=\"location-list\" class=\"item-list\">\n  <!-- locations inserted here -->\n</ol>\n\n";
   });
 
 },{"hbsfy/runtime":26}],13:[function(require,module,exports){
@@ -734,6 +734,23 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 function program1(depth0,data) {
   
   var buffer = "", stack1, helper;
+  buffer += "\n				<li><strong>Price:</strong> ";
+  if (helper = helpers.price_level) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.price_level); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "/4</li>\n				";
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  
+  return "\n        <li class=\"open-now\">Open now!</li>\n        ";
+  }
+
+function program5(depth0,data) {
+  
+  var buffer = "", stack1, helper;
   buffer += "\n        <span class=\"rating\"><span>Rating:</span>";
   if (helper = helpers.rating) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.rating); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
@@ -742,43 +759,26 @@ function program1(depth0,data) {
   return buffer;
   }
 
-function program3(depth0,data) {
-  
-  var buffer = "", stack1, helper;
-  buffer += "\n				<li><strong>Price:</strong> ";
-  if (helper = helpers.price_level) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.price_level); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</li>\n				";
-  return buffer;
-  }
-
-function program5(depth0,data) {
-  
-  
-  return "\n        <li><strong>Open now!</strong></li>\n        ";
-  }
-
   buffer += "<div id=\"single-place\">\n  <div class=\"single-place-wrap cf\">\n    <h2>";
   if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "</h2>\n    <address>";
+    + "</h2>\n     <address>";
   if (helper = helpers.address) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.address); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</address>\n    <img src=\"";
+  buffer += "</address>\n     <hr>\n    <div class=\"col-2\">\n      <img src=\"";
   if (helper = helpers.type_icon) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.type_icon); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "\" width=\"30px\">\n    <div class=\"col-2\">\n      ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.rating), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n    </div>\n    <div class=\"col-2\">\n      <ul>\n      	";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.price_level), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+    + "\" width=\"25\">\n      <ul>\n      	";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.price_level), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n\n       	";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.open_now), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.open_now), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n      </ul>\n    </div>\n    <div class=\"col-2 right\">\n      <ul>\n      ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.rating), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n        <li><a href=\"https://twitter.com/intent/tweet?text=I%27m%20heading%20to%20";
   if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
