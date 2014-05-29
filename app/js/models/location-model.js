@@ -1,7 +1,5 @@
 var Backbone = require('backbone');
-var PlaceCollection = require('./../collections/place-collection.js');
 var googleMapServices = require('./../apis/googleMaps.js');
-var _ = require('underscore');
 
 /* Locations will be passed in with:
  *    search: {String} the string that the user entered

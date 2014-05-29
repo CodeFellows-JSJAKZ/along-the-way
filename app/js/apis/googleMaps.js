@@ -1,6 +1,5 @@
 var $ = require('jquery');
 var template = require('./../../templates/place-detailed.hbs');
-var _ = require('underscore');
 
 var googleMapServices = {
 
