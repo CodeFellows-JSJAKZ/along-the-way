@@ -134,7 +134,7 @@ var googleMapServices = {
         that.directionsDisplay.setDirections(result);
         that.createRouteBoxes(result.routes[0].overview_path);
         var distance = result.routes[0].legs[0].distance['text'];
-        $('#inner-wrapper').append(distanceTemplate({distance: distance}));
+        $('#distance').html(distanceTemplate({distance: distance}));
         return true;
       } else {
         console.warn(status);
