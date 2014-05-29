@@ -1,6 +1,7 @@
 var $ = require('jquery');
 var template = require('./../../templates/place-detailed.hbs');
 var _ = require('underscore');
+var distanceTemplate = require('./../../templates/distance.hbs');
 
 var googleMapServices = {
 
@@ -16,6 +17,7 @@ var googleMapServices = {
   start: null,
   end: null,
   placeTypes: null,
+
 
   /* Set up maps services:
    *   Create map
@@ -36,7 +38,7 @@ var googleMapServices = {
       googleMapServices.createMap({lat: 0, lng: 0});
     }
     googleMapServices.initializeAutoComplete();
-  
+
   },
 
   /* Create map to be used by all google maps services.
@@ -130,6 +132,8 @@ var googleMapServices = {
       if (status == google.maps.DirectionsStatus.OK) {
         that.directionsDisplay.setDirections(result);
         that.createRouteBoxes(result.routes[0].overview_path);
+        var distance = result.routes[0].legs[0].distance['text'];
+        $('#inner-wrapper').append(distanceTemplate({distance: distance}));
         return true;
       } else {
         console.warn(status);
@@ -239,29 +243,40 @@ var googleMapServices = {
   filter: {
     entertainment: [
       'amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'casino',
-      'movie_rental', 'movie_theater', 'stadium', 'museum', 'night_club', 'park','zoo'
+      'movie_rental', 'movie_theater', 'stadium', 'museum', 'night_club', 'park','zoo', 'bar'
     ],
-    stores: [
-      'bicycle_store', 'book_store', 'clothing_store', 'convenience_store',
-      'department_store', 'electronics_store', 'home_goods_store', 'jewelry_store',
-      'liquor_store', 'hardware_store', 'store', 'shoe_store', 'shopping_mall',
-      'pet_store', 'grocery_or_supermarket', 'florist'
+    shopping: [
+      'book_store', 'clothing_store', 'department_store', 'jewelry_store', 'shoe_store',
+      'shopping_mall', 'pet_store', 'florist'
     ],
-    services: ['car_repair', 'car_wash', 'gas_station', 'laundry'],
-    food: ['bakery', 'bar', 'cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant'],
-    aesthetics: ['beauty_salon', 'gym', 'hair_care', 'spa'],
-    transportation: ['bus_station', 'subway_station', 'taxi_stand', 'train_station'],
-    banking: ['atm', 'bank', 'post_office'],
-    education: ['school', 'university', 'library']
+    householdGoods: [
+      'electronics_store', 'home_goods_store', 'hardware_store', 'grocery_or_supermarket'
+    ],
+    services: [
+      'car_repair', 'car_wash', 'gas_station', 'laundry', 'post_office', 'library', 'bicycle_store'
+    ],
+    food: [
+    'bakery', 'bar', 'cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant',
+    'grocery_or_supermarket', 'liquor_store'
+    ],
+    healthBeauty: [
+      'beauty_salon', 'gym', 'hair_care', 'spa'
+    ],
+    transportation: [
+      'bus_station', 'subway_station', 'taxi_stand', 'train_station'
+    ],
+    banking: [
+      'atm', 'bank'
+    ]
   },
 
   /* Compile user filters based on form input */
   filterFunc: function(checked){
     var finalFilter = [];
     if(checked.length === 0){
-      finalFilter = this.filter.entertainment.concat(this.filter.stores,
-      this.filter.services, this.filter.food, this.filter.aesthetics, 
-      this.filter.transportation, this.filter.banking, this.filter.education);
+      finalFilter = this.filter.entertainment.concat(this.filter.shopping,
+      this.filter.services, this.filter.food, this.filter.healthBeauty,
+      this.filter.transportation, this.filter.banking, this.filter.householdGoods);
     }else{
       for(var i=0; i < checked.length; i++){
         finalFilter = finalFilter.concat(this.filter[checked[i]]);
