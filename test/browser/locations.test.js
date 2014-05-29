@@ -61,10 +61,4 @@ describe('Location', function () {
 
 	});
 
-	describe('collection', function () {
-
-		it('should build a route');
-
-	});
-
 });

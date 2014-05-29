@@ -1,7 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var $ = require('jquery');
 var template = require('./../../templates/place-detailed.hbs');
-var _ = require('underscore');
 
 var googleMapServices = {
 
@@ -186,10 +185,10 @@ var googleMapServices = {
     });
   },
 
-
+  /* Given nearbySeach results, put marker on map for each */
   putPlacesOnMap: function putPlacesOnMap(results) {
     // re-use the same infowindow for all markers
-    this.infoWindow = new google.maps.InfoWindow();
+    this.infoWindow = this.infoWindow || new google.maps.InfoWindow();
 
     // set maximum places per routebox
     var maxPlaces = Math.min(5, results.length);
@@ -287,7 +286,7 @@ var googleMapServices = {
 module.exports = googleMapServices;
 
 
-},{"./../../templates/place-detailed.hbs":15,"jquery":27,"underscore":28}],2:[function(require,module,exports){
+},{"./../../templates/place-detailed.hbs":8,"jquery":19}],2:[function(require,module,exports){
 var Backbone = require('backbone');
 var LocationModel = require('../models/location-model.js');
 
@@ -298,29 +297,9 @@ var LocationCollection = Backbone.Collection.extend({
 module.exports = LocationCollection;
 
 
-},{"../models/location-model.js":4,"backbone":17}],3:[function(require,module,exports){
+},{"../models/location-model.js":3,"backbone":9}],3:[function(require,module,exports){
 var Backbone = require('backbone');
-var $ = require('jquery');
-var PlaceModel = require('../models/place-model.js');
 var googleMapServices = require('./../apis/googleMaps.js');
-
-var PlaceCollection = Backbone.Collection.extend({
-
-	model: PlaceModel,
-
-	findPlaces: function(location){
-    googleMapServices.getPlacesByLocation(location, this);
-  }
-});
-
-module.exports = PlaceCollection;
-
-
-},{"../models/place-model.js":5,"./../apis/googleMaps.js":1,"backbone":17,"jquery":27}],4:[function(require,module,exports){
-var Backbone = require('backbone');
-var PlaceCollection = require('./../collections/place-collection.js');
-var googleMapServices = require('./../apis/googleMaps.js');
-var _ = require('underscore');
 
 /* Locations will be passed in with:
  *    search: {String} the string that the user entered
@@ -352,33 +331,7 @@ var LocationModel = Backbone.Model.extend({
 module.exports = LocationModel;
 
 
-},{"./../apis/googleMaps.js":1,"./../collections/place-collection.js":3,"backbone":17,"underscore":28}],5:[function(require,module,exports){
-var Backbone = require('backbone');
-
-/* Defines a place. Populated with data from google maps:
- *    {String} name
- *    {Number} lat
- *    {Number} lng
- *    {Number} rating 0.0 to 5.0
- *  {String[]} types
- *    {String} address (without state/country/etc.)
- */
-var Place = Backbone.Model.extend({
-	defaults: {
-		name: '',
-		lat: null,
-		lng: null,
-		rating: null,
-        types: [],
-		address: ''
-	}
-});
-
-module.exports = Place;
-
-
-
-},{"backbone":17}],6:[function(require,module,exports){
+},{"./../apis/googleMaps.js":1,"backbone":9}],4:[function(require,module,exports){
 (function (global){
 var $ = require('jquery');
 var _ = require('underscore');
@@ -387,8 +340,6 @@ Backbone.$ = $;
 
 var LocationCollection = require('./collections/location-collection.js');
 var LocationCollectionView = require('./views/location-collection-view.js');
-var PlaceCollection = require('./collections/place-collection.js');
-var PlaceCollectionView = require('./views/place-collection-view.js');
 var PlaceDetailedView = require('./views/place-detailed-view.js');
 var googleMapServices = require('./apis/googleMaps.js');
 
@@ -399,7 +350,7 @@ var Router = Backbone.Router.extend({
   // views to cache
   locationCollectionView: null,
 
-  initialize: function(opts) {
+  initialize: function() {
     AlongTheWay.router = this;
     _.bind(this.home, this);
     _.bind(this.placesList, this);
@@ -421,7 +372,7 @@ var Router = Backbone.Router.extend({
         el: $('#inner-wrapper')
       });
       // try to locate user and initialize google maps services
-      if ("geolocation" in navigator) {
+      if ('geolocation' in navigator) {
         console.log('Geolocating..');
         navigator.geolocation.getCurrentPosition(function(geoposition) {
           googleMapServices.initialize(geoposition);
@@ -440,7 +391,7 @@ var Router = Backbone.Router.extend({
       el: $('#inner-wrapper')
     });
     // hacky - may want to replace
-    var locationObj = this.locationCollectionView.collection.get({cid: locationId})
+    var locationObj = this.locationCollectionView.collection.get({cid: locationId});
     placeCollectionView.render(locationObj.get('search'));
   },
 
@@ -460,11 +411,10 @@ Backbone.history.start();
 
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./apis/googleMaps.js":1,"./collections/location-collection.js":2,"./collections/place-collection.js":3,"./views/location-collection-view.js":7,"./views/place-collection-view.js":9,"./views/place-detailed-view.js":10,"backbone":17,"jquery":27,"underscore":28}],7:[function(require,module,exports){
+},{"./apis/googleMaps.js":1,"./collections/location-collection.js":2,"./views/location-collection-view.js":5,"./views/place-detailed-view.js":6,"backbone":9,"jquery":19,"underscore":20}],5:[function(require,module,exports){
 var $ = require('jquery');
 var _ = require('underscore');
 var Backbone = require('backbone');
-var LocationView = require('./location-view.js');
 var LocationModel = require('./../models/location-model.js');
 var template = require('./../../templates/location-collection.hbs');
 var googleMapServices = require('./../apis/googleMaps.js');
@@ -477,8 +427,6 @@ var googleMapServices = require('./../apis/googleMaps.js');
   template: template,
 
   initialize: function() {
-    // listen for models being added to collection
-    this.listenTo(this.collection, 'add', this.modelAdded);
     _.bind(this.inputEntered, this);
   },
 
@@ -486,13 +434,13 @@ var googleMapServices = require('./../apis/googleMaps.js');
     'click #location-submit': 'inputEntered',
   },
 
-  inputEntered: function(ev) {
+  inputEntered: function() {
     var start = $('#start-input').val().trim();
     var end = $('#destination-input').val().trim();
     if(!end){
-      alert("Please add an end location");
+      alert('Please add an end location');
     }else if(!start){
-      alert("Please add a start point");
+      alert('Please add a start point');
     }
     else{
       var filteredArray = [];
@@ -509,6 +457,8 @@ var googleMapServices = require('./../apis/googleMaps.js');
         this.collection.add(model);
         model = new LocationModel({search: end, order: 1});
         this.collection.add(model);
+        var offset = $('#gmap').offset();
+        window.scrollTo(0, offset.top);
       }
     }
   },
@@ -522,82 +472,7 @@ var googleMapServices = require('./../apis/googleMaps.js');
 module.exports = LocationListView;
 
 
-},{"./../../templates/location-collection.hbs":12,"./../apis/googleMaps.js":1,"./../models/location-model.js":4,"./location-view.js":8,"backbone":17,"jquery":27,"underscore":28}],8:[function(require,module,exports){
-var Backbone = require('backbone');
-var _ = require('underscore');
-var template = require('./../../templates/location.hbs');
-
-/* View for a single Location object.
- *
- * Handles delete click
- * Handles click to view list of places for location
- */
-var LocationView = Backbone.View.extend({
-  template: template,
-
-  initialize: function() {
-    this.listenTo(this.model, 'change', this.render);
-		_.bind(this.showPlaces, this);
-  },
-
-  events: {
-    'click .location-remove': 'destroy',
-    'click li p': 'showPlaces'
-
-  },
-
-  showPlaces: function(){
-    Backbone.history.navigate(this.model.cid, {trigger: true});
-  },
-
-  destroy: function() {
-    this.model.destroy();
-    this.remove();
-  },
-
-  render: function render () {
-    this.$el.html(this.template(this.model.toJSON()));
-    return this;
-  }
-});
-
-module.exports = LocationView;
-
-
-},{"./../../templates/location.hbs":13,"backbone":17,"underscore":28}],9:[function(require,module,exports){
-var Backbone = require('backbone');
-var _ = require('underscore');
-var $ = require('jquery');
-
-var Place = require('../models/place-model.js');
-var PlaceView = require('./place-view.js');
-var template = require('./../../templates/place-collection.hbs');
-
-/* View for a collection of places */
-var PlaceCollectionView = Backbone.View.extend({
-
-	initialize: function(){
-		_.bind(this.render, this);
-	},
-
-  template: template,
-
-	render: function render(locationStr) {
-    this.$el.html(this.template({location: locationStr}));
-    var ul = $('#places-list');
-		var that = this;
-		_.each(this.collection.models, function (place, key, list) {
-			var placeView = new PlaceView({ model: place });
-			ul.append(placeView.render().el);
-			return this;
-	  });
-  }
-});
-
-module.exports = PlaceCollectionView;
-
-
-},{"../models/place-model.js":5,"./../../templates/place-collection.hbs":14,"./place-view.js":11,"backbone":17,"jquery":27,"underscore":28}],10:[function(require,module,exports){
+},{"./../../templates/location-collection.hbs":7,"./../apis/googleMaps.js":1,"./../models/location-model.js":3,"backbone":9,"jquery":19,"underscore":20}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -631,45 +506,7 @@ module.exports = PlaceDetailedView;
 
 
 
-},{"../../templates/place-detailed.hbs":15,"backbone":17,"jquery":27,"underscore":28}],11:[function(require,module,exports){
-var Backbone = require('backbone');
-var _ = require('underscore');
-var $ = require('jquery');
-
-var router = require('./../router.js');
-var template = require('../../templates/place.hbs');
-
-/* View for a single place object within a list. */
-var PlaceView = Backbone.View.extend({
-
-	template: template,
-
-	initialize: function () {
-		_.bind(this.render, this);
-		_.bind(this.showDetails, this);
-	},
-
-	events: {
-		'click': 'showDetails'
-	},
-
-	render: function render() {
-    //individual place view with map
-    this.$el.html(this.template(this.model.toJSON()));
-    return this;
-	},
-
-	showDetails: function () {
-   Backbone.history.navigate(Backbone.history.fragment + '/' + this.model.cid,
-      {trigger: true});
-	}
-
-});
-
-module.exports = PlaceView;
-
-
-},{"../../templates/place.hbs":16,"./../router.js":6,"backbone":17,"jquery":27,"underscore":28}],12:[function(require,module,exports){
+},{"../../templates/place-detailed.hbs":8,"backbone":9,"jquery":19,"underscore":20}],7:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -681,49 +518,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   return "<h3>Find places to visit along your route.</h3>\n<div class=\"location-form cf\">\n	<div class=\"loading\"id=\"loading-gif\">\n		<img src=\"./../images/ajaxloader.gif\"/>geolocating...\n	</div>\n\n	<fieldset>\n		<label for=\"location-input\" class=\"field-header\">Where does your route start?</label>\n		<input type=\"text\" name=\"location\" class=\"location-input\" id=\"start-input\" placeholder=\"address, zip code or landmark\">\n		<p class=\"description\">Enter an address, city, or landmark where your route will start.</p>\n	</fieldset>\n\n	<fieldset>\n		<label for=\"destination-input\" class=\"field-header\">Where does your route end?</label>\n    <input type=\"text\" name=\"destination\" class=\"location-input\" id=\"destination-input\" placeholder=\"address, zip code or landmark\">\n    <p class=\"description\">Enter a location where your route will end.</p>\n  </fieldset>\n\n  <fieldset id=\"filter\">\n    <legend class=\"field-header\">Only show places that are...</legend>\n      <label class=\"checkbox-wrap\" for=\"check-entertainment\">\n        <input type=\"checkbox\" name=\"filter\" value=\"entertainment\" id=\"check-entertainment\">\n        <span>Entertainment</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-stores\">\n        <input type=\"checkbox\" name=\"filter\" value=\"stores\" id=\"check-stores\">\n        <span>Stores</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-services\">\n        <input type=\"checkbox\" name=\"filter\" value=\"services\" id=\"check-services\">\n        <span>Services</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-food\">\n        <input type=\"checkbox\" name=\"filter\" value=\"food\" id=\"check-food\">\n        <span>Food</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-aesthetics\">\n        <input type=\"checkbox\" name=\"filter\" value=\"aesthetics\" id=\"check-aesthetics\">\n        <span>Aesthetics</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-transport\">\n        <input type=\"checkbox\" name=\"filter\" value=\"transportation\" id=\"check-transport\">\n        <span>Transportation</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-banking\">\n        <input type=\"checkbox\" name=\"filter\" value=\"banking\" id=\"check-banking\">\n        <span>Banking</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-education\">\n        <input type=\"checkbox\" name=\"filter\" value=\"education\" id=\"check-education\">\n        <span>Education</span>\n      </label>\n  </fieldset>\n\n  <p>\n  	<input type=\"submit\" value=\"Map it!\" id=\"location-submit\">\n  </p>\n</div>\n<ol id=\"location-list\" class=\"item-list\">\n  <!-- locations inserted here -->\n</ol>\n\n";
   });
 
-},{"hbsfy/runtime":26}],13:[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var Handlebars = require('hbsfy/runtime');
-module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression;
-
-
-  buffer += "<li>\n  <span class=\"location-remove\">X</span>\n  <p class=\"location-name\">";
-  if (helper = helpers.search) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.search); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</p>\n  <p class=\"message\">";
-  if (helper = helpers.lat) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.lat); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + ", ";
-  if (helper = helpers.lng) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.lng); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</p>\n</li>\n\n<!--\nclasses:\nmessage\nerror\n-->\n";
-  return buffer;
-  });
-
-},{"hbsfy/runtime":26}],14:[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var Handlebars = require('hbsfy/runtime');
-module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression;
-
-
-  buffer += "<a class=\"back-button\" href=\"#\">← Back to Locations</a>\n<h2 id=\"single-location\">";
-  if (helper = helpers.location) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.location); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</h2>\n<ul id=\"places-list\" class=\"item-list\">\n</ul>\n";
-  return buffer;
-  });
-
-},{"hbsfy/runtime":26}],15:[function(require,module,exports){
+},{"hbsfy/runtime":18}],8:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -788,36 +583,7 @@ function program5(depth0,data) {
   return buffer;
   });
 
-},{"hbsfy/runtime":26}],16:[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var Handlebars = require('hbsfy/runtime');
-module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression;
-
-
-  buffer += "<li id=\"place-";
-  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "\">\n	<p class=\"place-name\">";
-  if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + " ";
-  if (helper = helpers.rating) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.rating); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</p>\n	<p class=\"type-of-place\">";
-  if (helper = helpers.types) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.types); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</p>\n</li>\n";
-  return buffer;
-  });
-
-},{"hbsfy/runtime":26}],17:[function(require,module,exports){
+},{"hbsfy/runtime":18}],9:[function(require,module,exports){
 //     Backbone.js 1.1.2
 
 //     (c) 2010-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -2427,7 +2193,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 }));
 
-},{"underscore":18}],18:[function(require,module,exports){
+},{"underscore":10}],10:[function(require,module,exports){
 //     Underscore.js 1.6.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -3772,7 +3538,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   }
 }).call(this);
 
-},{}],19:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 /*globals Handlebars: true */
 var base = require("./handlebars/base");
@@ -3805,7 +3571,7 @@ var Handlebars = create();
 Handlebars.create = create;
 
 exports["default"] = Handlebars;
-},{"./handlebars/base":20,"./handlebars/exception":21,"./handlebars/runtime":22,"./handlebars/safe-string":23,"./handlebars/utils":24}],20:[function(require,module,exports){
+},{"./handlebars/base":12,"./handlebars/exception":13,"./handlebars/runtime":14,"./handlebars/safe-string":15,"./handlebars/utils":16}],12:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -3986,7 +3752,7 @@ exports.log = log;var createFrame = function(object) {
   return obj;
 };
 exports.createFrame = createFrame;
-},{"./exception":21,"./utils":24}],21:[function(require,module,exports){
+},{"./exception":13,"./utils":16}],13:[function(require,module,exports){
 "use strict";
 
 var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
@@ -4015,7 +3781,7 @@ function Exception(message, node) {
 Exception.prototype = new Error();
 
 exports["default"] = Exception;
-},{}],22:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -4153,7 +3919,7 @@ exports.program = program;function invokePartial(partial, name, context, helpers
 exports.invokePartial = invokePartial;function noop() { return ""; }
 
 exports.noop = noop;
-},{"./base":20,"./exception":21,"./utils":24}],23:[function(require,module,exports){
+},{"./base":12,"./exception":13,"./utils":16}],15:[function(require,module,exports){
 "use strict";
 // Build out our basic SafeString type
 function SafeString(string) {
@@ -4165,7 +3931,7 @@ SafeString.prototype.toString = function() {
 };
 
 exports["default"] = SafeString;
-},{}],24:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 /*jshint -W004 */
 var SafeString = require("./safe-string")["default"];
@@ -4242,15 +4008,15 @@ exports.escapeExpression = escapeExpression;function isEmpty(value) {
 }
 
 exports.isEmpty = isEmpty;
-},{"./safe-string":23}],25:[function(require,module,exports){
+},{"./safe-string":15}],17:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime');
 
-},{"./dist/cjs/handlebars.runtime":19}],26:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":11}],18:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":25}],27:[function(require,module,exports){
+},{"handlebars/runtime":17}],19:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.1
  * http://jquery.com/
@@ -13442,6 +13208,6 @@ return jQuery;
 
 }));
 
-},{}],28:[function(require,module,exports){
-module.exports=require(18)
-},{}]},{},[6])
+},{}],20:[function(require,module,exports){
+module.exports=require(10)
+},{}]},{},[4])

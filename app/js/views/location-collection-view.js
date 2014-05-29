@@ -1,7 +1,6 @@
 var $ = require('jquery');
 var _ = require('underscore');
 var Backbone = require('backbone');
-var LocationView = require('./location-view.js');
 var LocationModel = require('./../models/location-model.js');
 var template = require('./../../templates/location-collection.hbs');
 var googleMapServices = require('./../apis/googleMaps.js');
@@ -14,8 +13,6 @@ var googleMapServices = require('./../apis/googleMaps.js');
   template: template,
 
   initialize: function() {
-    // listen for models being added to collection
-    this.listenTo(this.collection, 'add', this.modelAdded);
     _.bind(this.inputEntered, this);
   },
 
@@ -23,13 +20,13 @@ var googleMapServices = require('./../apis/googleMaps.js');
     'click #location-submit': 'inputEntered',
   },
 
-  inputEntered: function(ev) {
+  inputEntered: function() {
     var start = $('#start-input').val().trim();
     var end = $('#destination-input').val().trim();
     if(!end){
-      alert("Please add an end location");
+      alert('Please add an end location');
     }else if(!start){
-      alert("Please add a start point");
+      alert('Please add a start point');
     }
     else{
       var filteredArray = [];
@@ -46,6 +43,8 @@ var googleMapServices = require('./../apis/googleMaps.js');
         this.collection.add(model);
         model = new LocationModel({search: end, order: 1});
         this.collection.add(model);
+        var offset = $('#gmap').offset();
+        window.scrollTo(0, offset.top);
       }
     }
   },
