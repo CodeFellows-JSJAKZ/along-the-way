@@ -239,16 +239,22 @@ var googleMapServices = {
   // types:[] to search for when returning places
   // see https://developers.google.com/places/documentation/supported_types
   filter: {
-    entertainment: ['amusement_park', 'aquarium', 'art_gallery',
-    'bowling_alley', 'casino', 'movie_rental', 'movie_theater',
-    'stadium', 'museum', 'night_club', 'park','zoo'],
-    stores: ['bicycle_store', 'book_store', 'clothing_store', 'convenience_store',
-    'department_store', 'electronics_store', 'home_goods_store', 'jewelry_store',
-    'liquor_store', 'hardware_store', 'store', 'shoe_store', 'shopping_mall',
-    'pet_store', 'grocery_or_supermarket', 'florist'],
+    entertainment: [
+      'amusement_park', 'aquarium', 'art_gallery',
+      'bowling_alley', 'casino', 'movie_rental', 'movie_theater',
+      'stadium', 'museum', 'night_club', 'park','zoo'
+    ],
+    stores: [
+      'bicycle_store', 'book_store', 'clothing_store', 'convenience_store',
+      'department_store', 'electronics_store', 'home_goods_store', 'jewelry_store',
+      'liquor_store', 'hardware_store', 'store', 'shoe_store', 'shopping_mall',
+      'pet_store', 'grocery_or_supermarket', 'florist'
+    ],
     services: ['car_repair', 'car_wash', 'gas_station', 'laundry'],
-    food: ['bakery', 'bar', 'cafe', 'food', 'meal_delivery',
-    'meal_takeaway', 'restaurant'],
+    food: [
+      'bakery', 'bar', 'cafe', 'food', 'meal_delivery', 'meal_takeaway',
+      'restaurant'
+    ],
     aesthetics: ['beauty_salon', 'gym', 'hair_care', 'spa'],
     transportation: ['bus_station', 'subway_station', 'taxi_stand', 'train_station'],
     banking: ['atm', 'bank', 'post_office'],
