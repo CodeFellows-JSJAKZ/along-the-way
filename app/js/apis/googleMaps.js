@@ -3,6 +3,7 @@ var template = require('./../../templates/place-detailed.hbs');
 var _ = require('underscore');
 var distanceTemplate = require('./../../templates/distance.hbs');
 
+
 var googleMapServices = {
 
   // define object properties that are set later
@@ -189,10 +190,10 @@ var googleMapServices = {
     });
   },
 
-
+  /* Given nearbySeach results, put marker on map for each */
   putPlacesOnMap: function putPlacesOnMap(results) {
     // re-use the same infowindow for all markers
-    this.infoWindow = new google.maps.InfoWindow();
+    this.infoWindow = this.infoWindow || new google.maps.InfoWindow();
 
     // set maximum places per routebox
     var maxPlaces = Math.min(5, results.length);

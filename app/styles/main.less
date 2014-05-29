@@ -1,7 +1,7 @@
 //variables
 
 @c_lightgrey: #f2f2f2;
-@c_medgrey: #ccc;
+@c_medgrey: #cfcfcf;
 @c_lightblue: #e5f0fb;
 @c_brightblue: #0074e1;
 @c_error_bg: #ffc7c7;
@@ -40,21 +40,25 @@ body {
 	-o-background-size: cover;
 	background-size: cover;
 	padding: 20px 0;
-	font-family: sans-serif;
+	//font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+	font-family: Candara, Calibri, Segoe, "Segoe UI", Optima, Arial, sans-serif;
   font-size: 1.2em;
 	line-height: 1.5em;
 }
 
 .wrapper {
 	margin: 0 auto;
-	background-color: #eee;
-	padding: 30px;
+	background-color: #f6f6f6;
+	padding: 0;
 	width: 80%;
 	min-width: 400px;
 	max-width: 800px;
 	border-radius: 4px;
-	box-shadow: 0 2px 5px #aaa;
-	border: 6px solid #333;//@c_lightgrey;
+	border: 3px solid #fff;
+
+	#inner-wrapper {
+		padding: 30px;
+	}
 
 	.loading {
 		color: #999;
@@ -80,16 +84,27 @@ body {
 
 	h1 {
 		text-align: center;
-		margin: 0 0 30px;
-		font-family: Lobster, cursive;
+		margin: 30px 0 0;
+		font-family: 'Fugaz One', cursive;
 		font-size: 4em;
 		line-height: 1em;
-		color: @c_brightblue;
+		color: #444;
 		text-shadow: rgb(224, 224, 224) 1px 1px 0px, rgba(0, 0, 0, 0.498039) 1px 1px 1px;
+		letter-spacing: -2px;
+
+		span {
+			font-size: 0.4em;
+			text-transform: uppercase;
+			vertical-align: middle;
+		}
 	}
 
   h3 {
     text-align: center;
+    font-weight: normal;
+    margin: -10px 0 10px;
+    font-size: 0.9em;
+    font-style: italic;
   }
 
 	p {
@@ -105,43 +120,52 @@ body {
 				font-size: 1.2em;
 			}
 		}
+
+		&.description {
+			font-size: 0.9em;
+			font-style: italic;
+			margin: 0;
+			padding: 0;
+		}
 	}
 
 	#gmap {
 		height: 35em !important;
-		border: 1px solid #888;
+		border-radius: 4px;
+		margin: 0 -3px -3px -3px;
+		background: #ddd url(../images/ajaxloader.gif) no-repeat center 10%;
 	}
 }
 
 .location-form {
-	border-top: 1px solid @c_lightgrey;
 
-	label {
+	.field-header {
 		display: block;
-		margin: 14px 0 3px;
+		margin: 0 0 3px;
+		font-weight: bold
 	}
 
 	fieldset {
-		padding: 0;
+		padding: 20px 0;
 		border: none;
+		margin: 0;
 
-		legend {
-			padding: 14px 0 5px;
+		legend.field-header {
+			padding: 20px 0 0;
+			margin-bottom: -14px
 		}
 
 		.checkbox-wrap {
 			display: inline-block;
 			border-radius: 3px;
 			background: white;
-      padding: 2px;
+      padding: 2px 0 2px 8px;
 			margin: 0 6px 8px 0;
 			width: 28%;
+			border: 1px solid #ccc;
 
-			label {
-				//font-size: 0.9em;
-				//font-weight: bold;
-				display: inline;
-				margin: 0;
+			span {
+				font-size: 0.9em;
 			}
 		}
 	}
@@ -153,8 +177,9 @@ body {
 		margin: 0;
 
 		&[type=checkbox] {
-			display: inline-block;
-			margin: 0 8px 0 0;
+			display: block;
+			margin: 7px 9px 0 0;
+			float: left;
 		}
 
 		&.location-input {
@@ -164,7 +189,7 @@ body {
 			border-radius: 2px;
 			border: 1px solid @c_medgrey;
 			margin: 0 0 5px;
-			font-size: 1.3em;
+			font-size: 1.2em;
 			line-height: 1em;
 		}
 
@@ -182,8 +207,6 @@ body {
 			cursor: pointer;
 			clear: both;
 			font-size: 1.2em;
-			text-transform: uppercase;
-			letter-spacing: 2px;
 			width: 33%;
 			margin: 14px auto 0;
 
@@ -396,16 +419,20 @@ body {
 	}
 
 	.wrapper {
-		padding: 10px;
-		width: 92%;
+		width: 100%;
 		min-width: 1px;
-		max-width: 500px;
+		max-width: 600px;
 		border-radius: 0;
 		border: none;
 		box-shadow: none;
 
+		#inner-wrapper {
+			padding: 10px;
+		}
+
 		h1 {
-			font-size: 2.5em
+			font-size: 2.5em;
+			margin: 10px 0 0;
 		}
 
 		#gmap {
@@ -428,8 +455,8 @@ body {
 			.checkbox-wrap {
 				padding-left: 6px;
 				padding-right: 0;
-        display: block;
-        width: 98%;
+        display: inline-block;
+        width: 43%;
 
 				input {
 					margin-right: 4px;

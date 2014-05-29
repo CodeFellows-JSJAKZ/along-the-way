@@ -5,8 +5,6 @@ Backbone.$ = $;
 
 var LocationCollection = require('./collections/location-collection.js');
 var LocationCollectionView = require('./views/location-collection-view.js');
-var PlaceCollection = require('./collections/place-collection.js');
-var PlaceCollectionView = require('./views/place-collection-view.js');
 var PlaceDetailedView = require('./views/place-detailed-view.js');
 var googleMapServices = require('./apis/googleMaps.js');
 
@@ -17,7 +15,7 @@ var Router = Backbone.Router.extend({
   // views to cache
   locationCollectionView: null,
 
-  initialize: function(opts) {
+  initialize: function() {
     AlongTheWay.router = this;
     _.bind(this.home, this);
     _.bind(this.placesList, this);
@@ -39,7 +37,7 @@ var Router = Backbone.Router.extend({
         el: $('#inner-wrapper')
       });
       // try to locate user and initialize google maps services
-      if ("geolocation" in navigator) {
+      if ('geolocation' in navigator) {
         console.log('Geolocating..');
         navigator.geolocation.getCurrentPosition(function(geoposition) {
           googleMapServices.initialize(geoposition);
@@ -58,7 +56,7 @@ var Router = Backbone.Router.extend({
       el: $('#inner-wrapper')
     });
     // hacky - may want to replace
-    var locationObj = this.locationCollectionView.collection.get({cid: locationId})
+    var locationObj = this.locationCollectionView.collection.get({cid: locationId});
     placeCollectionView.render(locationObj.get('search'));
   },
 

@@ -3,50 +3,56 @@
 	<div class="loading"id="loading-gif">
 		<img src="./../images/ajaxloader.gif"/>geolocating...
 	</div>
-  <label for="location-input">Starting point:</label>
-  <input type="text" name="location" class="location-input" id="start-input" placeholder="address, zip code or landmark">
-    <fieldset id="filter">
-    <legend>Filter results by type</legend>
-      <span class="checkbox-wrap">
-        <input type="checkbox" name="filter" value="banking" id="check-banking">
-        <label for="check-banking">Banking</label>
-      </span>
-      <span class="checkbox-wrap">
-        <input type="checkbox" name="filter" value="entertainment" id="check-entertainment">
-        <label for="check-entertainment">Entertainment</label>
-      </span>
-      <span class="checkbox-wrap">
-        <input type="checkbox" name="filter" value="food" id="check-food">
-        <label for="check-food">Food</label>
-      </span>
-      <span class="checkbox-wrap">
-        <input type="checkbox" name="filter" value="healthBeauty" id="check-healthBeauty">
-        <label for="check-healthBeauty">Health and Beauty</label>
-      </span>
-      <span class="checkbox-wrap">
-        <input type="checkbox" name="filter" value="householdGoods" id="check-householdGoods">
-        <label for="check-householdGoods">Household Items</label>
-      </span>
-      <span class="checkbox-wrap">
-        <input type="checkbox" name="filter" value="services" id="check-services">
-        <label for="check-services">Services</label>
-      </span>
-      <span class="checkbox-wrap">
-        <input type="checkbox" name="filter" value="shopping" id="check-shopping">
-        <label for="check-shopping">Shopping</label>
-      </span>
-      <span class="checkbox-wrap">
-        <input type="checkbox" name="filter" value="transportation" id="check-transport">
-        <label for="check-transport">Transportation</label>
-      </span>
+	<fieldset>
+		<label for="location-input" class="field-header">Where does your route start?</label>
+		<input type="text" name="location" class="location-input" id="start-input" placeholder="address, zip code or landmark">
+		<p class="description">Enter an address, city, or landmark where your route will start.</p>
+	</fieldset>
+
+	<fieldset>
+		<label for="destination-input" class="field-header">Where does your route end?</label>
+    <input type="text" name="destination" class="location-input" id="destination-input" placeholder="address, zip code or landmark">
+    <p class="description">Enter a location where your route will end.</p>
   </fieldset>
 
-  <label for="destination-input">Destination:</label>
-  <input type="text" name="destination" class="location-input" id="destination-input" placeholder="address, zip code or landmark">
-
+  <fieldset id="filter">
+    <legend class="field-header">Only show places that are...</legend>
+      <label class="checkbox-wrap" for="check-banking">
+        <input type="checkbox" name="filter" value="banking" id="check-banking">
+        <span>Banking</span>
+      </label>
+      <label class="checkbox-wrap" for="check-entertainment">
+        <input type="checkbox" name="filter" value="entertainment" id="check-entertainment">
+        <span>Entertainment</span>
+      </label>
+      <label class="checkbox-wrap" for="check-food">
+        <input type="checkbox" name="filter" value="food" id="check-food">
+        <span>Food</span>
+      </label>
+      <label class="checkbox-wrap" for="check-healthBeauty">
+        <input type="checkbox" name="filter" value="healthBeauty" id="check-healthBeauty">
+        <span>Health and Beauty</span>
+      </label>
+      <label class="checkbox-wrap" for="check-householdGoods">
+        <input type="checkbox" name="filter" value="householdGoods" id="check-householdGoods">
+        <span>Household Items</span>
+      </label>
+      <label class="checkbox-wrap" for="check-services">
+        <input type="checkbox" name="filter" value="services" id="check-services">
+        <span>Services</span>
+      </label>
+      <label class="checkbox-wrap" for="check-shopping">
+        <input type="checkbox" name="filter" value="shopping" id="check-shopping">
+        <span>Shopping</span>
+      </label>
+      <label class="checkbox-wrap" for="check-transport">
+        <input type="checkbox" name="filter" value="transportation" id="check-transportation">
+        <span>Transportation</span>
+      </label>
+  </fieldset>
 
   <p>
-  	<input type="submit" value="Go" id="location-submit">
+  	<input type="submit" value="Map it!" id="location-submit">
   </p>
 
 </div>
