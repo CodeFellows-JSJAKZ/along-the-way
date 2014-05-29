@@ -43,6 +43,8 @@ var googleMapServices = require('./../apis/googleMaps.js');
         this.collection.add(model);
         model = new LocationModel({search: end, order: 1});
         this.collection.add(model);
+        var offset = $('#gmap').offset();
+        window.scrollTo(0, offset.top);
       }
     }
   },
