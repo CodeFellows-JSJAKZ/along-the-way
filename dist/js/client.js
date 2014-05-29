@@ -1,6 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var $ = require('jquery');
 var template = require('./../../templates/place-detailed.hbs');
+var _ = require('underscore');
+var distanceTemplate = require('./../../templates/distance.hbs');
+
 
 var googleMapServices = {
 
@@ -16,6 +19,7 @@ var googleMapServices = {
   start: null,
   end: null,
   placeTypes: null,
+
 
   /* Set up maps services:
    *   Create map
@@ -36,7 +40,7 @@ var googleMapServices = {
       googleMapServices.createMap({lat: 0, lng: 0});
     }
     googleMapServices.initializeAutoComplete();
-  
+
   },
 
   /* Create map to be used by all google maps services.
@@ -130,6 +134,8 @@ var googleMapServices = {
       if (status == google.maps.DirectionsStatus.OK) {
         that.directionsDisplay.setDirections(result);
         that.createRouteBoxes(result.routes[0].overview_path);
+        var distance = result.routes[0].legs[0].distance['text'];
+        $('#inner-wrapper').append(distanceTemplate({distance: distance}));
         return true;
       } else {
         console.warn(status);
@@ -239,29 +245,40 @@ var googleMapServices = {
   filter: {
     entertainment: [
       'amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'casino',
-      'movie_rental', 'movie_theater', 'stadium', 'museum', 'night_club', 'park','zoo'
+      'movie_rental', 'movie_theater', 'stadium', 'museum', 'night_club', 'park','zoo', 'bar'
     ],
-    stores: [
-      'bicycle_store', 'book_store', 'clothing_store', 'convenience_store',
-      'department_store', 'electronics_store', 'home_goods_store', 'jewelry_store',
-      'liquor_store', 'hardware_store', 'store', 'shoe_store', 'shopping_mall',
-      'pet_store', 'grocery_or_supermarket', 'florist'
+    shopping: [
+      'book_store', 'clothing_store', 'department_store', 'jewelry_store', 'shoe_store',
+      'shopping_mall', 'pet_store', 'florist'
     ],
-    services: ['car_repair', 'car_wash', 'gas_station', 'laundry'],
-    food: ['bakery', 'bar', 'cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant'],
-    aesthetics: ['beauty_salon', 'gym', 'hair_care', 'spa'],
-    transportation: ['bus_station', 'subway_station', 'taxi_stand', 'train_station'],
-    banking: ['atm', 'bank', 'post_office'],
-    education: ['school', 'university', 'library']
+    householdGoods: [
+      'electronics_store', 'home_goods_store', 'hardware_store', 'grocery_or_supermarket'
+    ],
+    services: [
+      'car_repair', 'car_wash', 'gas_station', 'laundry', 'post_office', 'library', 'bicycle_store'
+    ],
+    food: [
+    'bakery', 'bar', 'cafe', 'food', 'meal_delivery', 'meal_takeaway', 'restaurant',
+    'grocery_or_supermarket', 'liquor_store'
+    ],
+    healthBeauty: [
+      'beauty_salon', 'gym', 'hair_care', 'spa'
+    ],
+    transportation: [
+      'bus_station', 'subway_station', 'taxi_stand', 'train_station'
+    ],
+    banking: [
+      'atm', 'bank'
+    ]
   },
 
   /* Compile user filters based on form input */
   filterFunc: function(checked){
     var finalFilter = [];
     if(checked.length === 0){
-      finalFilter = this.filter.entertainment.concat(this.filter.stores,
-      this.filter.services, this.filter.food, this.filter.aesthetics, 
-      this.filter.transportation, this.filter.banking, this.filter.education);
+      finalFilter = this.filter.entertainment.concat(this.filter.shopping,
+      this.filter.services, this.filter.food, this.filter.healthBeauty,
+      this.filter.transportation, this.filter.banking, this.filter.householdGoods);
     }else{
       for(var i=0; i < checked.length; i++){
         finalFilter = finalFilter.concat(this.filter[checked[i]]);
@@ -286,7 +303,7 @@ var googleMapServices = {
 module.exports = googleMapServices;
 
 
-},{"./../../templates/place-detailed.hbs":8,"jquery":19}],2:[function(require,module,exports){
+},{"./../../templates/distance.hbs":7,"./../../templates/place-detailed.hbs":9,"jquery":20,"underscore":21}],2:[function(require,module,exports){
 var Backbone = require('backbone');
 var LocationModel = require('../models/location-model.js');
 
@@ -297,7 +314,7 @@ var LocationCollection = Backbone.Collection.extend({
 module.exports = LocationCollection;
 
 
-},{"../models/location-model.js":3,"backbone":9}],3:[function(require,module,exports){
+},{"../models/location-model.js":3,"backbone":10}],3:[function(require,module,exports){
 var Backbone = require('backbone');
 var googleMapServices = require('./../apis/googleMaps.js');
 
@@ -331,7 +348,7 @@ var LocationModel = Backbone.Model.extend({
 module.exports = LocationModel;
 
 
-},{"./../apis/googleMaps.js":1,"backbone":9}],4:[function(require,module,exports){
+},{"./../apis/googleMaps.js":1,"backbone":10}],4:[function(require,module,exports){
 (function (global){
 var $ = require('jquery');
 var _ = require('underscore');
@@ -353,14 +370,10 @@ var Router = Backbone.Router.extend({
   initialize: function() {
     AlongTheWay.router = this;
     _.bind(this.home, this);
-    _.bind(this.placesList, this);
-    _.bind(this.placeDetails, this);
   },
 
   routes: {
-    '': 'home',
-    ':locationId': 'placesList',
-    ':locationId/:placeId': 'placeDetails'
+    '': 'home'
   },
 
   home: function home() {
@@ -383,26 +396,6 @@ var Router = Backbone.Router.extend({
       }
     }
     this.locationCollectionView.render();
-  },
-
-  placesList: function(locationId){
-    var placeCollectionView = new PlaceCollectionView({
-			collection: AlongTheWay[locationId],
-      el: $('#inner-wrapper')
-    });
-    // hacky - may want to replace
-    var locationObj = this.locationCollectionView.collection.get({cid: locationId});
-    placeCollectionView.render(locationObj.get('search'));
-  },
-
-  placeDetails: function(locationId, placeId) {
-    var placeDetailedView = new PlaceDetailedView({
-      model: AlongTheWay[locationId].get(placeId),
-      el: $('#inner-wrapper')
-    });
-    placeDetailedView.render();
-    // set url on back button
-    $('.back-button').attr('href', '#' + locationId);
   }
 });
 
@@ -411,7 +404,7 @@ Backbone.history.start();
 
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./apis/googleMaps.js":1,"./collections/location-collection.js":2,"./views/location-collection-view.js":5,"./views/place-detailed-view.js":6,"backbone":9,"jquery":19,"underscore":20}],5:[function(require,module,exports){
+},{"./apis/googleMaps.js":1,"./collections/location-collection.js":2,"./views/location-collection-view.js":5,"./views/place-detailed-view.js":6,"backbone":10,"jquery":20,"underscore":21}],5:[function(require,module,exports){
 var $ = require('jquery');
 var _ = require('underscore');
 var Backbone = require('backbone');
@@ -457,8 +450,9 @@ var googleMapServices = require('./../apis/googleMaps.js');
         this.collection.add(model);
         model = new LocationModel({search: end, order: 1});
         this.collection.add(model);
-        var offset = $('#gmap').offset();
-        window.scrollTo(0, offset.top);
+				$('html, body').animate({
+					scrollTop: $("#gmap").offset().top
+				}, 2000);
       }
     }
   },
@@ -472,7 +466,7 @@ var googleMapServices = require('./../apis/googleMaps.js');
 module.exports = LocationListView;
 
 
-},{"./../../templates/location-collection.hbs":7,"./../apis/googleMaps.js":1,"./../models/location-model.js":3,"backbone":9,"jquery":19,"underscore":20}],6:[function(require,module,exports){
+},{"./../../templates/location-collection.hbs":8,"./../apis/googleMaps.js":1,"./../models/location-model.js":3,"backbone":10,"jquery":20,"underscore":21}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -506,7 +500,24 @@ module.exports = PlaceDetailedView;
 
 
 
-},{"../../templates/place-detailed.hbs":8,"backbone":9,"jquery":19,"underscore":20}],7:[function(require,module,exports){
+},{"../../templates/place-detailed.hbs":9,"backbone":10,"jquery":20,"underscore":21}],7:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var Handlebars = require('hbsfy/runtime');
+module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression;
+
+
+  buffer += " <h4 class=\"distanceTraveled\">Your Route is: ";
+  if (helper = helpers.distance) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.distance); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</h4>";
+  return buffer;
+  });
+
+},{"hbsfy/runtime":19}],8:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -515,10 +526,10 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<h3>Find places to visit along your route.</h3>\n<div class=\"location-form cf\">\n	<div class=\"loading\"id=\"loading-gif\">\n		<img src=\"./../images/ajaxloader.gif\"/>geolocating...\n	</div>\n\n	<fieldset>\n		<label for=\"location-input\" class=\"field-header\">Where does your route start?</label>\n		<input type=\"text\" name=\"location\" class=\"location-input\" id=\"start-input\" placeholder=\"address, zip code or landmark\">\n		<p class=\"description\">Enter an address, city, or landmark where your route will start.</p>\n	</fieldset>\n\n	<fieldset>\n		<label for=\"destination-input\" class=\"field-header\">Where does your route end?</label>\n    <input type=\"text\" name=\"destination\" class=\"location-input\" id=\"destination-input\" placeholder=\"address, zip code or landmark\">\n    <p class=\"description\">Enter a location where your route will end.</p>\n  </fieldset>\n\n  <fieldset id=\"filter\">\n    <legend class=\"field-header\">Only show places that are...</legend>\n      <label class=\"checkbox-wrap\" for=\"check-entertainment\">\n        <input type=\"checkbox\" name=\"filter\" value=\"entertainment\" id=\"check-entertainment\">\n        <span>Entertainment</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-stores\">\n        <input type=\"checkbox\" name=\"filter\" value=\"stores\" id=\"check-stores\">\n        <span>Stores</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-services\">\n        <input type=\"checkbox\" name=\"filter\" value=\"services\" id=\"check-services\">\n        <span>Services</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-food\">\n        <input type=\"checkbox\" name=\"filter\" value=\"food\" id=\"check-food\">\n        <span>Food</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-aesthetics\">\n        <input type=\"checkbox\" name=\"filter\" value=\"aesthetics\" id=\"check-aesthetics\">\n        <span>Aesthetics</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-transport\">\n        <input type=\"checkbox\" name=\"filter\" value=\"transportation\" id=\"check-transport\">\n        <span>Transportation</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-banking\">\n        <input type=\"checkbox\" name=\"filter\" value=\"banking\" id=\"check-banking\">\n        <span>Banking</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-education\">\n        <input type=\"checkbox\" name=\"filter\" value=\"education\" id=\"check-education\">\n        <span>Education</span>\n      </label>\n  </fieldset>\n\n  <p>\n  	<input type=\"submit\" value=\"Map it!\" id=\"location-submit\">\n  </p>\n</div>\n<ol id=\"location-list\" class=\"item-list\">\n  <!-- locations inserted here -->\n</ol>\n\n";
+  return "<h3>Find places to visit along your route.</h3>\n<div class=\"location-form cf\">\n	<div class=\"loading\"id=\"loading-gif\">\n		<img src=\"./../images/ajaxloader.gif\"/>geolocating...\n	</div>\n	<fieldset>\n		<label for=\"location-input\" class=\"field-header\">Where does your route start?</label>\n		<input type=\"text\" name=\"location\" class=\"location-input\" id=\"start-input\" placeholder=\"address, zip code or landmark\">\n	</fieldset>\n\n	<fieldset>\n		<label for=\"destination-input\" class=\"field-header\">Where does your route end?</label>\n    <input type=\"text\" name=\"destination\" class=\"location-input\" id=\"destination-input\" placeholder=\"address, zip code or landmark\">\n  </fieldset>\n\n  <fieldset id=\"filter\">\n    <legend class=\"field-header\">Only show places that are...</legend>\n      <label class=\"checkbox-wrap\" for=\"check-banking\">\n        <input type=\"checkbox\" name=\"filter\" value=\"banking\" id=\"check-banking\">\n        <span>Banking</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-entertainment\">\n        <input type=\"checkbox\" name=\"filter\" value=\"entertainment\" id=\"check-entertainment\">\n        <span>Entertainment</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-food\">\n        <input type=\"checkbox\" name=\"filter\" value=\"food\" id=\"check-food\">\n        <span>Food</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-healthBeauty\">\n        <input type=\"checkbox\" name=\"filter\" value=\"healthBeauty\" id=\"check-healthBeauty\">\n        <span>Health and Beauty</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-householdGoods\">\n        <input type=\"checkbox\" name=\"filter\" value=\"householdGoods\" id=\"check-householdGoods\">\n        <span>Household Items</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-services\">\n        <input type=\"checkbox\" name=\"filter\" value=\"services\" id=\"check-services\">\n        <span>Services</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-shopping\">\n        <input type=\"checkbox\" name=\"filter\" value=\"shopping\" id=\"check-shopping\">\n        <span>Shopping</span>\n      </label>\n      <label class=\"checkbox-wrap\" for=\"check-transport\">\n        <input type=\"checkbox\" name=\"filter\" value=\"transportation\" id=\"check-transportation\">\n        <span>Transportation</span>\n      </label>\n  </fieldset>\n\n  <p>\n  	<input type=\"submit\" value=\"Map it!\" id=\"location-submit\">\n  </p>\n\n</div>\n<ol id=\"location-list\" class=\"item-list\">\n  <!-- locations inserted here -->\n</ol>\n\n";
   });
 
-},{"hbsfy/runtime":18}],8:[function(require,module,exports){
+},{"hbsfy/runtime":19}],9:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -583,7 +594,7 @@ function program5(depth0,data) {
   return buffer;
   });
 
-},{"hbsfy/runtime":18}],9:[function(require,module,exports){
+},{"hbsfy/runtime":19}],10:[function(require,module,exports){
 //     Backbone.js 1.1.2
 
 //     (c) 2010-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -2193,7 +2204,7 @@ function program5(depth0,data) {
 
 }));
 
-},{"underscore":10}],10:[function(require,module,exports){
+},{"underscore":11}],11:[function(require,module,exports){
 //     Underscore.js 1.6.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -3538,7 +3549,7 @@ function program5(depth0,data) {
   }
 }).call(this);
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 /*globals Handlebars: true */
 var base = require("./handlebars/base");
@@ -3571,7 +3582,7 @@ var Handlebars = create();
 Handlebars.create = create;
 
 exports["default"] = Handlebars;
-},{"./handlebars/base":12,"./handlebars/exception":13,"./handlebars/runtime":14,"./handlebars/safe-string":15,"./handlebars/utils":16}],12:[function(require,module,exports){
+},{"./handlebars/base":13,"./handlebars/exception":14,"./handlebars/runtime":15,"./handlebars/safe-string":16,"./handlebars/utils":17}],13:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -3752,7 +3763,7 @@ exports.log = log;var createFrame = function(object) {
   return obj;
 };
 exports.createFrame = createFrame;
-},{"./exception":13,"./utils":16}],13:[function(require,module,exports){
+},{"./exception":14,"./utils":17}],14:[function(require,module,exports){
 "use strict";
 
 var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
@@ -3781,7 +3792,7 @@ function Exception(message, node) {
 Exception.prototype = new Error();
 
 exports["default"] = Exception;
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -3919,7 +3930,7 @@ exports.program = program;function invokePartial(partial, name, context, helpers
 exports.invokePartial = invokePartial;function noop() { return ""; }
 
 exports.noop = noop;
-},{"./base":12,"./exception":13,"./utils":16}],15:[function(require,module,exports){
+},{"./base":13,"./exception":14,"./utils":17}],16:[function(require,module,exports){
 "use strict";
 // Build out our basic SafeString type
 function SafeString(string) {
@@ -3931,7 +3942,7 @@ SafeString.prototype.toString = function() {
 };
 
 exports["default"] = SafeString;
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 /*jshint -W004 */
 var SafeString = require("./safe-string")["default"];
@@ -4008,15 +4019,15 @@ exports.escapeExpression = escapeExpression;function isEmpty(value) {
 }
 
 exports.isEmpty = isEmpty;
-},{"./safe-string":15}],17:[function(require,module,exports){
+},{"./safe-string":16}],18:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime');
 
-},{"./dist/cjs/handlebars.runtime":11}],18:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":12}],19:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":17}],19:[function(require,module,exports){
+},{"handlebars/runtime":18}],20:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.1
  * http://jquery.com/
@@ -13208,6 +13219,6 @@ return jQuery;
 
 }));
 
-},{}],20:[function(require,module,exports){
-module.exports=require(10)
+},{}],21:[function(require,module,exports){
+module.exports=require(11)
 },{}]},{},[4])
