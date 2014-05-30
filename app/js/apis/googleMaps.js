@@ -24,7 +24,7 @@ var googleMapServices = {
    *   Create map
    *   Initialize geocoder
    *   Reverse geocode starting location
-   *   Initialize autocomplete
+   *   call initializeAutoComplete
    */
   initialize: function(geoposition) {
     if (geoposition) {
@@ -45,7 +45,6 @@ var googleMapServices = {
   /* Create map to be used by all google maps services.
    * Initiate PlacesService using map
    */
-
   createMap: function createMap(coords) {
     var googCoords = new google.maps.LatLng(coords.latitude, coords.longitude);
 
@@ -57,7 +56,7 @@ var googleMapServices = {
   },
 
   /* Set up autocomplete to work when entering locations:
-   *  Bind to start and end input fields
+   * Bind to start and end input fields
    */
   initializeAutoComplete: function() {
     var startInput = (document.getElementById('start-input'));
@@ -89,8 +88,9 @@ var googleMapServices = {
 
   /* Track whether we have all the information ro start building a route.
    *   Receive start, end, and type filters.  Wait for all 3 to proceed
-   *   When ready, clear route and markers from map, call getDirections */
-  buildRoute: function(location, placeTypes) {
+   *   When ready, call clearAllMarkers, remove route from map, call getDirections
+   */
+  collectRouteComponents: function(location, placeTypes) {
     if (placeTypes) {
       this.placeTypes = placeTypes;
     } else if (location) {
@@ -112,7 +112,7 @@ var googleMapServices = {
   },
 
   /* Given start and end points, get a route. (Assumes driving)
-   *   Puts route on map and calls createRouteBoxes
+   * Puts route on map and calls createRouteBoxes
    */
   getDirections: function(start, end) {
     var startLL = new google.maps.LatLng(start.get('lat'), start.get('lng'));
@@ -120,7 +120,6 @@ var googleMapServices = {
     this.directionsService = this.directionsService || new google.maps.DirectionsService();
     this.directionsDisplay = this.directionsDisplay || new google.maps.DirectionsRenderer();
     this.directionsDisplay.setMap(this.map);
-    //this.directionsDisplay.setDirections({routes: []});
 
     var opts = {
       origin: startLL,
@@ -143,9 +142,9 @@ var googleMapServices = {
     });
   },
 
-  /* creates LatLngBounds that cover the entire route
-   *   used to get places all along the way
-  */
+  /* Creates LatLngBounds that cover the entire route
+   * Used to get places all along the way
+   */
   createRouteBoxes: function(overview_path) {
     var boxes = this.routeBoxer.box(overview_path, 0.125);
     // find places in each box
@@ -153,9 +152,10 @@ var googleMapServices = {
   },
 
 
-  /* Get places for the given bounds.
-   * When results are received, creates a marker for each on the map.
-   * Sets click listener on the marker to show an InfoWindow
+  /* Get places for a LatLngBounds
+   * When results are received, creates a marker for each on the map,
+   *   Sets click listener on the marker to show an InfoWindow
+   * If over query limit, set timeout and try again
    */
   getNearbyPlaces: function(boxes, i) {
     if (i === boxes.length) {
@@ -181,7 +181,7 @@ var googleMapServices = {
       } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
         console.log('Over query limit; waiting 1 second');
         setTimeout(function() {
-          that.getNearbyPlaces(boxes, i);
+          that.getNearbyPlaces(boxes, i); // try again for the same box
         }, 1000);
       } else {
         console.log('ERROR: ' + status);
@@ -285,7 +285,7 @@ var googleMapServices = {
     }
     console.log('filter:');
     console.log(finalFilter);
-    this.buildRoute(null, finalFilter);
+    this.collectRouteComponents(null, finalFilter);
   },
 
   /* Remove all markers from the map
