@@ -1,18 +1,14 @@
-/* globals require, console */
-
 var gulp = require('gulp');
 var browserify = require('browserify');
 var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
 var hbsfy = require('hbsfy');
-var mocha = require('gulp-mocha');
-var nodemon = require('gulp-nodemon');
 var less = require('gulp-less');
 var uglify = require('gulp-uglify');
 var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
-//var watchify = require('watchify');
+var shell = require('gulp-shell');
 
 // define paths once
 var DIRS = {
@@ -35,65 +31,36 @@ gulp.task('default', function() {
   }
 });
 
-
-/*
-Testing!
-*/
-
-gulp.task('unit-test', function() {
-  console.log('Running tests in ' + DIRS.TEST);
-  return gulp.src(DIRS.TEST + 'unit/**/*.test.js')
-    .pipe(mocha({reporter: 'list'}));
-});
-
+/* bundle-tests - browserify tests */
 gulp.task('js-test', function () {
 	return browserify(DIRS.TEST + 'browser/requirements.js')
-			//.transform(hbsfy)
+			.transform(hbsfy)
 			.bundle()
 			.pipe(source('test.js'))
 			.pipe(buffer())
 			.pipe(gulp.dest(DIRS.TEST + 'browser/'));
 });
 
+/* test-watch - watch for changes and re-bundle tests as needed */
 gulp.task('test-watch', function () {
-	gulp
-		.watch([DIRS.TEST + 'browser/*.js', '!' + DIRS.TEST + 'browser/test.js'], ['js-test'])
-			.on('change', function(event) {
-				console.log('Oh, a change!');
-			});
+	gulp.watch([DIRS.TEST + 'browser/*.js', '!' + DIRS.TEST + 'browser/test.js'], ['js-test'])
+    .on('change', function() {
+      console.log('Oh, a change!');
+    });
 });
 
-
-/*
-Styling!
-*/
-
 // styles - turn scss into css, move to BUILD
-gulp.task('styles', function () {
+gulp.task('styles', ['clean'], function () {
 	var src = DIRS.SRC + DIRS.STYLES + '*.less';
-	console.log('Processing less from ' + src);
 	return gulp.src(src)
 			.pipe(less({compress: true}))
 			.pipe(concat('main.css'))
 			.pipe(gulp.dest(DIRS.DIST + DIRS.STYLES));
 });
 
-gulp.task('styles-watch', function () {
-	gulp
-			.watch(DIRS.SRC + DIRS.STYLES + '*.less', ['styles'])
-			.on('change', function (event) {
-				console.log('LESS converting to CSS ...');
-			});
-});
-
-/*
-JavaScript!
-*/
-
 // js - browserify SRC js and reqs into single client.js file
 gulp.task('js', ['clean'], function() {
   var start = DIRS.SRC + 'js/router.js';
-  console.log('Bundling reqs starting at ' + start);
   return browserify(start)
     .transform(hbsfy)
     .bundle()
@@ -102,34 +69,27 @@ gulp.task('js', ['clean'], function() {
     .pipe(gulp.dest(DIRS.DIST));
 });
 
-// js - browserify SRC js and reqs into single client.js file
+// uglify - compress js for prod
 gulp.task('uglify', function () {
 	return gulp.src(DIRS.DIST + 'js/client.js')
 			.pipe(uglify())
 			.pipe(gulp.dest(DIRS.DIST));
 });
 
-
-/*
-Other stuff!
-*/
-
 // clean - empty out the /dist folder
 gulp.task('clean', function () {
-	console.log('Cleaning ' + DIRS.DIST);
-	gulp
-			.src([DIRS.DIST + '**/*', DIRS.DIST + '*.*'], {read: false})
-			.pipe(clean());
+	return gulp.src([DIRS.DIST + '**/*', DIRS.DIST + '*.*'], {read: false})
+    .pipe(clean());
 });
 
-// html - copy html from SRC to BUILD
+// html - copy from SRC to BUILD
 gulp.task('html', function() {
   gulp.src(DIRS.SRC + '**/*.html', {base: DIRS.SRC})
     .pipe(gulp.dest(DIRS.DIST));
 });
 
-// images - copy images from SRC to BUILD
-gulp.task('img', function() {
+// images - copy from SRC to BUILD
+gulp.task('img', ['clean'], function() {
   gulp.src(DIRS.SRC + 'images/*.*', {base: DIRS.SRC})
     .pipe(gulp.dest(DIRS.DIST));
 });
@@ -141,35 +101,18 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('default'));
 });
 
-// serve - run express server. see on change
+
 gulp.task('serve', ['build'], function() {
-  nodemon({
-		script: 'server.js',
-		ext: 'html js less hbs',
-		ignore: [
-			'node_modules/**/*',
-			DIRS.DIST + '**/*'
-		]
-  })
-    .on('change', ['build'])
-    .on('restart', function() {
-      console.log('Server restarted');
-    });
+  gulp.src('').pipe(shell(['node server.js']));
+  return gulp.watch([DIRS.SRC + '**/*.*'], ['build']);
 });
-
-
-/*
-Task groups!
-*/
 
 // build - runs the standard suite of development building
 gulp.task('build', ['clean', 'html', 'styles', 'js', 'img']);
 
-// ship - ready to deploy
+// ship - prepare code for deployment
 gulp.task('ship', ['clean', 'html', 'styles', 'lint', 'js', 'uglify', 'img']);
 
-// test - pared down process for testing
-gulp.task('test', ['js-test', 'unit-test', 'test-watch']);
+// test - bundle tests and watch for changes
+gulp.task('test', ['js-test', 'test-watch']);
 
-// test - pared down process for testing
-gulp.task('styling', ['styles', 'styles-watch']);
