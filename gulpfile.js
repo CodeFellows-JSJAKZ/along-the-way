@@ -70,10 +70,10 @@ gulp.task('js', ['clean'], function() {
 });
 
 // uglify - compress js for prod
-gulp.task('uglify', function () {
+gulp.task('uglify', ['js'], function () {
 	return gulp.src(DIRS.DIST + 'js/client.js')
 			.pipe(uglify())
-			.pipe(gulp.dest(DIRS.DIST));
+			.pipe(gulp.dest(DIRS.DIST + 'js/'));
 });
 
 // clean - empty out the /dist folder
