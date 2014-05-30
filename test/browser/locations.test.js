@@ -1,6 +1,5 @@
 var expect = require('chai').expect;
 var Location = require('../../app/js/models/location-model.js');
-var googleMapServices = require('../../app/js/apis/googleMaps.js');
 
 describe('Location', function () {
 
@@ -53,10 +52,6 @@ describe('Location', function () {
 			expect(location2.get('lng')).to.be.ok;
 			expect(location2.get('lng')).to.be.at.least(-180);
 			expect(location2.get('lng')).to.be.at.most(180);
-		});
-
-		it('should build a route object', function () {
-			googleMapServices.getDirections(location1, location2);
 		});
 
 	});
